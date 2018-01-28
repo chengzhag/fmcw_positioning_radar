@@ -1,15 +1,17 @@
 #include <mbed.h>
-
+#define WIDTH_FALL 10
+#define WIDTH_PULSE 90
 #define WIDTH_BIT 100
 
 InterruptIn triger(D4);
 DigitalOut switchV1(D2), switchV2(D3);
-DigitalOut usrpSyn(D5);
+DigitalInOut usrpSyn(D5, PIN_OUTPUT, OpenDrainNoPull, 1);
 
 void switchAnt()
 {
 	static int Rxi = 0;
-	usrpSyn=1;
+	
+	//ÇÐ»»ÌìÏß
 	switch (Rxi)
 	{
 	case 0:
@@ -25,7 +27,13 @@ void switchAnt()
 		switchV2 = 1;
 		break;
 	}
-	wait_us(WIDTH_BIT);
+
+	//À­µÍÂö³å
+	wait_us(WIDTH_FALL);
+	usrpSyn=0;
+	wait_us(WIDTH_PULSE);
+
+	//·¢ËÍÌìÏß±àºÅ
 	switch (Rxi)
 	{
 	case 0:
@@ -45,7 +53,9 @@ void switchAnt()
 		break;
 	}
 	wait_us(WIDTH_BIT);
-	usrpSyn = 0;
+
+	//Ðü¿ÕÊä³ö
+	usrpSyn = 1;
 	
 	if (++Rxi>=3)
 	{
