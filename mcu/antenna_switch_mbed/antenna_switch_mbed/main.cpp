@@ -1,6 +1,6 @@
 #include <mbed.h>
-#define WIDTH_FALL 10
-#define WIDTH_PULSE 90
+#define WIDTH_FALL 5
+#define WIDTH_PULSE 95
 #define WIDTH_BIT 100
 
 InterruptIn triger(D4);

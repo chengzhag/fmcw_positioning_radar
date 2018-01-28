@@ -1,0 +1,9 @@
+function array=log2array(logsout,name)
+if isa(logsout,'Dataset');
+elid
+end
+array=get(logsout,name);
+array=array.Values;
+
+array=getdatasamples(array,1:length(array.time));
+end
