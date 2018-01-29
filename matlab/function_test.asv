@@ -11,6 +11,7 @@ load '../data/dataSim_200kHz_400rps_5rpf_1t3r_static.mat'
 ys=log2array(logsout,'dataSim');
 lRamp=fS/fTr;%length ramp
 lF=size(ys,2);
+nCircPF=
 
 
 %% 提取两路信号
@@ -23,22 +24,31 @@ iSam=3;
 ts=0:1/fS:1/fS*(size(ysLo,2)-1);
 ysLoSam=ysLo(iSam,:);
 ysTrSam=ysTr(iSam,:);
+
 % 计算触发电平
 trThres=(max(ysTrSam)+min(ysTrSam))/2;%triger threshold
 trThres=(mean(ysTrSam(ysTrSam>trThres))+mean(ysTrSam(ysTrSam<trThres)))/2;
+
 % 绘制信号
 figure;
 plot(ts,ysLoSam);
 hold on
 plot(ts,ysTrSam);
 plot([ts(1),ts(end)],[trThres,trThres]);
+
 % 检验firstRampTime函数
 tFrampSam=firstRampTime(ysTrSam,fS,fTr,tPul,nPul,0,trThres);%time Ramp
 plot(tFrampSam,trThres,'o');
+
+% 检验触发沿index，为后面circshift准备
+iTrF=ceil(tFrampSam*fS)+1;
+plot(ts(iTrF),ysTrSam(iTrF),'o');
+
+% 绘制坐标轴和图例
 title(['第' num2str(iSam) '帧的同步信号和中频信号']);
 xlabel('t(s)');
-legend('中频信号','同步信号','触发电平','第一个同步信号触发沿');
-% 计算
+legend('中频信号','同步信号','触发电平','第一个同步信号触发沿','反推得到的触发沿index');
+
 hold off
 
 %% 测试firstRampTime的效率和抖动
@@ -75,9 +85,37 @@ if doShiftTest_firstRampTime
     end
 end
 
-%% 用ysTrSam测试getAntNum函数
-nsAnt=zeros(1,lF/lRamp-1);
+%% 用ysTrSam测试getAntIndex函数
+iAnt=getAntIndex(ysTrSam, tFrampSam, fS, tPul, trThres, antBits);
+isAnt=zeros(1,lF/lRamp-1);
 for iSwitch=1:lF/lRamp-1
-    nsAnt(iSwitch)=getAntNum(ysTrSam, tFrampSam+iSwitch/fTr, fS, tPul, trThres, antBits);
+    isAnt(iSwitch)=getAntIndex(ysTrSam, tFrampSam+iSwitch/fTr, fS, tPul, trThres, antBits);
 end
-disp(['样本帧中检测到的天线编号有：' num2str(nsAnt)]);
+disp(['样本帧中检测到的天线编号有：' num2str(isAnt)]);
+
+%% 用ysTrSam测试interpShift函数，对中频信号进行循环移位
+figure;
+
+subplot(1,2,1);
+ysTrSamShifted=interpShift(ysTrSam,-((iAnt-1)*lRamp+(tFrampSam*fS)));%少移一位，让过零点移到首位
+plot(ts,ysTrSamShifted,ts,ysTrSam);
+hold on;
+plot(tFrampSam,trThres,'o');
+plot(ts(1),ysTrSamShifted(1),'o');
+title('对同步信号进行循环移位');
+xlabel('t(s)');
+legend('移位前的同步信号','移位后的同步信号','移位前的触发沿','移位后的触发沿');
+hold off;
+
+subplot(1,2,2);
+ysLoSamShifted=interpShift(ysLoSam,-((iAnt-1)*lRamp+(tFrampSam*fS)));
+plot(ts,ysLoSamShifted,ts,ysLoSam);
+title('对中频信号进行循环移位');
+xlabel('t(s)');
+legend('移位前的中频信号','移位后的中频信号');
+
+%% reshape移位后的中频信号ysLoSamShifted
+ysLoRxi=reshape(ysLoSamShifted,lRamp*nRx,lF/lRamp/nRx);
+figure;
+plot(repmat(ts(1:lRamp*nRx)',1,5),ysLoRxi);
+legend([repmat('第',),]);

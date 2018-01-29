@@ -11,6 +11,7 @@ load '../data/dataSim_200kHz_400rps_5rpf_1t3r_static.mat'
 ys=log2array(logsout,'dataSim');
 lRamp=fS/fTr;%length ramp
 lF=size(ys,2);
+nCyclePF=lF/lRamp/nRx;
 
 
 %% 提取两路信号
@@ -84,9 +85,39 @@ if doShiftTest_firstRampTime
     end
 end
 
-%% 用ysTrSam测试getAntNum函数
-nsAnt=zeros(1,lF/lRamp-1);
+%% 用ysTrSam测试getAntIndex函数
+iAnt=getAntIndex(ysTrSam, tFrampSam, fS, tPul, trThres, antBits);
+isAnt=zeros(1,lF/lRamp-1);
 for iSwitch=1:lF/lRamp-1
-    nsAnt(iSwitch)=getAntNum(ysTrSam, tFrampSam+iSwitch/fTr, fS, tPul, trThres, antBits);
+    isAnt(iSwitch)=getAntIndex(ysTrSam, tFrampSam+iSwitch/fTr, fS, tPul, trThres, antBits);
 end
-disp(['样本帧中检测到的天线编号有：' num2str(nsAnt)]);
+disp(['样本帧中检测到的天线编号有：' num2str(isAnt)]);
+
+%% 用ysTrSam测试interpShift函数，对中频信号进行循环移位
+figure;
+
+subplot(1,2,1);
+ysTrSamShifted=interpShift(ysTrSam,-((iAnt-1)*lRamp+(tFrampSam*fS)));%少移一位，让过零点移到首位
+plot(ts,ysTrSamShifted,ts,ysTrSam);
+hold on;
+plot(tFrampSam,trThres,'o');
+plot(ts(1),ysTrSamShifted(1),'o');
+title('对同步信号进行循环移位');
+xlabel('t(s)');
+legend('移位前的同步信号','移位后的同步信号','移位前的触发沿','移位后的触发沿');
+hold off;
+
+subplot(1,2,2);
+ysLoSamShifted=interpShift(ysLoSam,-((iAnt-1)*lRamp+(tFrampSam*fS)));
+plot(ts,ysLoSamShifted,ts,ysLoSam);
+title('对中频信号进行循环移位');
+xlabel('t(s)');
+legend('移位前的中频信号','移位后的中频信号');
+
+%% reshape移位后的中频信号ysLoSamShifted
+ysLoRxi=reshape(ysLoSamShifted,lRamp*nRx,nCyclePF);
+figure;
+plot(repmat(ts(1:lRamp*nRx)',1,5),ysLoRxi);
+legend([repmat('第',nCyclePF,1),num2str((1:nCyclePF)'),repmat('个周期',nCyclePF,1)]);
+title('样本帧中的各周期');
+xlabel('t(s)');
