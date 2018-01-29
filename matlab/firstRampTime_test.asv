@@ -1,0 +1,111 @@
+%% 运行参数设置
+doJoggleTest=1;
+do
+
+%% 清理
+close all;
+
+%% 加载数据、参数
+load '../data/dataSim_200kHz_400rps_5rpf_1t3r_static.mat'
+
+ys=log2array(logsout,'dataSim');
+lRamp=fS/fTr;%length ramp
+lF=size(ys,2);
+
+
+%% 提取两路信号
+ysLo=real(ys);%ys local
+ysTr=imag(ys);%ys triger
+
+%% 显示示例帧，计算参数，检验firstRampTime函数
+% 抽取示例帧
+iSam=3;
+ts=0:1/fS:1/fS*(size(ysLo,2)-1);
+ysLoSam=ysLo(iSam,:);
+ysTrSam=ysTr(iSam,:);
+% 计算触发电平
+trThres=(max(ysTrSam)+min(ysTrSam))/2;%triger threshold
+trThres=(mean(ysTrSam(ysTrSam>trThres))+mean(ysTrSam(ysTrSam<trThres)))/2;
+% 绘制信号
+figure;
+plot(ts,ysLoSam);
+hold on
+plot(ts,ysTrSam);
+plot([ts(1),ts(end)],[trThres,trThres]);
+% 检验firstRampTime函数
+tFramp=firstRampTime(ysTrSam,fS,fTr,tPul,nPul,0,trThres);%time Ramp
+plot(tFramp,trThres,'o');
+title(['第' num2str(iSam) '帧的同步信号和中频信号']);
+xlabel('t(s)');
+legend('中频信号','同步信号','触发电平','第一个同步信号触发沿');
+hold off
+
+%% 测试firstRampTime的效率和抖动
+tsFramp=zeros(size(ys,1),1);
+for iF=1:size(ys,1)
+    tsFramp(iF)=firstRampTime(ysTr(iF,:),fS,fTr,tPul,3,0,trThres);%time Ramp
+end
+figure;
+% 理想情况下，触发信号时间应该线性变化，但由于触发沿的非线性、采样点不够密集，仍可能带来相位抖动
+% 通过估计触发信号时间增量的抖动，可以简单地估计firstRampTime函数可能带来的相位抖动
+tsDeltaInc=detrend(tsFramp(2:end)-tsFramp(1:end-1));%times delta increment
+plot(tsDeltaInc);
+title('firstRampTime函数可能带来的相位抖动');
+ylabel('t(s)');
+xlabel('帧');
+disp(['触发信号时间增量的抖动均方差为' num2str(std(tsDeltaInc))]);
+
+%% 通过循环位移样本帧模拟了长时间运行时可能触发的边界条件
+hV=figure;
+tsFramp=zeros(size(ys,2),1);
+for iShift=1:lRamp*nRx
+    ysTrShift=circshift(ysTrSam,iShift);
+    tsFramp(iShift)=firstRampTime(ysTrShift,fS,fTr,tPul,3,0,trThres);%time Ramp
+    %绘制触发信号和触发点
+    figure(hV);
+    plot(ts,ysTrShift);
+    hold on;
+    plot(tsFramp(iShift),trThres,'o');
+    hold off
+    pause(0.001);
+end
+
+%% 同步斜坡信号起始时间函数，返回所有斜坡信号起始时间点
+% tFramp: 第一个斜坡开始时间，精确到采样时间之下，以第一个采样点为参考时间0
+% ysTr: 一帧triger信号
+% fS: 采样率
+% fTr: 帧率
+% tPul: 脉冲/比特宽度
+% nPul: 脉冲/比特总数
+% trEdge: 触发沿：1上升沿 0下降沿
+% trThres: 触发电平
+function tFramp=firstRampTime(ysTr, fS, fTr, tPul, nPul, trEdge, trThres)
+%% 准备参数
+lRamp=fS/fTr;%length ramp
+lPul=fS*tPul;%length pulse
+
+if(mod(size(ysTr,2),lRamp)~=0)
+    error('The length of frame is not integer multiple of the length of ramp .');
+end
+
+%% 分析第一个完整斜坡同步信号
+%第一个完整斜坡同步信号触发沿位于1:lRamp,为了容错，扩大范围到1:lRamp+lPul*nPul
+isFramp=1:lRamp+lPul*nPul;%indexs first ramp
+ysTrFf=ysTr(isFramp);%ys triger first ramp
+iTrF=[];
+if trEdge==0
+    iTrF=find(ysTrFf(2:end)<trThres & ysTrFf(1:end-1)>trThres)+1;%index triger first
+else
+    iTrF=find(ysTrFf(2:end)>trThres & ysTrFf(1:end-1)<trThres)+1;
+end
+iTrF([false iTrF(2:end)-iTrF(1:end-1)<=lPul*nPul])=[];%要求脉冲和比特总时长小于斜坡周期的一半
+if isempty(iTrF)
+    tFramp=nan;
+    return
+else
+    iTrF=iTrF(end);%选取最后一个触发信号
+end
+
+%% 线性插值分析上升沿的精确时间
+tFramp=interp1([ysTr(iTrF-1),ysTr(iTrF)],([iTrF-1,iTrF]-1)/fS,trThres);
+end
