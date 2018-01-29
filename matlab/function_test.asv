@@ -23,31 +23,22 @@ iSam=3;
 ts=0:1/fS:1/fS*(size(ysLo,2)-1);
 ysLoSam=ysLo(iSam,:);
 ysTrSam=ysTr(iSam,:);
-
 % 计算触发电平
 trThres=(max(ysTrSam)+min(ysTrSam))/2;%triger threshold
 trThres=(mean(ysTrSam(ysTrSam>trThres))+mean(ysTrSam(ysTrSam<trThres)))/2;
-
 % 绘制信号
 figure;
 plot(ts,ysLoSam);
 hold on
 plot(ts,ysTrSam);
 plot([ts(1),ts(end)],[trThres,trThres]);
-
 % 检验firstRampTime函数
 tFrampSam=firstRampTime(ysTrSam,fS,fTr,tPul,nPul,0,trThres);%time Ramp
 plot(tFrampSam,trThres,'o');
-
-% 检验触发沿index，为后面circshift准备
-iTrF=ceil(tFrampSam*fS)+1;
-plot(ts(iTrF),ysTrSam(iTrF),'o');
-
-% 绘制坐标轴和图例
 title(['第' num2str(iSam) '帧的同步信号和中频信号']);
 xlabel('t(s)');
-legend('中频信号','同步信号','触发电平','第一个同步信号触发沿','反推得到的触发沿index');
-
+legend('中频信号','同步信号','触发电平','第一个同步信号触发沿');
+% 计算
 hold off
 
 %% 测试firstRampTime的效率和抖动
