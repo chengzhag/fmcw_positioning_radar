@@ -3,6 +3,10 @@
 % vIn: 输入向量
 % dis: 向右移位距离
 function vOut=interpShift(vIn, dis)
+    if isnan(dis)
+        vOut=vIn;
+        return
+    end
     isZeroBased=0:length(vIn)-1;
     if dis>=0
         iShift=floor(dis);

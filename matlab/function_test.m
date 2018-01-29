@@ -8,6 +8,7 @@ close all;
 %% 加载数据、参数
 load '../data/dataSim_200kHz_400rps_5rpf_1t3r_static.mat'
 
+nRx=size(antBits,1);
 ys=log2array(logsout,'dataSim');
 lRamp=fS/fTr;%length ramp
 lF=size(ys,2);
@@ -97,7 +98,7 @@ disp(['样本帧中检测到的天线编号有：' num2str(isAnt)]);
 figure;
 
 subplot(1,2,1);
-ysTrSamShifted=interpShift(ysTrSam,-((iAnt-1)*lRamp+(tFrampSam*fS)));%少移一位，让过零点移到首位
+ysTrSamShifted=interpShift(ysTrSam,calcShiftDis(iAnt,tFrampSam,lRamp,fS,nRx));%少移一位，让过零点移到首位
 plot(ts,ysTrSamShifted,ts,ysTrSam);
 hold on;
 plot(tFrampSam,trThres,'o');
@@ -108,7 +109,7 @@ legend('移位前的同步信号','移位后的同步信号','移位前的触发沿','移位后的触发沿');
 hold off;
 
 subplot(1,2,2);
-ysLoSamShifted=interpShift(ysLoSam,-((iAnt-1)*lRamp+(tFrampSam*fS)));
+ysLoSamShifted=interpShift(ysLoSam,calcShiftDis(iAnt,tFrampSam,lRamp,fS,nRx));
 plot(ts,ysLoSamShifted,ts,ysLoSam);
 title('对中频信号进行循环移位');
 xlabel('t(s)');
@@ -121,3 +122,4 @@ plot(repmat(ts(1:lRamp*nRx)',1,5),ysLoRxi);
 legend([repmat('第',nCyclePF,1),num2str((1:nCyclePF)'),repmat('个周期',nCyclePF,1)]);
 title('样本帧中的各周期');
 xlabel('t(s)');
+

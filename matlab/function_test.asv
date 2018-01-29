@@ -8,10 +8,11 @@ close all;
 %% 加载数据、参数
 load '../data/dataSim_200kHz_400rps_5rpf_1t3r_static.mat'
 
+nRx=size(antBits,1)
 ys=log2array(logsout,'dataSim');
 lRamp=fS/fTr;%length ramp
 lF=size(ys,2);
-nCircPF=
+nCyclePF=lF/lRamp/nRx;
 
 
 %% 提取两路信号
@@ -108,14 +109,17 @@ legend('移位前的同步信号','移位后的同步信号','移位前的触发沿','移位后的触发沿');
 hold off;
 
 subplot(1,2,2);
-ysLoSamShifted=interpShift(ysLoSam,-((iAnt-1)*lRamp+(tFrampSam*fS)));
+ysLoSamShifted=interpShift(ysLoSam,-((nRx+1-iAnt)*lRamp+(tFrampSam*fS)));
 plot(ts,ysLoSamShifted,ts,ysLoSam);
 title('对中频信号进行循环移位');
 xlabel('t(s)');
 legend('移位前的中频信号','移位后的中频信号');
 
 %% reshape移位后的中频信号ysLoSamShifted
-ysLoRxi=reshape(ysLoSamShifted,lRamp*nRx,lF/lRamp/nRx);
+ysLoRxi=reshape(ysLoSamShifted,lRamp*nRx,nCyclePF);
 figure;
 plot(repmat(ts(1:lRamp*nRx)',1,5),ysLoRxi);
-legend([repmat('第',),]);
+legend([repmat('第',nCyclePF,1),num2str((1:nCyclePF)'),repmat('个周期',nCyclePF,1)]);
+title('样本帧中的各周期');
+xlabel('t(s)');
+

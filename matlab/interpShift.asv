@@ -1,8 +1,0 @@
-%% 循环移位，通过线性插值实现小数位数的移位
-% vOut: 输出向量
-% vIn: 输入向量
-% dis: 向左移位距离
-function vOut=interpShift(vIn, dis)
-    isZeroBased=0:length(vIn)-1;
-    isShifted=isZeroBased-
-end
