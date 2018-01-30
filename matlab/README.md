@@ -38,4 +38,7 @@ interpShift.m：循环移位，通过线性插值实现小数位数的移位
 测试通过各天线的频谱分析出坐标的各函数。过程如下：
 1. 读取simulink记录的各天线频谱数据
 
+### findFirstPeak测试
+findFirstPeak.m：在列向量中寻找噪底之上第一个峰的下标
+
 

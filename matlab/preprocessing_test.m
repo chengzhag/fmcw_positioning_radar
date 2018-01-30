@@ -14,7 +14,6 @@ lRamp=fS/fTr;%length ramp
 lF=size(ys,2);
 nCyclePF=lF/lRamp/nRx;
 
-
 %% 提取两路信号
 ysLo=real(ys);%ys local
 ysTr=imag(ys);%ys triger
@@ -31,7 +30,7 @@ trThres=(max(ysTrSam)+min(ysTrSam))/2;%triger threshold
 trThres=(mean(ysTrSam(ysTrSam>trThres))+mean(ysTrSam(ysTrSam<trThres)))/2;
 
 % 绘制信号
-figure;
+figure('name','示例帧触发沿检测');
 plot(ts,ysLoSam);
 hold on
 plot(ts,ysTrSam);
@@ -58,7 +57,7 @@ if doJoggleTest_firstRampTime
     for iF=1:size(ys,1)
         tsFramp(iF)=firstRampTime(ysTr(iF,:),fS,fTr,tPul,3,0,trThres);%time Ramp
     end
-    figure;
+    figure('name','firstRampTime的抖动');
     % 理想情况下，触发信号时间应该线性变化，但由于触发沿的非线性、采样点不够密集，仍可能带来相位抖动
     % 通过估计触发信号时间增量的抖动，可以简单地估计firstRampTime函数可能带来的相位抖动
     tsDeltaInc=detrend(tsFramp(2:end)-tsFramp(1:end-1));%times delta increment
@@ -71,7 +70,7 @@ end
 
 %% 通过循环位移样本帧模拟了长时间运行时可能触发的边界条件
 if doShiftTest_firstRampTime
-    hV=figure;
+    hV=figure('name','长时间运行测试firstRampTime');
     tsFramp=zeros(size(ys,2),1);
     for iShift=1:lRamp*nRx
         ysTrShift=circshift(ysTrSam,iShift);
@@ -95,7 +94,7 @@ end
 disp(['样本帧中检测到的天线编号有：' num2str(isAnt)]);
 
 %% 用ysTrSam测试interpShift函数，对中频信号进行循环移位
-figure;
+figure('name','interpShift移位测试');
 
 subplot(1,2,1);
 ysTrSamShifted=interpShift(ysTrSam,calcShiftDis(iAnt,tFrampSam,lRamp,fS,nRx));%少移一位，让过零点移到首位
@@ -117,7 +116,7 @@ legend('移位前的中频信号','移位后的中频信号');
 
 %% reshape移位后的中频信号ysLoSamShifted
 ysLoRxi=reshape(ysLoSamShifted,lRamp*nRx,nCyclePF);
-figure;
+figure('name','斜坡分割测试');
 plot(repmat(ts(1:lRamp*nRx)',1,5),ysLoRxi);
 legend([repmat('第',nCyclePF,1),num2str((1:nCyclePF)'),repmat('个周期',nCyclePF,1)]);
 title('样本帧中的各周期');
