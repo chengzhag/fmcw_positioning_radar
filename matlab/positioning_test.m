@@ -106,7 +106,7 @@ for iRx=1:3
     plot(dsTa(:,iRx),ts);
     ylabel('t(s)');
     xlabel('d(m)');
-    title('距离——时间曲线');
+    title(['Rx' num2str(iRx) '的距离——时间曲线']);
 end
 
 %% 对距离——时间曲线做异常值剔除和滤波处理
