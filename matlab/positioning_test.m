@@ -1,11 +1,11 @@
 %% 运行参数设置
-doFindpeaksTest_findpeaks=0;
+doFindpeaksTest_findpeaks=1;
 
 %% 清理
 close all;
 
 %% 加载数据、参数
-% load '../data/foreground_1MHz_400rps_5rpf_1t3r_walking.mat'
+load '../data/foreground_1MHz_400rps_5rpf_1t3r_walking.mat'
 
 nRx=size(antBits,1);
 fo=log2array(logsout,'foregroundSim');
@@ -23,10 +23,10 @@ ds=fs/fPm;
 ts=linspace(0,size(fo,2)/fF,size(fo,2));%3Rx，5帧平均
 
 %% 截取前景有效时间和距离范围
-tMi=5;
+tMi=1;
 tMa=25;
-dMi=0;
-dMa=30;
+dMi=4.3;
+dMa=23.5;
 valT=ts>=tMi & ts<=tMa;
 valD=ds>=dMi & ds<=dMa;
 
@@ -52,7 +52,7 @@ if doFindpeaksTest_findpeaks
         figure(hFP);
         for iRx=1:3
             subplot(1,3,iRx);
-            findpeaks(fo(:,iF,iRx),ds,'MinPeakProminence',max(fo(:,iF,iRx))/2,'Annotate','extents','NPeaks',1);
+            findpeaks(fo(:,iF,iRx),ds,'MinPeakProminence',max(fo(:,iF,iRx))*0.8,'Annotate','extents','NPeaks',1);
             title(['第' num2str(ts(iF)) 's Rx' num2str(iRx) '的频谱']);
         end
         pause(0.5);
