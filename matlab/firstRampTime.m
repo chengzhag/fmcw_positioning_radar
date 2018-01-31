@@ -20,19 +20,24 @@ end
 %第一个完整斜坡同步信号触发沿位于1:lRamp,为了容错，扩大范围到1:lRamp+lPul*nPul
 isFramp=1:lRamp+lPul*nPul;%indexs first ramp
 ysTrFf=ysTr(isFramp);%ys triger first ramp
-iTrF=[];
+isTrF=[];
 if trEdge==0
-    iTrF=find(ysTrFf(2:end)<trThres & ysTrFf(1:end-1)>trThres)+1;%index triger first
+    isTrF=find(ysTrFf(2:end)<trThres & ysTrFf(1:end-1)>=trThres)+1;%index triger first
 else
-    iTrF=find(ysTrFf(2:end)>trThres & ysTrFf(1:end-1)<trThres)+1;
+    isTrF=find(ysTrFf(2:end)>trThres & ysTrFf(1:end-1)<=trThres)+1;
 end
-iTrF([false iTrF(2:end)-iTrF(1:end-1)<=lPul*nPul])=[];%要求脉冲和比特总时长小于斜坡周期的一半
-if isempty(iTrF)
-    tFramp=nan;
+if isempty(isTrF)
+    tFramp=single(nan);
     return
 else
-    iTrF=iTrF(end);%选取最后一个触发信号
+    iTrF=isTrF(find([true diff(isTrF)>lPul*nPul],1,'last'));%要求脉冲和比特总时长小于斜坡周期的一半,选取最后一个触发信号
 end
+
+% 在调试错误触发时启用
+% if ysTr(iTrF+150)>trThres && ysTr(iTrF+250)>trThres
+%     tFramp=single(nan);
+%     return
+% end
 
 %% 线性插值分析上升沿的精确时间
 tFramp=interp1([ysTr(iTrF-1),ysTr(iTrF)],([iTrF-1,iTrF]-1)/fS,trThres);

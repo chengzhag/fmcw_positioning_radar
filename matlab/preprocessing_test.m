@@ -81,7 +81,7 @@ if doShiftTest_firstRampTime
         hold on;
         plot(tsFramp(iShift),trThres,'o');
         hold off
-        pause(0.001);
+        pause(0.01);
     end
 end
 
