@@ -36,8 +36,8 @@ fo=fo(ds>=dCa,:,:);
 ds=ds(ds>=dCa)-dCa;
 
 %% 截取前景有效时间和距离范围
-tMi=2;
-tMa=17;
+tMi=5;
+tMa=22;
 dMi=0;
 dMa=19.5;
 valT=ts>=tMi & ts<=tMa;
