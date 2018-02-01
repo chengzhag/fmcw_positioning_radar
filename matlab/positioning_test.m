@@ -37,7 +37,7 @@ ds=ds(ds>=dCa)-dCa;
 
 %% 截取前景有效时间和距离范围
 tMi=5;
-tMa=22;
+tMa=24;
 dMi=0;
 dMa=19.5;
 valT=ts>=tMi & ts<=tMa;
