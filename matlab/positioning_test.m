@@ -1,12 +1,13 @@
 %% 运行参数设置
 doFindpeaksTest_findpeaks=0;
 doFindFirstpeakSampleTest_findpeaks=0;
+doFindFirstpeakTest_findpeaks=1;
 
 %% 清理
 close all;
 
 %% 加载/提取数据、参数
-% load '../data/foreground_1MHz_400rps_5rpf_1t3r_walking.mat'
+load '../data/foreground_1MHz_400rps_5rpf_1t3r_walking.mat'
 
 nRx=size(antBits,1);
 fo=log2array(logsout,'foregroundSim');
@@ -36,10 +37,10 @@ fo=fo(ds>=dCa,:,:);
 ds=ds(ds>=dCa)-dCa;
 
 %% 截取前景有效时间和距离范围
-tMi=5;
-tMa=24;
-dMi=0;
-dMa=19.5;
+tMi=2;
+tMa=22;
+dMi=0.29;
+dMa=21;
 valT=ts>=tMi & ts<=tMa;
 valD=ds>=dMi & ds<=dMa;
 
@@ -95,35 +96,37 @@ if doFindFirstpeakSampleTest_findpeaks
 end
 
 %% 检测所有帧的峰值，测试findFirstPeak函数
-dsTa=zeros(size(fo,2),nRx);
-for iF=1:size(fo,2);
-    dsTa(iF,:)=findFirstPeak(permute(fo(:,iF,:),[1,3,2]),0.7);
-end
-dsTa=dsTa.*dPs;
-hDT=figure('name','寻峰得到的距离——时间曲线');
-for iRx=1:nRx
-    subplot(1,nRx,iRx);
-    plot(dsTa(:,iRx),ts);
-    ylabel('t(s)');
-    xlabel('d(m)');
-    title(['Rx' num2str(iRx) '的距离——时间曲线']);
-end
-
-%% 对距离——时间曲线做异常值剔除和滤波处理
-dsTaHampel=hampel(dsTa,11,0.5);
-figure(hDT);
-for iRx=1:nRx
-    subplot(1,nRx,iRx);
-    hold on;
-    plot(dsTaHampel(:,iRx),ts);
-end
-
-dsTaFiltered=filter(0.2,[1,-0.8],dsTaHampel);
-figure(hDT);
-for iRx=1:nRx
-    subplot(1,nRx,iRx);
-    hold on;
-    plot(dsTaFiltered(:,iRx),ts);
+if doFindFirstpeakTest_findpeaks
+    dsTa=zeros(size(fo,2),nRx);
+    for iF=1:size(fo,2);
+        dsTa(iF,:)=findFirstPeak(permute(fo(:,iF,:),[1,3,2]),0.7);
+    end
+    dsTa=dsTa.*dPs;
+    hDT=figure('name','寻峰得到的距离——时间曲线');
+    for iRx=1:nRx
+        subplot(1,nRx,iRx);
+        plot(dsTa(:,iRx),ts);
+        ylabel('t(s)');
+        xlabel('d(m)');
+        title(['Rx' num2str(iRx) '的距离——时间曲线']);
+    end
+    
+    %% 对距离——时间曲线做异常值剔除和滤波处理
+    dsTaHampel=hampel(dsTa,11,0.5);
+    figure(hDT);
+    for iRx=1:nRx
+        subplot(1,nRx,iRx);
+        hold on;
+        plot(dsTaHampel(:,iRx),ts);
+    end
+    
+    dsTaFiltered=filter(0.2,[1,-0.8],dsTaHampel);
+    figure(hDT);
+    for iRx=1:nRx
+        subplot(1,nRx,iRx);
+        hold on;
+        plot(dsTaFiltered(:,iRx),ts);
+    end
 end
 
 %% 
