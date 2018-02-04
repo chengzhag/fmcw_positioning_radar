@@ -7,7 +7,7 @@ doFindFirstpeakTest_findpeaks=0;
 close all;
 
 %% 加载/提取数据、参数
-load '../data/foreground_1MHz_400rps_1rpf_1t8r_walking.mat'
+% load '../data/foreground_1MHz_400rps_1rpf_1t8r_walking.mat'
 
 nRx=size(antBits,1);
 fo=log2array(logsout,'foregroundSim');
