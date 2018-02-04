@@ -1,13 +1,13 @@
 %% 运行参数设置
 doFindpeaksTest_findpeaks=0;
 doFindFirstpeakSampleTest_findpeaks=0;
-doFindFirstpeakTest_findpeaks=1;
+doFindFirstpeakTest_findpeaks=0;
 
 %% 清理
 close all;
 
 %% 加载/提取数据、参数
-load '../data/foreground_1MHz_400rps_5rpf_1t3r_walking.mat'
+load '../data/foreground_1MHz_400rps_1rpf_1t8r_walking.mat'
 
 nRx=size(antBits,1);
 fo=log2array(logsout,'foregroundSim');
@@ -38,9 +38,9 @@ ds=ds(ds>=dCa)-dCa;
 
 %% 截取前景有效时间和距离范围
 tMi=2;
-tMa=22;
-dMi=0.29;
-dMa=21;
+tMa=20;
+dMi=max(dsTxRxi);
+dMa=20;
 valT=ts>=tMi & ts<=tMa;
 valD=ds>=dMi & ds<=dMa;
 
