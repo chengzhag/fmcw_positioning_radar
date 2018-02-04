@@ -1,31 +1,30 @@
 #include <mbed.h>
-#define WIDTH_FALL 5
-#define WIDTH_PULSE 85
+#include <vector>
+#include <bitset>
+using namespace std;
+
+#define WIDTH_FALL 0
+#define WIDTH_PULSE 80
 #define WIDTH_BIT 100
 
-InterruptIn triger(D4);
-DigitalOut switchV1(D2), switchV2(D3);
-DigitalInOut usrpSyn(D5, PIN_OUTPUT, OpenDrainNoPull, 1);
+InterruptIn triger(D2);
+DigitalInOut usrpSyn(D3, PIN_OUTPUT, OpenDrainNoPull, 1);
+vector<vector<DigitalOut>>  switchs{ {D4,D5},{D6,D7},{D8} };
+
 
 void switchAnt()
 {
-	static int Rxi = 0;
+	static bitset<3> iRx(0);
 	
 	//ÇÐ»»ÌìÏß
-	switch (Rxi)
+	size_t iB = 0;
+	for (auto &douts : switchs)
 	{
-	case 0:
-		switchV1 = 0;
-		switchV2 = 0;
-		break;
-	case 1:
-		switchV1 = 1;
-		switchV2 = 0;
-		break;
-	case 2:
-		switchV1 = 0;
-		switchV2 = 1;
-		break;
+		for (auto &dout : douts)
+		{
+			dout = iRx[iB];
+		}
+		++iB;
 	}
 
 	//À­µÍÂö³å
@@ -34,33 +33,27 @@ void switchAnt()
 	wait_us(WIDTH_PULSE);
 
 	//·¢ËÍÌìÏß±àºÅ
-	switch (Rxi)
+	for (int i = iRx.size() - 1; i >= 0; --i)
 	{
-	case 0:
-		usrpSyn = 0;
+		usrpSyn = iRx[i];
 		wait_us(WIDTH_BIT);
-		usrpSyn = 0;
-		break;
-	case 1:
-		usrpSyn = 1;
-		wait_us(WIDTH_BIT);
-		usrpSyn = 0;
-		break;
-	case 2:
-		usrpSyn = 0;
-		wait_us(WIDTH_BIT);
-		usrpSyn = 1;
-		break;
 	}
-	wait_us(WIDTH_BIT);
+	
+	
 
 	//Ðü¿ÕÊä³ö
 	usrpSyn = 1;
 	
-	if (++Rxi>=3)
+	
+	if (iRx.to_ulong() >= 7)
 	{
-		Rxi = 0;
+		iRx = 0;
 	}
+	else
+	{
+		iRx = iRx.to_ulong() + 1;
+	}
+
 }
 
 int main() 
