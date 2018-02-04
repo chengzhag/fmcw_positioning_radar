@@ -7,11 +7,10 @@ doFindFirstpeakTest_findpeaks=0;
 close all;
 
 %% 加载/提取数据、参数
-% load '../data/foreground_1MHz_400rps_1rpf_1t8r_walking.mat'
+load '../data/foreground_1MHz_400rps_1rpf_1t8r_walking.mat'
 
 nRx=size(antBits,1);
 fo=log2array(logsout,'foregroundSim');
-fo=fo(:,:,100:end);
 fo=permute(fo,[1,3,2]);
 lRamp=fS/fTr;%length ramp
 lSp=size(fo,1);
@@ -23,7 +22,7 @@ fD=fS/lFft;%frequency delta
 dPs=fD/fPm;%distance per sample
 fs=linspace(0,fD*(lSp-1),lSp);
 ds=fs/fPm;
-ts=linspace(0,size(fo,2)/fF,size(fo,2));%3Rx，5帧平均
+ts=linspace(0,size(fo,2)/fF,size(fo,2));
 
 %% 计算每根天线的参数
 % 计算发射天线到各接收天线之间的距离
@@ -37,7 +36,7 @@ fo=fo(ds>=dCa,:,:);
 ds=ds(ds>=dCa)-dCa;
 
 %% 截取前景有效时间和距离范围
-tMi=2;
+tMi=4;
 tMa=20;
 dMi=max(dsTxRxi);
 dMa=20;

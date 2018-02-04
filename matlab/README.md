@@ -41,4 +41,7 @@ interpShift.m：循环移位，通过线性插值实现小数位数的移位
 ### findFirstPeak测试
 findFirstPeak.m：在列向量中寻找噪底之上第一个峰的下标
 
+## fft2d_test.m
+利用usrp_1t3r_positioning.slx采集的数据yLoCut_1MHz_400rps_1rpf_1t8r_walking.mat，基于阵列天线的原理，简单采用2DFFT的方法实验了距离和到达角的能量图。在预处理中采用了2Dhamming窗，减轻距离FFT和角度FFT的旁瓣。
+
 
