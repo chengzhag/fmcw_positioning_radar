@@ -57,7 +57,7 @@ valD=ds>=dMi & ds<=dMa;
 heatMaps=heatMaps(valD,:,:);
 ds=ds(valD);
 
-heatMaps=flip(heatMaps,2);
+% heatMaps=flip(heatMaps,2);
 
 % ¼õÈ¥±³¾°
 heatMapB=filter(0.05,[1,-0.95],heatMaps,0,3);
