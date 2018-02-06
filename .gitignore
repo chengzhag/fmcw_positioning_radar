@@ -215,3 +215,15 @@ FakesAssemblies/
 **/*.Server/GeneratedArtifacts
 **/*.Server/ModelManifest.xml
 _Pvt_Extensions
+
+# simulink
+slprj/
+build_exception.mat
+*.slxc
+*.slx.autosave
+
+# matlab
+*.asv
+
+# visualGDB
+VisualGDBCache/
