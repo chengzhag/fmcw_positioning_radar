@@ -1,10 +1,11 @@
+%% 清理
+clear;
+close all;
+
 %% 运行参数设置
 doFindpeaksTest_findpeaks=0;
 doFindFirstpeakSampleTest_findpeaks=0;
 doFindFirstpeakTest_findpeaks=0;
-
-%% 清理
-close all;
 
 %% 加载/提取数据、参数
 load '../data/yLoCut_1MHz_400rps_1rpf_1t8r_walking.mat'
@@ -39,7 +40,6 @@ yLoCut=yLoCut(:,:,valT);
 ts=ts(valT);
 
 %% 2DFFT
-
 yLoCut=yLoCut...
     .*repmat(hamming(size(yLoCut,2))',size(yLoCut,1),1,size(yLoCut,3))...
     .*repmat(hamming(size(yLoCut,1)),1,size(yLoCut,2),size(yLoCut,3));
@@ -47,15 +47,15 @@ heatMaps=fft2(yLoCut,size(yLoCut,1),2^nextpow2(100));
 
 % 排除线缆长度，截取有效距离
 heatMaps=heatMaps(ds>=dCa,:,:);
-ds=ds(ds>=dCa)-dCa;
+dsC=ds(ds>=dCa)-dCa;
 
 % 截取有效距离范围
-dMi=max(dsTxRxi);
-dMa=20;
+dMi=0;
+dMa=25;
 valD=ds>=dMi & ds<=dMa;
 
 heatMaps=heatMaps(valD,:,:);
-ds=ds(valD);
+dsC=dsC(valD);
 
 % heatMaps=flip(heatMaps,2);
 
@@ -68,7 +68,9 @@ for iFrame=1:size(heatMaps,3)
     figure(hHea);
     heatMap=heatMaps(:,:,iFrame);
     heatMap=circshift(heatMap,ceil(size(heatMap,2)/2),2);
-    imagesc(1:size(heatMap,2),ds,heatMap);
+    imagesc(flip(1:size(heatMap,2)),dsC,heatMap);
+    set(gca, 'XDir','normal', 'YDir','normal');
     title(['第' num2str(ts(iFrame)) 's 的空间热度图']);
+    ylabel('y(m)');
     pause(0.01);
 end
