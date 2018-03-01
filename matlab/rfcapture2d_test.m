@@ -3,8 +3,8 @@ clear;
 close all;
 
 %% 运行参数设置
-doShowSampleFtnyx=1;
-doShowDsYXN=1;
+doShowSampleFtnyx=0;
+doShowDsYXN=0;
 useGPU=1;
 
 %% 加载/提取数据、参数
