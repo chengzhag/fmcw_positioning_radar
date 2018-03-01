@@ -42,13 +42,14 @@ ts=ts(valT);
 
 %% 为硬算公式准备参数
 xsCoor=single(-8:0.2:8);
-ysCoor=single(0:0.2:15);
+ysCoor=single(0:0.2:10);
 
 [xsMesh,ysMesh]=meshgrid(xsCoor,ysCoor);
 dsYXN=zeros(length(ysCoor),length(xsCoor),nRx);
 for iRx=1:nRx
-    dsYXN(:,:,iRx)=sqrt((xsMesh-antCoor(iRx,1)).^2+(ysMesh-antCoor(iRx,2)).^2 ...
-        +(xsMesh-antCoor(end,1)).^2+(ysMesh-antCoor(end,2)).^2)+dCa;
+    dsYXN(:,:,iRx)=sqrt((xsMesh-antCoor(iRx,1)).^2+(ysMesh-antCoor(iRx,2)).^2) ...
+        +sqrt((xsMesh-antCoor(end,1)).^2+(ysMesh-antCoor(end,2)).^2) ...
+        +dCa;
 end
 
 fxytn=single(zeros(length(ysCoor),length(xsCoor),lRamp,nRx));

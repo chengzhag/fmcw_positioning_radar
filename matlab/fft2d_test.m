@@ -8,7 +8,7 @@ doFindFirstpeakSampleTest_findpeaks=0;
 doFindFirstpeakTest_findpeaks=0;
 doShowHeatMapsBefore=0;
 doShowHeatMapsAfter=1;
-delAng=1;
+delAng=0.5;
 
 %% 加载/提取数据、参数
 load '../data/yLoCut_1MHz_400rps_1rpf_1t8r_walking.mat'
@@ -65,7 +65,7 @@ dsC=(ds(ds>=dCa)-dCa)/2;
 
 % 截取有效距离范围
 dMi=0;
-dMa=20;
+dMa=10;
 valD=dsC>=dMi & dsC<=dMa;
 
 heatMaps=heatMaps(valD,:,:);
@@ -96,7 +96,7 @@ end
 if doShowHeatMapsAfter
     %% 极坐标转换
     xsCoor=single(-8:0.2:8);
-    ysCoor=single(0:0.2:15);
+    ysCoor=single(0:0.2:10);
     
     [xsMesh,ysMesh]=meshgrid(xsCoor,ysCoor);
     heatMapsCar=zeros(length(ysCoor),length(xsCoor),length(ts),'single');
