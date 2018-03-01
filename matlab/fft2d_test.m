@@ -6,7 +6,7 @@ close all;
 doFindpeaksTest_findpeaks=0;
 doFindFirstpeakSampleTest_findpeaks=0;
 doFindFirstpeakTest_findpeaks=0;
-doShowHeatMapsBefore=0;
+doShowHeatMapsBefore=1;
 doShowHeatMapsAfter=1;
 delAng=0.5;
 
@@ -16,23 +16,15 @@ load '../data/yLoCut_1MHz_400rps_1rpf_1t8r_walking.mat'
 nRx=size(antBits,1);
 yLoCut=log2array(logsout,'yLoCutSim');
 
-% 降采样
-yLoCut=yLoCut(1:5:size(yLoCut,1),:,:);
-fS=fS/5;
-lFft=lFft/5;
-
-lRamp=fS/fTr;%length ramp
-lSp=size(yLoCut,1);
 fF=fTr/nRx/nCyclePF;
 
-dLambda=3e8/3e9;
-fBw=2e9;%frequency bandwidth
+dLambda=3e8/fCen;
 fPm=fBw*fTr/3e8;%frequency per meter
 fD=fS/lFft;%frequency delta
 dPs=fD/fPm;%distance per sample
-fs=linspace(0,fD*(lSp/2-1),floor(lSp/2));
-ds=fs/fPm;
 ts=linspace(0,size(yLoCut,3)/fF,size(yLoCut,3));
+
+tsRamp=(0:lFft-1)/fS*fftDownFac;
 
 angMax=asind(dLambda/2/abs(antCoor(1,1)-antCoor(2,1)));
 nAng=floor(angMax*2/delAng);
@@ -76,7 +68,7 @@ heatMaps=circshift(heatMaps,ceil(size(heatMaps,2)/2),2);
 
 if doShowHeatMapsBefore
     %% 背景消除
-    heatMapsB=filter(0.05,[1,-0.95],heatMaps,0,3);
+    heatMapsB=filter(0.2,[1,-0.8],heatMaps,0,3);
     heatMapsF=abs(heatMaps-heatMapsB);
     
     %% 显示功率分布
@@ -111,7 +103,7 @@ if doShowHeatMapsAfter
     end
     
     %% 背景消除
-    heatMapsCarB=filter(0.05,[1,-0.95],heatMapsCar,0,3);
+    heatMapsCarB=filter(0.2,[1,-0.8],heatMapsCar,0,3);
     heatMapsCarF=abs(heatMapsCar-heatMapsCarB);
     
     %% 显示功率分布
