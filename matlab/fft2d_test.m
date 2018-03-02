@@ -7,7 +7,7 @@ doFindpeaksTest_findpeaks=0;
 doFindFirstpeakSampleTest_findpeaks=0;
 doFindFirstpeakTest_findpeaks=0;
 doShowHeatMapsBefore=0;
-doShowHeatMapsAfter=0;
+doShowHeatMapsAfter=1;
 delAng=0.5;
 
 %% 加载/提取数据、参数
@@ -26,9 +26,9 @@ ts=linspace(0,size(yLoCut,3)/fF,size(yLoCut,3));
 
 tsRamp=(0:lFft-1)/fS*fftDownFac;
 
-angMax=asind(dLambda/2/abs(antCoor(1,1)-antCoor(2,1)));
-nAng=floor(angMax*2/delAng);
-angs=linspace(-angMax,angMax,nAng);
+% angMax=asind(dLambda/2/abs(antCoor(1,1)-antCoor(2,1)));
+% nAng=floor(angMax*2/delAng);
+% angs=linspace(-angMax,angMax,nAng);
 
 %% 计算每根天线的参数
 % 计算发射天线到各接收天线之间的距离
@@ -37,34 +37,23 @@ for iRx=1:nRx
     dsTxRxi(iRx,:)=pdist([antCoor(iRx,:);antCoor(nRx+1,:)]);
 end
 
-%% 截取有效时间
-tMi=5;
-tMa=38;
-valT=ts>=tMi & ts<=tMa;
-
-yLoCut=yLoCut(:,:,valT);
-ts=ts(valT);
+% %% 截取有效时间
+% tMi=5;
+% tMa=38;
+% valT=ts>=tMi & ts<=tMa;
+% 
+% yLoCut=yLoCut(:,:,valT);
+% ts=ts(valT);
 
 %% 2DFFT
 % yLoCut=yLoCut...
 %     .*repmat(hamming(size(yLoCut,2))',size(yLoCut,1),1,size(yLoCut,3))...
 %     .*repmat(hamming(size(yLoCut,1)),1,size(yLoCut,2),size(yLoCut,3));
-heatMaps=fft2(yLoCut,size(yLoCut,1),nAng);
+heatMaps=fft2(yLoCut,lFft,nAng);
+heatMaps=heatMaps(isD,:,:);
 
-% 排除线缆长度，截取有效距离
-heatMaps=heatMaps(ds>=dCa,:,:);
-dsC=(ds(ds>=dCa)-dCa)/2;
-
-% 截取有效距离范围
-dMi=0;
-dMa=10;
-valD=dsC>=dMi & dsC<=dMa;
-
-heatMaps=heatMaps(valD,:,:);
-dsC=dsC(valD);
-
-heatMaps=flip(heatMaps,2);
 heatMaps=circshift(heatMaps,ceil(size(heatMaps,2)/2),2);
+heatMaps=flip(heatMaps,2);
 
 if doShowHeatMapsBefore
     %% 背景消除
@@ -88,7 +77,7 @@ end
 if doShowHeatMapsAfter
     %% 极坐标转换
     xsCoor=single(-8:0.2:8);
-    ysCoor=single(0:0.2:10);
+    ysCoor=single(dMi:0.2:dMa);
     
     [xsMesh,ysMesh]=meshgrid(xsCoor,ysCoor);
     heatMapsCar=zeros(length(ysCoor),length(xsCoor),length(ts),'single');

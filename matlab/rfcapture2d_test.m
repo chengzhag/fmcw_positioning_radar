@@ -33,7 +33,7 @@ tsRamp=(0:lFft-1)/fS*fftDownFac;
 
 %% 为硬算公式准备参数
 xsCoor=single(-8:0.2:8);
-ysCoor=single(0:0.2:10);
+ysCoor=single(dMi:0.2:dMa);
 
 [xsMesh,ysMesh]=meshgrid(xsCoor,ysCoor);
 dsYXN=zeros(length(ysCoor),length(xsCoor),nRx);
@@ -43,9 +43,9 @@ for iRx=1:nRx
         +dCa;
 end
 
-fxytn=single(zeros(length(ysCoor),length(xsCoor),lFft,nRx));
+fxytn=single(zeros(length(ysCoor),length(xsCoor),size(yLoCut,1),nRx));
 for iRx=1:nRx
-    for iT=1:lFft
+    for iT=1:size(yLoCut,1)
         fxytn(:,:,iT,iRx)=single(exp(j*2*pi*fBw*fTr*dsYXN(:,:,iRx)/3e8*tsRamp(iT))...
             .*exp(j*2*pi*dsYXN(:,:,iRx)/dLambda));
     end
