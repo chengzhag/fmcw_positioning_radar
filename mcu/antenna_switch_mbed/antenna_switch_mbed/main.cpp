@@ -9,21 +9,25 @@ using namespace std;
 
 InterruptIn triger(D2);
 DigitalInOut usrpSyn(D3, PIN_OUTPUT, OpenDrainNoPull, 1);
-vector<vector<DigitalOut>>  switchs{ {D4,D5},{D6,D7},{D8} };
-
+vector<DigitalOut>  switchsRx{ D4,D5,D6,D7};
+vector<DigitalOut>  switchsTx{ D8,D9 };
+bitset<4> iRx(0);
+bitset<2> iTx(0);
 
 void switchAnt()
 {
-	static bitset<3> iRx(0);
-	
 	//ÇÐ»»ÌìÏß
 	size_t iB = 0;
-	for (auto &douts : switchs)
+	for (auto &dout : switchsRx)
 	{
-		for (auto &dout : douts)
-		{
-			dout = iRx[iB];
-		}
+		dout = iRx[iB];
+		++iB;
+	}
+
+	iB = 0;
+	for (auto &dout : switchsTx)
+	{
+		dout = iTx[iB];
 		++iB;
 	}
 
@@ -45,15 +49,23 @@ void switchAnt()
 	usrpSyn = 1;
 	
 	
-	if (iRx.to_ulong() >= 7)
+	if (iRx.to_ulong() >= 11)
 	{
 		iRx = 0;
+
+		if (iTx.to_ulong() >= 3)
+		{
+			iTx = 0;
+		}
+		else
+		{
+			iTx = iTx.to_ulong() + 1;
+		}
 	}
 	else
 	{
 		iRx = iRx.to_ulong() + 1;
 	}
-
 }
 
 int main() 
