@@ -4,8 +4,8 @@
 using namespace std;
 
 #define WIDTH_FALL 0
-#define WIDTH_PULSE 80
-#define WIDTH_BIT 100
+#define WIDTH_PULSE 30
+#define WIDTH_BIT 50
 
 InterruptIn triger(D2);
 DigitalInOut usrpSyn(D3, PIN_OUTPUT, OpenDrainNoPull, 1);
@@ -40,6 +40,11 @@ void switchAnt()
 	for (int i = iRx.size() - 1; i >= 0; --i)
 	{
 		usrpSyn = iRx[i];
+		wait_us(WIDTH_BIT);
+	}
+	for (int i = iTx.size() - 1; i >= 0; --i)
+	{
+		usrpSyn = iTx[i];
 		wait_us(WIDTH_BIT);
 	}
 	
