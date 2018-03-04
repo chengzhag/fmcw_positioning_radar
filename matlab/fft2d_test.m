@@ -3,45 +3,34 @@ clear;
 close all;
 
 %% 运行参数设置
-doFindpeaksTest_findpeaks=0;
-doFindFirstpeakSampleTest_findpeaks=0;
-doFindFirstpeakTest_findpeaks=0;
-doShowHeatMapsBefore=0;
+% doFindpeaksTest_findpeaks=0;
+% doFindFirstpeakSampleTest_findpeaks=0;
+% doFindFirstpeakTest_findpeaks=0;
+doShowHeatMapsBefore=1;
 doShowHeatMapsAfter=1;
-delAng=0.5;
 
 %% 加载/提取数据、参数
-load '../data/yLoCut_1MHz_400rps_1rpf_1t8r_walking.mat'
+load '../data/yLoCut_200kHz_800rps_1rpf_4t12r_walking.mat'
 
-nRx=size(antBits,1);
 yLoCut=log2array(logsout,'yLoCutSim');
+yLoReshape=reshape(yLoCut,size(yLoCut,1),nRx,nTx,size(yLoCut,3));
 
 fF=fTr/nRx/nCyclePF;
-
-dLambda=3e8/fCen;
-fPm=fBw*fTr/3e8;%frequency per meter
-fD=fS/lFft;%frequency delta
-dPs=fD/fPm;%distance per sample
 ts=linspace(0,size(yLoCut,3)/fF,size(yLoCut,3));
-
 tsRamp=(0:lFft-1)/fS*fftDownFac;
 
-% angMax=asind(dLambda/2/abs(antCoor(1,1)-antCoor(2,1)));
-% nAng=floor(angMax*2/delAng);
-% angs=linspace(-angMax,angMax,nAng);
-
-%% 计算每根天线的参数
-% 计算发射天线到各接收天线之间的距离
-dsTxRxi=zeros(nRx,1);%暂时只做一根发射天线
-for iRx=1:nRx
-    dsTxRxi(iRx,:)=pdist([antCoor(iRx,:);antCoor(nRx+1,:)]);
-end
+% %% 计算每根天线的参数
+% % 计算发射天线到各接收天线之间的距离
+% dsTxRxi=zeros(nRx,1);%暂时只做一根发射天线
+% for iRx=1:nRx
+%     dsTxRxi(iRx,:)=pdist([antCoor(iRx,:);antCoor(nRx+1,:)]);
+% end
 
 % %% 截取有效时间
 % tMi=5;
 % tMa=38;
 % valT=ts>=tMi & ts<=tMa;
-% 
+%
 % yLoCut=yLoCut(:,:,valT);
 % ts=ts(valT);
 
@@ -49,17 +38,17 @@ end
 % yLoCut=yLoCut...
 %     .*repmat(hamming(size(yLoCut,2))',size(yLoCut,1),1,size(yLoCut,3))...
 %     .*repmat(hamming(size(yLoCut,1)),1,size(yLoCut,2),size(yLoCut,3));
-heatMaps=fft2(yLoCut,lFft,nAng);
-heatMaps=heatMaps(isD,:,:);
+heatMaps=fft2(yLoReshape,lFft,nAng);
+heatMaps=heatMaps(isD,:,:,:);
 
 heatMaps=circshift(heatMaps,ceil(size(heatMaps,2)/2),2);
 heatMaps=flip(heatMaps,2);
+%% 背景消除
+heatMapsB=filter(0.2,[1,-0.8],heatMaps,0,4);
+heatMapsF=abs(heatMaps-heatMapsB);
+heatMapsF=permute(prod(heatMapsF,3),[1,2,4,3]);
 
 if doShowHeatMapsBefore
-    %% 背景消除
-    heatMapsB=filter(0.2,[1,-0.8],heatMaps,0,3);
-    heatMapsF=abs(heatMaps-heatMapsB);
-    
     %% 显示功率分布
     hHea=figure('name','空间热度图');
     for iFrame=1:size(heatMapsF,3)
@@ -88,12 +77,8 @@ if doShowHeatMapsAfter
     angsPo2Car(isnan(angsPo2Car))=0;
     
     for iFrame=1:length(ts)
-        heatMapsCar(:,:,iFrame)=interp2(angs,dsC,heatMaps(:,:,iFrame),angsPo2Car,dsPo2Car,'linear',0);
+        heatMapsCarF(:,:,iFrame)=interp2(angs,dsC,heatMapsF(:,:,iFrame),angsPo2Car,dsPo2Car,'linear',0);
     end
-    
-    %% 背景消除
-    heatMapsCarB=filter(0.2,[1,-0.8],heatMapsCar,0,3);
-    heatMapsCarF=abs(heatMapsCar-heatMapsCarB);
     
     %% 显示功率分布
     hHea=figure('name','空间热度图');

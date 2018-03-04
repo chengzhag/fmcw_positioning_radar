@@ -8,19 +8,13 @@ doShowDsYXN=0;
 useGPU=1;
 
 %% 加载/提取数据、参数
-load '../data/yLoCut_1MHz_400rps_1rpf_1t8r_walking.mat'
+load '../data/yLoCut_200kHz_800rps_1rpf_4t12r_walking.mat'
 
-nRx=size(antBits,1);
 yLoCut=log2array(logsout,'yLoCutSim');
+yLoReshape=reshape(yLoCut,size(yLoCut,1),nRx,nTx*size(yLoCut,3));
 
 fF=fTr/nRx/nCyclePF;
-
-dLambda=3e8/fCen;
-fPm=fBw*fTr/3e8;%frequency per meter
-fD=fS/lFft;%frequency delta
-dPs=fD/fPm;%distance per sample
 ts=linspace(0,size(yLoCut,3)/fF,size(yLoCut,3));
-
 tsRamp=(0:lFft-1)/fS*fftDownFac;
 
 % %% 截取有效时间
@@ -43,9 +37,9 @@ for iRx=1:nRx
         +dCa;
 end
 
-fxytn=single(zeros(length(ysCoor),length(xsCoor),size(yLoCut,1),nRx));
+fxytn=single(zeros(length(ysCoor),length(xsCoor),size(yLoReshape,1),nRx));
 for iRx=1:nRx
-    for iT=1:size(yLoCut,1)
+    for iT=1:size(yLoReshape,1)
         fxytn(:,:,iT,iRx)=single(exp(j*2*pi*fBw*fTr*dsYXN(:,:,iRx)/3e8*tsRamp(iT))...
             .*exp(j*2*pi*dsYXN(:,:,iRx)/dLambda));
     end
@@ -92,36 +86,39 @@ end
 %% 硬算功率分布
 if useGPU
     ftnyxGPU=gpuArray(ftnyx);
-    yLoCutGPU=gpuArray(yLoCut);
-    heatMapsGPU=zeros(length(ysCoor),length(xsCoor),length(ts),'single','gpuArray');
+    yLoCutGPU=gpuArray(yLoReshape);
+    heatMapsGPU=zeros(length(ysCoor),length(xsCoor),size(yLoCutGPU,3),'single','gpuArray');
     tic;
-    for iFrame=1:length(ts)
+    for iFrame=1:size(yLoCutGPU,3)
         yLoRe=repmat(yLoCutGPU(:,:,iFrame),1,1,length(ysCoor),length(xsCoor));
         sf=sum(sum(yLoRe.*ftnyxGPU,1),2);
         heatMapsGPU(:,:,iFrame)=permute(sf,[3,4,1,2]);
         
-        disp(['第' num2str(iFrame) '帧' num2str(iFrame/length(ts)*100,'%.1f') ...
+        disp(['第' num2str(iFrame) '帧' num2str(iFrame/size(yLoCutGPU,3)*100,'%.1f') ...
             '% 用时' num2str(toc/60,'%.2f') 'min ' ...
-            '剩余' num2str(toc/iFrame*(length(ts)-iFrame)/60,'%.2f') 'min']);
+            '剩余' num2str(toc/iFrame*(size(yLoCutGPU,3)-iFrame)/60,'%.2f') 'min']);
     end
     heatMaps=gather(heatMapsGPU);
 else
-    heatMaps=zeros(length(ysCoor),length(xsCoor),length(ts),'single');
+    heatMaps=zeros(length(ysCoor),length(xsCoor),size(yLoCutGPU,3),'single');
     tic;
-    for iFrame=1:length(ts)
-        yLoRe=repmat(yLoCut(:,:,iFrame),1,1,length(ysCoor),length(xsCoor));
+    for iFrame=1:size(yLoCutGPU,3)
+        yLoRe=repmat(yLoReshape(:,:,iFrame),1,1,length(ysCoor),length(xsCoor));
         sf=sum(sum(yLoRe.*ftnyx,1),2);
         heatMaps(:,:,iFrame)=permute(sf,[3,4,1,2]);
         
-        disp(['第' num2str(iFrame) '帧' num2str(iFrame/length(ts)*100,'%.1f') ...
+        disp(['第' num2str(iFrame) '帧' num2str(iFrame/size(yLoCutGPU,3)*100,'%.1f') ...
             '% 用时' num2str(toc/60,'%.2f') 'min ' ...
-            '剩余' num2str(toc/iFrame*(length(ts)-iFrame)/60,'%.2f') 'min']);
+            '剩余' num2str(toc/iFrame*(size(yLoCutGPU,3)-iFrame)/60,'%.2f') 'min']);
     end
 end
+heatMaps=reshape(heatMaps,size(heatMaps,1), ...
+    size(heatMaps,2),nTx,size(heatMaps,3)/nTx);
 
 %% 背景消除
-heatMapsB=filter(0.2,[1,-0.8],heatMaps,0,3);
+heatMapsB=filter(0.2,[1,-0.8],heatMaps,0,4);
 heatMapsF=abs(heatMaps-heatMapsB);
+heatMapsF=permute(prod(heatMapsF,3),[1,2,4,3]);
 
 %% 显示功率分布
 hHea=figure('name','空间热度图');
