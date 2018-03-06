@@ -4,6 +4,7 @@ close all;
 
 %% 运行参数设置
 doShowSamTsRsZ=0;
+doShowSamFTsrampRTZ=0;
 % useGPU=1;
 
 %% 加载/提取数据、参数
@@ -19,15 +20,17 @@ fF=fTr/nRx/nCyclePF;
 ts=linspace(0,size(yLoCut,3)/fF,size(yLoCut,3));
 tsRamp=(0:size(yLoCut,1)-1)/fS*fftDownFac;
 
-iTsVal=(ts>1&ts<3);
+iTsVal=(ts>1&ts<10);
 
 %% 为硬算公式准备参数
 dsPol=single(interp1(ds,shiftdim(coorPolFil(:,1,:))));
 angsPol=single(-interp1(angs,shiftdim(coorPolFil(:,2,:))));
-zs=single(-3:0.2:3);
+zs=single(-3:0.1:3);
+xs=dsPol.*sind(angsPol);
+ys=dsPol.*cosd(angsPol);
 zsTs=repmat(zs,length(ts),1);
-xsTs=repmat(dsPol.*sind(angsPol),1,size(zsTs,2));
-ysTs=repmat(dsPol.*cosd(angsPol),1,size(zsTs,2));
+xsTs=repmat(xs,1,size(zsTs,2));
+ysTs=repmat(ys,1,size(zsTs,2));
 
 
 
@@ -69,6 +72,10 @@ rsTsZRTGPU=gpuArray(rsTsZRT);
 yLoReshapeGPU=gpuArray(yLoReshape);
 tsRampGPU=gpuArray(tsRamp);
 psZGPU=zeros(length(zs),length(ts),'single','gpuArray');
+
+if doShowSamFTsrampRTZ
+    hFTsrampRTZ=figure('name','可视化各时刻目标z方向上某天线对的频率和相位');
+end
 tic;
 for iFrame=1:length(ts)
     sTsrampRT=yLoReshapeGPU(:,:,:,iFrame);
@@ -80,6 +87,15 @@ for iFrame=1:length(ts)
         .*exp( ...
         1i*2*pi*rsTsrampRTZ/dLambda ...
         );
+    if doShowSamFTsrampRTZ
+        samIR=1;
+        samIT=1;
+        samFTsrampRTZ=shiftdim(fTsrampRTZ(:,samIR,samIT));
+        figure(hFTsrampRTZ);
+        imagesc(angle(samFTsrampRTZ));
+        title(['Rx' num2str(samIR) ' Tx ' num2str(samIT) '天线对在目标z方向上的频率和相位']);
+        pause(0.01);
+    end
     pz=shiftdim(sum(sum(sum(fTsrampRTZ,1),2),3));
     psZGPU(:,iFrame)=pz;
     
