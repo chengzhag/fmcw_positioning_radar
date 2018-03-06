@@ -20,7 +20,7 @@ fF=fTr/nRx/nCyclePF;
 ts=linspace(0,size(yLoCut,3)/fF,size(yLoCut,3));
 tsRamp=(0:size(yLoCut,1)-1)/fS*fftDownFac;
 
-iTsVal=(ts>1&ts<10);
+iTsVal=(ts>2&ts<12);
 
 %% 为硬算公式准备参数
 dsPol=single(interp1(ds,shiftdim(coorPolFil(:,1,:))));
