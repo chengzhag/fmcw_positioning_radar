@@ -4,7 +4,7 @@ close all;
 
 %% 运行参数设置
 doShowSamTsRsZ=0;
-doShowSamFTsrampRTZ=0;
+doShowSamFTsrampRTZ=1;
 % useGPU=1;
 
 %% 加载/提取数据、参数
@@ -90,13 +90,15 @@ for iFrame=1:length(ts)
     if doShowSamFTsrampRTZ
         samIR=1;
         samIT=1;
-        samFTsrampRTZ=shiftdim(fTsrampRTZ(:,samIR,samIT));
+        samFTsrampRTZ=permute(fTsrampRTZ(:,samIR,samIT,:),[1,4,2,3]);
         figure(hFTsrampRTZ);
-        imagesc(angle(samFTsrampRTZ));
+        imagesc(zs,tsRamp,angle(samFTsrampRTZ));
+        set(gca, 'XDir','normal', 'YDir','normal');
         title(['Rx' num2str(samIR) ' Tx ' num2str(samIT) '天线对在目标z方向上的频率和相位']);
+        ylabel('t(s)');
         pause(0.01);
     end
-    pz=shiftdim(sum(sum(sum(fTsrampRTZ,1),2),3));
+    pz=shiftdim(sum(sum(sum(fTsrampRTZ.*repmat(sTsrampRT,1,1,1,size(fTsrampRTZ,4)),1),2),3));
     psZGPU(:,iFrame)=pz;
     
      disp(['第' num2str(iFrame) '帧' num2str(iFrame/length(ts)*100,'%.1f') ...
