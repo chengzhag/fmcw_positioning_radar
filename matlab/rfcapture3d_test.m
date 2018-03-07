@@ -28,82 +28,55 @@ angsPol=single(-interp1(angs,shiftdim(coorPolFil(:,2,:))));
 zs=single(-3:0.1:3);
 xs=dsPol.*sind(angsPol);
 ys=dsPol.*cosd(angsPol);
-zsTs=repmat(zs,length(ts),1);
-xsTs=repmat(xs,1,size(zsTs,2));
-ysTs=repmat(ys,1,size(zsTs,2));
+zsTs=repmat(zs',1,length(ts));
+xsTs=repmat(xs',length(zs),1);
+ysTs=repmat(ys',length(zs),1);
 
-
-
-%% 计算r(n,m)(X(ts),Y(ts),z)，（ts为长时间）
-rsTsZRT=zeros(length(ts),size(zsTs,2),nRx,nTx,'single');%r(n,m)(X(ts),Y(ts),z)，（ts为长时间）
-for iRx=1:nRx
-    for iTx=1:nTx
-        rsTsZRT(:,:,iRx,iTx)=sqrt( ...
-            (xsTs-repmat(antCoor(iRx,1),length(ts),size(zsTs,2))).^2 ...
-            + (ysTs-repmat(antCoor(iRx,2),length(ts),size(zsTs,2))).^2 ...
-            + (zsTs-repmat(antCoor(iRx,3),length(ts),size(zsTs,2))).^2 ...
-            ) ...
-            + sqrt( ...
-            (xsTs-repmat(antCoor(iTx+nRx,1),length(ts),size(zsTs,2))).^2 ...
-            + (ysTs-repmat(antCoor(iTx+nRx,2),length(ts),size(zsTs,2))).^2 ...
-            + (zsTs-repmat(antCoor(iTx+nRx,3),length(ts),size(zsTs,2))).^2 ...
-            );
-    end
-end
-%% 可视化 各收发天线对 到各时刻目标点 z方向上各点 的来回距离
-if doShowSamTsRsZ
-    hSample=figure('name','各收发天线对 到各时刻目标点 z方向上各点 的来回距离');
-    for iTx=1:nTx
-        for iRx=1:nRx
-            figure(hSample);
-            samTsRsZ=permute(rsTsZRT(:,:,iRx,iTx),[2,1]);
-            imagesc(ts,zs,samTsRsZ);
-            set(gca, 'XDir','normal', 'YDir','normal');
-            title(['Tx' num2str(iTx) ' Rx' num2str(iRx) ' 天线对 到各时刻目标点 z方向上各点 的来回距离']);
-            xlabel('t(s)');
-            ylabel('z(m)');
-            pause(0.1);
-        end
-    end
-end
-
-%% 计算sumsumsum s(n,m,ts,tsRamp)*f(n,m,zs,ts,tsRamp)，（ts为长时间,tsRamp为短时间）
-rsTsZRTGPU=gpuArray(rsTsZRT);
-yLoReshapeGPU=gpuArray(yLoReshape);
-tsRampGPU=gpuArray(tsRamp);
+%% 计算功率
 psZGPU=zeros(length(zs),length(ts),'single','gpuArray');
-
-if doShowSamFTsrampRTZ
-    hFTsrampRTZ=figure('name','可视化各时刻目标z方向上某天线对的频率和相位');
-end
 tic;
 for iFrame=1:length(ts)
-    sTsrampRT=yLoReshapeGPU(:,:,:,iFrame);
-    rsTsrampRTZ=repmat(permute(rsTsZRTGPU(iFrame,:,:,:),[1,3,4,2]),length(tsRamp),1);
+    %% 计算r(n,m)(X(ts),Y(ts),z)，（ts为长时间）
+    rsCoRT=zeros(length(zs),nRx,nTx,'single');%r(n,m)(X(ts),Y(ts),z)，（ts为长时间）
+    for iRx=1:nRx
+        for iTx=1:nTx
+            rsCoRT(:,iRx,iTx)=sqrt( ...
+                (xsTs(:,iFrame)-repmat(single(antCoor(iRx,1)),length(zs),1)).^2 ...
+                + (ysTs(:,iFrame)-repmat(single(antCoor(iRx,2)),length(zs),1)).^2 ...
+                + (zsTs(:,iFrame)-repmat(single(antCoor(iRx,3)),length(zs),1)).^2 ...
+                ) ...
+                + sqrt( ...
+                (xsTs(:,iFrame)-repmat(single(antCoor(iTx+nRx,1)),length(zs),1)).^2 ...
+                + (ysTs(:,iFrame)-repmat(single(antCoor(iTx+nRx,2)),length(zs),1)).^2 ...
+                + (zsTs(:,iFrame)-repmat(single(antCoor(iTx+nRx,3)),length(zs),1)).^2 ...
+                );
+        end
+    end
+    
+    %% 计算sumsumsum s(n,m,ts,tsRamp)*f(n,m,zs,ts,tsRamp)，（ts为长时间,tsRamp为短时间）
+    rsCoRTGPU=gpuArray(rsCoRT);
+    yLoReshapeGPU=gpuArray(yLoReshape(:,:,:,iFrame));
+    tsRampGPU=gpuArray(tsRamp);
+    rsCoRTTsrampGPU=permute(repmat(rsCoRTGPU,1,1,1,length(tsRamp)),[4,2,3,1]);
+    tsCoRTTsrampGPU=repmat(tsRampGPU',1,size(rsCoRTTsrampGPU,2),size(rsCoRTTsrampGPU,3),size(rsCoRTTsrampGPU,4));
+    % psGPU=zeros(1,length(xss),'single','gpuArray');
+    
     fTsrampRTZ=exp( ...
-        1i*2*pi*fBw*fTr.*rsTsrampRTZ/3e8 ...
-        .*repmat(tsRampGPU',1,size(rsTsrampRTZ,2),size(rsTsrampRTZ,3),size(rsTsrampRTZ,4)) ...
+        1i*2*pi*fBw*fTr.*rsCoRTTsrampGPU/3e8 ...
+        .*tsCoRTTsrampGPU ...
         ) ...
         .*exp( ...
-        1i*2*pi*rsTsrampRTZ/dLambda ...
+        1i*2*pi*rsCoRTTsrampGPU/dLambda ...
         );
-    if doShowSamFTsrampRTZ
-        samIR=1;
-        samIT=1;
-        samFTsrampRTZ=permute(fTsrampRTZ(:,samIR,samIT,:),[1,4,2,3]);
-        figure(hFTsrampRTZ);
-        imagesc(zs,tsRamp,angle(samFTsrampRTZ));
-        set(gca, 'XDir','normal', 'YDir','normal');
-        title(['Rx' num2str(samIR) ' Tx ' num2str(samIT) '天线对在目标z方向上的频率和相位']);
-        ylabel('t(s)');
-        pause(0.01);
-    end
-    pz=shiftdim(sum(sum(sum(fTsrampRTZ.*repmat(sTsrampRT,1,1,1,size(fTsrampRTZ,4)),1),2),3));
-    psZGPU(:,iFrame)=pz;
+    psGPU=shiftdim(sum(sum(sum(fTsrampRTZ.*repmat(yLoReshapeGPU,1,1,1,size(fTsrampRTZ,4)),1),2),3));
     
-     disp(['第' num2str(iFrame) '帧' num2str(iFrame/length(ts)*100,'%.1f') ...
-            '% 用时' num2str(toc/60,'%.2f') 'min ' ...
-            '剩余' num2str(toc/iFrame*(length(ts)-iFrame)/60,'%.2f') 'min']);
+    psZGPU(:,iFrame)=abs(psGPU);
+    
+    if mod(iFrame,10)==0;
+    disp(['第' num2str(iFrame) '帧' num2str(iFrame/length(ts)*100,'%.1f') ...
+        '% 用时' num2str(toc/60,'%.2f') 'min ' ...
+        '剩余' num2str(toc/iFrame*(length(ts)-iFrame)/60,'%.2f') 'min']);
+    end
 end
 psZ=gather(psZGPU);
 
