@@ -15,7 +15,6 @@ load '../data/yLoCut_200kHz_800rps_1rpf_4t12r_ztest.mat'
 yLoCut=log2array(logsout,'yLoCutSim');
 yLoReshape=reshape(yLoCut,size(yLoCut,1),nRx,nTx,size(yLoCut,3));
 
-fF=fTr/nRx/nCyclePF;
 ts=linspace(0,size(yLoCut,3)/fF,size(yLoCut,3));
 tsRamp=(0:lFft-1)/fS*fftDownFac;
 

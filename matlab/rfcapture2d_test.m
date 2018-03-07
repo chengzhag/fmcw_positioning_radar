@@ -13,7 +13,6 @@ load '../data/yLoCut_200kHz_800rps_1rpf_4t12r_ztest.mat'
 yLoCut=log2array(logsout,'yLoCutSim');
 yLoReshape=reshape(yLoCut,size(yLoCut,1),nRx,nTx*size(yLoCut,3));
 
-fF=fTr/nRx/nCyclePF;
 ts=linspace(0,size(yLoCut,3)/fF,size(yLoCut,3));
 tsRamp=(0:lFft-1)/fS*fftDownFac;
 
@@ -94,9 +93,12 @@ if useGPU
         sf=sum(sum(yLoRe.*ftnyxGPU,1),2);
         heatMapsGPU(:,:,iFrame)=permute(sf,[3,4,1,2]);
         
-        disp(['第' num2str(iFrame) '帧' num2str(iFrame/size(yLoCutGPU,3)*100,'%.1f') ...
-            '% 用时' num2str(toc/60,'%.2f') 'min ' ...
-            '剩余' num2str(toc/iFrame*(size(yLoCutGPU,3)-iFrame)/60,'%.2f') 'min']);
+        if mod(iFrame,10)==0;
+            disp(['第' num2str(ceil(iFrame/nTx)) '帧' num2str(iFrame/size(yLoCutGPU,3)*100,'%.1f') ...
+                '% 用时' num2str(toc/60,'%.2f') 'min ' ...
+                '剩余' num2str(toc/iFrame*(size(yLoCutGPU,3)-iFrame)/60,'%.2f') 'min']);
+        end
+        
     end
     heatMaps=gather(heatMapsGPU);
 else

@@ -1,6 +1,6 @@
 %% 清理
 clear;
-close all;
+% close all;
 
 %% 运行参数设置
 doShowLo=0;
@@ -10,8 +10,8 @@ doShowPsYZsum=1;
 doShowPsXYsum=1;
 
 %% 加载/提取数据、参数
-nTx=8;
-nRx=8;
+nTx=4;
+nRx=12;
 antCoor=[ ...
     [linspace(-0.053*(nRx/2-0.5),0.053*(nRx/2-0.5),nRx)',zeros(nRx,2)]; ...
     [zeros(nTx,2),linspace(-0.138-0.053*(nTx-1),-0.138,nTx)'] ...
@@ -34,10 +34,10 @@ ds=fs/fPm;
 
 tsRamp=(0:lRamp-1)/fS;
 
-tarCoor=[0,3,0];%target coordinate
-dx=0.2;
-dy=1;
-dz=0.2;
+tarCoor=[1,3,0.5];%target coordinate
+dx=1;
+dy=0.5;
+dz=0.15;
 xs=single(-2:dx:2);
 ys=single(0:dy:5);
 zs=single(-1:dz:2);
