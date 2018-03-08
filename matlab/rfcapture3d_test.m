@@ -26,7 +26,7 @@ iTsVal=true(length(ts),1);
 %% 坐标处理
 dsPol=single(interp1(ds,shiftdim(single(coorPolFil(:,1,:)))));
 angsPol=single(-interp1(angs,shiftdim(single(coorPolFil(:,2,:)))));
-zs=single(-1:0.05:2);
+zs=single(-2:0.05:2);
 xs=dsPol.*sind(angsPol);
 ys=dsPol.*cosd(angsPol);
 xs(isnan(xs))=0;
@@ -55,44 +55,12 @@ if doShowXYs
 end
 
 %% 计算功率
-psZGPU=zeros(length(zs),length(ts),'single','gpuArray');
+psZ=zeros(length(zs),length(ts),'single');
 tic;
 for iFrame=1:length(ts)
-    %% 计算r(n,m)(X(ts),Y(ts),z)，（ts为长时间）
-    rsCoRT=zeros(length(zs),nRx,nTx,'single');%r(n,m)(X(ts),Y(ts),z)，（ts为长时间）
-    for iRx=1:nRx
-        for iTx=1:nTx
-            rsCoRT(:,iRx,iTx)=sqrt( ...
-                (xsTs(:,iFrame)-repmat(single(antCoor(iRx,1)),length(zs),1)).^2 ...
-                + (ysTs(:,iFrame)-repmat(single(antCoor(iRx,2)),length(zs),1)).^2 ...
-                + (zsTs(:,iFrame)-repmat(single(antCoor(iRx,3)),length(zs),1)).^2 ...
-                ) ...
-                + sqrt( ...
-                (xsTs(:,iFrame)-repmat(single(antCoor(iTx+nRx,1)),length(zs),1)).^2 ...
-                + (ysTs(:,iFrame)-repmat(single(antCoor(iTx+nRx,2)),length(zs),1)).^2 ...
-                + (zsTs(:,iFrame)-repmat(single(antCoor(iTx+nRx,3)),length(zs),1)).^2 ...
-                );
-        end
-    end
-    
-    %% 计算sumsumsum s(n,m,ts,tsRamp)*f(n,m,zs,ts,tsRamp)，（ts为长时间,tsRamp为短时间）
-    rsCoRTGPU=gpuArray(rsCoRT);
-    yLoReshapeGPU=gpuArray(yLoReshape(:,:,:,iFrame));
-    tsRampGPU=gpuArray(tsRamp);
-    rsCoRTTsrampGPU=permute(repmat(rsCoRTGPU,1,1,1,length(tsRamp)),[4,2,3,1]);
-    tsCoRTTsrampGPU=repmat(tsRampGPU',1,size(rsCoRTTsrampGPU,2),size(rsCoRTTsrampGPU,3),size(rsCoRTTsrampGPU,4));
-    % psGPU=zeros(1,length(xss),'single','gpuArray');
-    
-    fTsrampRTZ=exp( ...
-        1i*2*pi*fBw*fTr.*rsCoRTTsrampGPU/3e8 ...
-        .*tsCoRTTsrampGPU ...
-        ) ...
-        .*exp( ...
-        1i*2*pi*rsCoRTTsrampGPU/dLambda ...
-        );
-    psGPU=shiftdim(sum(sum(sum(fTsrampRTZ.*repmat(yLoReshapeGPU,1,1,1,size(fTsrampRTZ,4)),1),2),3));
-    
-    psZGPU(:,iFrame)=abs(psGPU);
+    pointCoor=[xsTs(:,iFrame),ysTs(:,iFrame),zsTs(:,iFrame)];
+    fTsrampRTZ=rfcaptureCo2F(pointCoor,antCoor,nRx,nTx,dCa,tsRamp,fBw,fTr,dLambda,1);
+    psZ(:,iFrame)=gather(abs(rfcaptureF2ps(fTsrampRTZ,yLoReshape(:,:,:,iFrame),1)));
     
     if mod(iFrame,10)==0
     disp(['第' num2str(iFrame) '帧' num2str(iFrame/length(ts)*100,'%.1f') ...
@@ -100,7 +68,6 @@ for iFrame=1:length(ts)
         '剩余' num2str(toc/iFrame*(length(ts)-iFrame)/60,'%.2f') 'min']);
     end
 end
-psZ=gather(psZGPU);
 psZ(isnan(psZ))=0;
 
 %% 背景消除

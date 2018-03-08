@@ -26,7 +26,6 @@ dLambda=3e8/fCen;
 dMa=10;
 dMi=1;
 
-slope=fBw*fTr;
 fPm=fBw*fTr/3e8;%frequency per meter
 fD=fS/lFft;%frequency delta
 fs=linspace(0,fS/2-fD,floor(lFft/2));
@@ -35,9 +34,11 @@ ds=fs/fPm;
 tsRamp=(0:lRamp-1)/fS;
 
 tarCoor=[1,3,0.5];%target coordinate
-dx=1;
+dx=0.25;
 dy=0.5;
-dz=0.15;
+dz=0.25;
+
+%% 计算坐标
 xs=single(-2:dx:2);
 ys=single(0:dy:5);
 zs=single(-1:dz:2);
@@ -48,6 +49,7 @@ zss=permute(zss,[2,1,3]);
 xsV=reshape(xss,numel(xss),1);
 ysV=reshape(yss,numel(yss),1);
 zsV=reshape(zss,numel(zss),1);
+pointCoor=[xsV,ysV,zsV];
 
 %% 计算目标点反射回波下变频的中频信号
 % 计算目标到各天线间的距离
@@ -74,41 +76,11 @@ if doShowLo
     ylabel('tsRamp(us)');
 end
 
-%% 计算r(n,m)(X(ts),Y(ts),z)，（ts为长时间）
-rsCoRT=zeros(length(zsV),nRx,nTx,'single');%r(n,m)(X(ts),Y(ts),z)，（ts为长时间）
-for iRx=1:nRx
-    for iTx=1:nTx
-        rsCoRT(:,iRx,iTx)=sqrt( ...
-            (xsV-repmat(single(antCoor(iRx,1)),length(zsV),1)).^2 ...
-            + (ysV-repmat(single(antCoor(iRx,2)),length(zsV),1)).^2 ...
-            + (zsV-repmat(single(antCoor(iRx,3)),length(zsV),1)).^2 ...
-            ) ...
-            + sqrt( ...
-            (xsV-repmat(single(antCoor(iTx+nRx,1)),length(zsV),1)).^2 ...
-            + (ysV-repmat(single(antCoor(iTx+nRx,2)),length(zsV),1)).^2 ...
-            + (zsV-repmat(single(antCoor(iTx+nRx,3)),length(zsV),1)).^2 ...
-            );
-    end
-end
+%% 根据rfcapture论文的硬算公式计算指定坐标上的功率大小
+fTsrampRTZ=rfcaptureCo2F(pointCoor,antCoor,nRx,nTx,0,tsRamp,fBw,fTr,dLambda,1);
+ps=abs(rfcaptureF2ps(fTsrampRTZ,yLoReshape,1));
+ps=reshape(ps,size(xss,1),size(xss,2),size(xss,3));
 
-%% 计算sumsumsum s(n,m,ts,tsRamp)*f(n,m,zs,ts,tsRamp)，（ts为长时间,tsRamp为短时间）
-rsCoRTGPU=gpuArray(rsCoRT);
-yLoReshapeGPU=gpuArray(yLoReshape);
-tsRampGPU=gpuArray(tsRamp);
-rsCoRTTsrampGPU=permute(repmat(rsCoRTGPU,1,1,1,length(tsRamp)),[4,2,3,1]);
-tsCoRTTsrampGPU=repmat(tsRampGPU',1,size(rsCoRTTsrampGPU,2),size(rsCoRTTsrampGPU,3),size(rsCoRTTsrampGPU,4));
-% psGPU=zeros(1,length(xss),'single','gpuArray');
-
-fTsrampRTZ=exp( ...
-    1i*2*pi*fBw*fTr.*rsCoRTTsrampGPU/3e8 ...
-    .*tsCoRTTsrampGPU ...
-    ) ...
-    .*exp( ...
-    1i*2*pi*rsCoRTTsrampGPU/dLambda ...
-    );
-psGPU=shiftdim(sum(sum(sum(fTsrampRTZ.*repmat(yLoReshapeGPU,1,1,1,size(fTsrampRTZ,4)),1),2),3));
-
-ps=reshape(gather(abs(psGPU)),size(xss,1),size(xss,2),size(xss,3));
 %% 绘制ps的yz剖面图
 if doShowPsYZ
     hPs=figure('name','ps的yz剖面图');
