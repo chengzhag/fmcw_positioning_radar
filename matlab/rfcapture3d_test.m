@@ -3,7 +3,7 @@ clear;
 close all;
 
 %% 运行参数设置
-doShowXYs=1;
+doShowXYs=0;
 doShowSamTsRsZ=0;
 doShowSamFTsrampRTZ=1;
 % useGPU=1;
@@ -55,12 +55,12 @@ if doShowXYs
 end
 
 %% 计算功率
-psZ=zeros(length(zs),length(ts),'single');
+psZ=zeros(length(zs),length(ts),'single','gpuArray');
 tic;
 for iFrame=1:length(ts)
     pointCoor=[xsTs(:,iFrame),ysTs(:,iFrame),zsTs(:,iFrame)];
     fTsrampRTZ=rfcaptureCo2F(pointCoor,antCoor,nRx,nTx,dCa,tsRamp,fBw,fTr,dLambda,1);
-    psZ(:,iFrame)=gather(abs(rfcaptureF2ps(fTsrampRTZ,yLoReshape(:,:,:,iFrame),1)));
+    psZ(:,iFrame)=abs(rfcaptureF2ps(fTsrampRTZ,yLoReshape(:,:,:,iFrame),1));
     
     if mod(iFrame,10)==0
     disp(['第' num2str(iFrame) '帧' num2str(iFrame/length(ts)*100,'%.1f') ...
@@ -69,6 +69,7 @@ for iFrame=1:length(ts)
     end
 end
 psZ(isnan(psZ))=0;
+psZ=gather(psZ);
 
 %% 背景消除
 psZF=filter(0.2,[1,-0.8],abs(psZ),0,2);

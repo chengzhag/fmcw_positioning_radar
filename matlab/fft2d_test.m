@@ -6,10 +6,10 @@ close all;
 % doFindpeaksTest_findpeaks=0;
 % doFindFirstpeakSampleTest_findpeaks=0;
 % doFindFirstpeakTest_findpeaks=0;
-doShowXYs=1;
-doShowTargetLabel=1;
-doShowHeatMapsBefore=1;
-doShowHeatMapsAfter=0;
+doShowXYs=0;
+doShowTargetLabel=0;
+doShowHeatMapsBefore=0;
+doShowHeatMapsAfter=1;
 
 %% 加载/提取数据、参数
 load '../data/yLoCut_200kHz_800rps_1rpf_4t12r_ztest.mat'
