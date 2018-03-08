@@ -6,13 +6,18 @@ close all;
 % doFindpeaksTest_findpeaks=0;
 % doFindFirstpeakSampleTest_findpeaks=0;
 % doFindFirstpeakTest_findpeaks=0;
-doShowHeatMapsBefore=0;
-doShowHeatMapsAfter=1;
+doShowXYs=1;
+doShowTargetLabel=1;
+doShowHeatMapsBefore=1;
+doShowHeatMapsAfter=0;
 
 %% 加载/提取数据、参数
 load '../data/yLoCut_200kHz_800rps_1rpf_4t12r_ztest.mat'
 
 yLoCut=log2array(logsout,'yLoCutSim');
+heatMap=log2array(logsout,'heatMapSim');
+coorPolRaw=log2array(logsout,'coorPolRawSim');
+coorPolFil=log2array(logsout,'coorPolFilSim');
 yLoReshape=reshape(yLoCut,size(yLoCut,1),nRx,nTx,size(yLoCut,3));
 
 ts=linspace(0,size(yLoCut,3)/fF,size(yLoCut,3));
@@ -33,6 +38,33 @@ tsRamp=(0:lFft-1)/fS*fftDownFac;
 % yLoCut=yLoCut(:,:,valT);
 % ts=ts(valT);
 
+%% 坐标处理
+dsPol=single(interp1(ds,shiftdim(single(coorPolFil(:,1,:)))));
+angsPol=single(-interp1(angs,shiftdim(single(coorPolFil(:,2,:)))));
+dsPol(isnan(dsPol))=0;
+angsPol(isnan(angsPol))=0;
+xs=dsPol.*sind(angsPol);
+ys=dsPol.*cosd(angsPol);
+xs(isnan(xs))=0;
+ys(isnan(ys))=0;
+if doShowXYs
+    hCor=figure('name','目标点坐标');
+    plot(ts,xs,ts,ys);
+    hold on;
+end
+xs=medfilt1(xs,16,[],1);
+ys=medfilt1(ys,16,[],1);
+if doShowXYs
+    figure(hCor);
+    plot(ts,xs,ts,ys);
+    title('目标点坐标');
+    legend('x滤波前','y滤波前','x滤波后','y滤波后');
+    xlabel('t(s)');
+    ylabel('(m)');
+    hold off;
+    pause(0.1);
+end
+
 %% 水平xy方向2DFFT
 heatMaps=fft2(yLoReshape,lFft,nAng);
 heatMaps=heatMaps(isD,:,:,:);
@@ -50,6 +82,12 @@ if doShowHeatMapsBefore
     for iFrame=1:size(heatMapsF,3)
         figure(hHea);
         heatMap=heatMapsF(:,:,iFrame);
+        heatMap=heatMap./max(max(heatMap));
+%         if doShowTargetLabel
+%             heatMap=insertShape(heatMap, ...
+%                 'circle',[length(angs)-coorPolFil(:,2,iFrame) coorPolFil(:,1,iFrame) 3], ...
+%                 'LineWidth',2,'Color','blue');
+%         end
         imagesc(angs,dsC,heatMap);
         set(gca, 'XDir','normal', 'YDir','normal');
         title(['第' num2str(ts(iFrame)) 's 的空间热度图']);

@@ -23,7 +23,7 @@ tsRamp=(0:size(yLoCut,1)-1)/fS*fftDownFac;
 % iTsVal=(ts>5&ts<50);
 iTsVal=true(length(ts),1);
 
-%% 为硬算公式准备参数
+%% 坐标处理
 dsPol=single(interp1(ds,shiftdim(single(coorPolFil(:,1,:)))));
 angsPol=single(-interp1(angs,shiftdim(single(coorPolFil(:,2,:)))));
 zs=single(-1:0.05:2);
@@ -32,6 +32,7 @@ ys=dsPol.*cosd(angsPol);
 xs(isnan(xs))=0;
 ys(isnan(ys))=0;
 if doShowXYs
+    hCor=figure('name','目标点坐标');
     plot(ts,xs,ts,ys);
     hold on;
 end
@@ -43,12 +44,14 @@ zsTs=repmat(zs',1,length(ts));
 xsTs=repmat(xs',length(zs),1);
 ysTs=repmat(ys',length(zs),1);
 if doShowXYs
+    figure(hCor);
     plot(ts,xs,ts,ys);
     title('目标点坐标');
     legend('x滤波前','y滤波前','x滤波后','y滤波后');
     xlabel('t(s)');
     ylabel('(m)');
     hold off;
+    pause(0.1);
 end
 
 %% 计算功率

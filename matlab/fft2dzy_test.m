@@ -44,8 +44,8 @@ heatMaps=circshift(heatMaps,ceil(size(heatMaps,2)/2),2);
 heatMapsB=filter(0.2,[1,-0.8],heatMaps,0,4);
 heatMapsF=abs(heatMaps-heatMapsB);
 % heatMapsF=permute(prod(heatMapsF,3),[1,2,4,3]);
-% heatMapsF=permute(sum(heatMapsF,3),[1,2,4,3]);
-heatMapsF=permute(prod(heatMapsF(:,:,5:8,:),3),[1,2,4,3]);
+heatMapsF=permute(sum(heatMapsF,3),[1,2,4,3]);
+% heatMapsF=permute(prod(heatMapsF(:,:,5:8,:),3),[1,2,4,3]);
 
 %% 显示坐标转换前功率分布
 if doShowHeatMapsBefore

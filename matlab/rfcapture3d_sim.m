@@ -1,6 +1,6 @@
 %% 清理
 clear;
-% close all;
+close all;
 
 %% 运行参数设置
 doShowLo=0;
