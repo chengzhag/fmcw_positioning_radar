@@ -10,8 +10,8 @@ doShowPsYZsum=1;
 doShowPsXYsum=1;
 
 %% 加载/提取数据、参数
-nTx=4;
-nRx=12;
+nTx=8;
+nRx=8;
 antCoor=[ ...
     [linspace(-0.053*(nRx/2-0.5),0.053*(nRx/2-0.5),nRx)',zeros(nRx,2)]; ...
     [zeros(nTx,2),linspace(-0.138-0.053*(nTx-1),-0.138,nTx)'] ...
@@ -34,9 +34,11 @@ ds=fs/fPm;
 tsRamp=(0:lRamp-1)/fS;
 
 tarCoor=[1,3,0.5];%target coordinate
-dx=0.25;
-dy=0.5;
-dz=0.25;
+dx=0.05;
+dy=0.05;
+dz=0.05;
+
+lBlock=1000;
 
 %% 计算坐标
 xs=single(-2:dx:2);
@@ -77,8 +79,24 @@ if doShowLo
 end
 
 %% 根据rfcapture论文的硬算公式计算指定坐标上的功率大小
-fTsrampRTZ=rfcaptureCo2F(pointCoor,antCoor,nRx,nTx,0,tsRamp,fBw,fTr,dLambda,1);
-ps=abs(rfcaptureF2ps(fTsrampRTZ,yLoReshape,1));
+ps=zeros(size(pointCoor,1),1,'gpuArray');
+isS=1:lBlock:size(pointCoor,1);
+tic;
+for iS=isS
+    iBlock=(iS-1)/lBlock+1;
+    if iS+lBlock-1<size(pointCoor,1)
+        isBlock=iS:iS+lBlock-1;
+    else
+        isBlock=iS:size(pointCoor,1);
+    end
+    fTsrampRTZ=rfcaptureCo2F(pointCoor(isBlock,:),antCoor,nRx,nTx,0,tsRamp,fBw,fTr,dLambda,1);
+    ps(isBlock,1)=abs(rfcaptureF2ps(fTsrampRTZ,yLoReshape,1));
+    if mod(iBlock,10)==0
+    disp(['第' num2str(iBlock) '分块' num2str(iBlock/length(isS)*100,'%.1f') ...
+        '% 用时' num2str(toc/60,'%.2f') 'min ' ...
+        '剩余' num2str(toc/iBlock*(length(isS)-iBlock)/60,'%.2f') 'min']);
+    end
+end
 ps=reshape(ps,size(xss,1),size(xss,2),size(xss,3));
 
 %% 绘制ps的yz剖面图
