@@ -18,7 +18,7 @@ coorPolFil=log2array(logsout,'coorPolFilSim');
 yLoReshape=reshape(yLoCut,size(yLoCut,1),nRx,nTx,size(yLoCut,3));
 
 ts=linspace(0,size(yLoCut,3)/fF,size(yLoCut,3));
-tsRamp=(0:size(yLoCut,1)-1)/fS*fftDownFac;
+% tsRamp=(0:size(yLoCut,1)-1)/fS*fftDownFac;
 
 % iTsVal=(ts>5&ts<50);
 iTsVal=true(length(ts),1);

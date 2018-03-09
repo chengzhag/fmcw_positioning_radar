@@ -14,7 +14,7 @@ yLoCut=log2array(logsout,'yLoCutSim');
 yLoReshape=reshape(yLoCut,size(yLoCut,1),nRx,nTx,size(yLoCut,3));
 
 ts=linspace(0,size(yLoCut,3)/fF,size(yLoCut,3));
-tsRamp=(0:size(yLoCut,1)-1)/fS*fftDownFac;
+% tsRamp=(0:size(yLoCut,1)-1)/fS*fftDownFac;
 
 % %% 截取有效时间
 % tMi=5;

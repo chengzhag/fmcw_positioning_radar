@@ -21,7 +21,7 @@ coorPolFil=log2array(logsout,'coorPolFilSim');
 yLoReshape=reshape(yLoCut,size(yLoCut,1),nRx,nTx,size(yLoCut,3));
 
 ts=linspace(0,size(yLoCut,3)/fF,size(yLoCut,3));
-tsRamp=(0:lFft-1)/fS*fftDownFac;
+% tsRamp=(0:size(yLoCut,1)-1)/fS*fftDownFac;
 
 % %% 计算每根天线的参数
 % % 计算发射天线到各接收天线之间的距离
