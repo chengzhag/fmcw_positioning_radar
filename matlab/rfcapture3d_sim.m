@@ -8,6 +8,7 @@ doShowPsYZ=0;
 doShowPsXY=0;
 doShowPsYZsum=1;
 doShowPsXYsum=1;
+doShowPsSlice=0;
 
 %% 加载/提取数据、参数
 nTx=8;
@@ -34,9 +35,9 @@ ds=fs/fPm;
 tsRamp=(0:lRamp-1)/fS;
 
 tarCoor=[1,3,0.5];%target coordinate
-dx=0.05;
-dy=0.05;
-dz=0.05;
+dx=0.1;
+dy=0.1;
+dz=0.1;
 
 lBlock=1000;
 
@@ -45,9 +46,9 @@ xs=single(-2:dx:2);
 ys=single(0:dy:5);
 zs=single(-1:dz:2);
 [xss,yss,zss]=meshgrid(xs,ys,zs);
-xss=permute(xss,[2,1,3]);
-yss=permute(yss,[2,1,3]);
-zss=permute(zss,[2,1,3]);
+% xss=permute(xss,[2,1,3]);
+% yss=permute(yss,[2,1,3]);
+% zss=permute(zss,[2,1,3]);
 xsV=reshape(xss,numel(xss),1);
 ysV=reshape(yss,numel(yss),1);
 zsV=reshape(zss,numel(zss),1);
@@ -102,8 +103,8 @@ ps=reshape(ps,size(xss,1),size(xss,2),size(xss,3));
 %% 绘制ps的yz剖面图
 if doShowPsYZ
     hPs=figure('name','ps的yz剖面图');
-    for ix=1:size(ps,1)
-        psYZ=permute(ps(ix,:,:),[2,3,1]);
+    for ix=1:length(xs)
+        psYZ=permute(ps(:,ix,:),[1,3,2]);
         figure(hPs);
         imagesc(zs,ys,psYZ);
         set(gca, 'XDir','normal', 'YDir','normal');
@@ -117,10 +118,10 @@ end
 %% 绘制ps的xy剖面图
 if doShowPsXY
     hPs=figure('name','ps的xy剖面图');
-    for iz=1:size(ps,3)
-        psXY=permute(ps(:,:,iz),[2,1]);
+    for iz=1:length(zs)
+        psYX=ps(:,:,iz);
         figure(hPs);
-        imagesc(xs,ys,psXY);
+        imagesc(xs,ys,psYX);
         set(gca, 'XDir','normal', 'YDir','normal');
         title(['ps的z=' num2str(zs(iz)) '剖面图']);
         xlabel('x(m)');
@@ -132,7 +133,7 @@ end
 %% 绘制ps的yz投影图
 if doShowPsYZsum
     hPs=figure('name','ps的yz投影图');
-    psYZsum=permute(sum(ps,1),[2,3,1]);
+    psYZsum=permute(sum(ps,2),[1,3,2]);
     figure(hPs);
     imagesc(zs,ys,psYZsum);
     set(gca, 'XDir','normal', 'YDir','normal');
@@ -147,14 +148,24 @@ end
 %% 绘制ps的xy投影图
 if doShowPsXYsum
     hPs=figure('name','ps的xy投影图');
-    psXYsum=permute(sum(ps,3),[2,1]);
+    psYXsum=sum(ps,3);
     figure(hPs);
-    imagesc(xs,ys,psXYsum);
+    imagesc(xs,ys,psYXsum);
     set(gca, 'XDir','normal', 'YDir','normal');
     title('ps的xy投影图');
     xlabel('x(m)');
     ylabel('y(m)');
     disp(['x方向上的3dB分辨率为' ...
-        num2str(dx*max(sum(psXYsum>max(max(psXYsum))/2,2))) ...
+        num2str(dx*max(sum(psYXsum>max(max(psYXsum))/2,2))) ...
         'm'])
+end
+
+%% 绘制ps的切片图
+if doShowPsSlice
+    hPs=figure('name','ps的切片图');
+    slice(xss,yss,zss,ps,linspace(xs(1),xs(length(xs)),5),linspace(ys(1),ys(length(ys)),1),linspace(zs(1),zs(length(zs)),5));
+    xlabel('x(m)');
+    ylabel('y(m)');
+    zlabel('z(m)');
+    title('ps的切片图');
 end
