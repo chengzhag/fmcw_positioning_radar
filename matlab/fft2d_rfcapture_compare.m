@@ -8,7 +8,7 @@ doShowTarcoor=1;
 doShowPowerZ=1;
 
 %% 加载/提取数据、参数
-load '../data/yLoCut_200kHz_800rps_1rpf_4t12r_ztest.mat'
+load '../data/yLoCut_200kHz_800rps_1rpf_4t12r_walkingreflector.mat'
 
 yLoCut=log2array(logsout,'yLoCutSim');
 yLoReshape=reshape(yLoCut,size(yLoCut,1),nRx,nTx,size(yLoCut,3));
@@ -21,8 +21,8 @@ dy=0.15;
 xsCoor=single(-8:dx:8);
 ysCoor=single(dMi:dy:dMa);
 
-dz=0.15;
-zsCoor=single(-2:dz:2);
+dz=0.3;
+zsCoor=single(-2:dz:5);
 
 %% rfcapture2d测试
 [xsMesh,ysMesh]=meshgrid(xsCoor,ysCoor);
@@ -130,12 +130,12 @@ if doShowTarcoor
 end
 
 %% 计算目标z方向上的功率分布
-rangeR=0.5;
-rangeN=5;
+rangeR=0.3;
+rangeN=3;
 disp('计算目标z方向上的功率分布(rfcapture)：');
-psZCap=getPowerZrn(xsTarCap,ysTarCap,zsCoor,yLoReshape,ts,antCoor,nRx,nTx,dCa,tsRamp,fBw,fTr,dLambda,1,rangeR,rangeN);
+psZCap=getPowerZ(xsTarCap,ysTarCap,zsCoor,yLoReshape,ts,antCoor,nRx,nTx,dCa,tsRamp,fBw,fTr,dLambda,1);
 disp('计算目标z方向上的功率分布(fft2d)：');
-psZFft=getPowerZrn(xsTarFft,ysTarFft,zsCoor,yLoReshape,ts,antCoor,nRx,nTx,dCa,tsRamp,fBw,fTr,dLambda,1,rangeR,rangeN);
+psZFft=getPowerZ(xsTarFft,ysTarFft,zsCoor,yLoReshape,ts,antCoor,nRx,nTx,dCa,tsRamp,fBw,fTr,dLambda,1);
 
 %% 绘制目标点 z方向上各点的功率随时间变化关系图
 if doShowPowerZ
