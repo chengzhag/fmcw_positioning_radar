@@ -72,11 +72,11 @@ psZ(isnan(psZ))=0;
 psZ=gather(psZ);
 
 %% 背景消除
-psZF=filter(0.2,[1,-0.8],abs(psZ),0,2);
+% psZF=filter(0.2,[1,-0.8],abs(psZ),0,2);
 % psZF=psZ-psZB;
 
 %% 绘制目标点 z方向上各点的功率随时间变化关系图
-psZAmp=abs(psZF(:,iTsVal));
+psZAmp=psZ(:,iTsVal);
 psZAmp=psZAmp./repmat(max(psZAmp),length(zs),1);
 hpsZ=figure('name','目标点 z方向上各点的功率随时间变化关系图');
 imagesc(ts(iTsVal),zs,psZAmp);
