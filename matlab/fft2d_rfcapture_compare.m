@@ -6,6 +6,7 @@ close all;
 doShowHeatmaps=0;
 doShowTarcoor=1;
 doShowPowerZ=1;
+useGPU=1;
 
 %% 加载/提取数据、参数
 load '../data/yLoCut_200kHz_800rps_1rpf_4t12r_walkingreflector.mat'
@@ -158,14 +159,6 @@ if doShowPowerZ
     title('fft2d目标点 z方向上各点的功率随时间变化关系图');
     xlabel('t(s)');
     ylabel('z(m)');
-end
-%% 二维数组最大值索引
-function [isX,isY]=iMax2d(m)
-[xsMax,isX]=max(m,[],2);
-[~,isY]=max(xsMax,[],1);
-isY=shiftdim(isY);
-isX=permute(isX,[3,1,2]);
-isX=isX((isY-1)*size(isX,1)+(1:size(isX,1))');
 end
 
 %% 计算目标z方向上的功率分布

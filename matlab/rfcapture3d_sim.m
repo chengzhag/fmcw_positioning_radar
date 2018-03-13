@@ -11,8 +11,8 @@ doShowPsXYsum=1;
 doShowPsSlice=0;
 
 %% 加载/提取数据、参数
-nTx=8;
-nRx=8;
+nTx=4;
+nRx=12;
 antCoor=[ ...
     [linspace(-0.053*(nRx/2-0.5),0.053*(nRx/2-0.5),nRx)',zeros(nRx,2)]; ...
     [zeros(nTx,2),linspace(-0.138-0.053*(nTx-1),-0.138,nTx)'] ...
