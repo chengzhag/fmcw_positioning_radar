@@ -4,20 +4,22 @@ close all;
 
 %% 运行参数设置
 doShowHeatmaps=0;
-doShowTarcoor=1;
+doShowTarcoor=0;
 doShowPsSlice=0;
 doShowPsXZsum=1;
+doSavePsXZsum=1;
+doShowPsZsum=1;
 lBlock=1000;
 
 %% 加载/提取数据、参数
-load '../data/yLoCut_200kHz_800rps_1rpf_4t12r_ztest.mat'
+load '../data/yLoCut_200kHz_800rps_1rpf_4t12r_ztest_stand_squat.mat'
 
 yLoCut=log2array(logsout,'yLoCutSim');
 yLoReshape=reshape(yLoCut,size(yLoCut,1),nRx,nTx,size(yLoCut,3));
 
 ts=linspace(0,size(yLoCut,3)/fF,size(yLoCut,3));
 
-iTVal=ts>5 & ts<50;
+iTVal=ts>5 & ts<15;
 ts=ts(iTVal);
 yLoReshape=yLoReshape(:,:,:,iTVal);
 
@@ -25,7 +27,7 @@ yLoReshape=yLoReshape(:,:,:,iTVal);
 dx=0.1;
 dy=0.1;
 xsCoor=single(-4:dx:4);
-ysCoor=single(1:dy:5);
+ysCoor=single(1:dy:8);
 
 %% rfcapture2d测试
 [xsMesh,ysMesh]=meshgrid(xsCoor,ysCoor);
@@ -46,7 +48,6 @@ for iFrame=1:length(ts)
         heatMapsCap(:,:,iTx,iFrame)=reshape(ps,length(ysCoor),length(xsCoor));
     end
     
-    
     if mod(iFrame,10)==0
         disp(['第' num2str(iFrame) '帧' num2str(iFrame/length(ts)*100,'%.1f') ...
             '% 用时' num2str(toc/60,'%.2f') 'min ' ...
@@ -57,7 +58,7 @@ end
 % 背景消除
 heatMapsBCap=filter(0.2,[1,-0.8],heatMapsCap,0,4);
 heatMapsFCap=abs(heatMapsCap-heatMapsBCap);
-heatMapsFCap=permute(sum(heatMapsFCap,3),[1,2,4,3]);
+heatMapsFCap=permute(prod(heatMapsFCap,3),[1,2,4,3]);
 
 %% fft2d测试
 heatMapsFft=fft2(yLoReshape,lFft,nAng);
@@ -69,7 +70,7 @@ heatMapsFft=flip(heatMapsFft,2);
 % 背景消除
 heatMapsBFft=filter(0.2,[1,-0.8],heatMapsFft,0,4);
 heatMapsFFft=abs(heatMapsFft-heatMapsBFft);
-heatMapsFFft=permute(sum(heatMapsFFft,3),[1,2,4,3]);
+heatMapsFFft=permute(prod(heatMapsFFft,3),[1,2,4,3]);
 
 % 极坐标转换
 heatMapsCarFFft=zeros(length(ysCoor),length(xsCoor),length(ts),'single');
@@ -142,14 +143,14 @@ if doShowHeatmaps
     end
 end
 
-%% 计算立方窗口
-dx=0.2;
-dy=0.3;
-dz=0.2;
-lx=2;
-ly=2;
-lz=10;
-sz=-5;
+%% 计算立方窗口，准备rfcaptureCo2F
+dx=0.05;
+dy=0.15;
+dz=0.1;
+lx=1;
+ly=0.5;
+lz=2.5;
+sz=-1.5;
 
 xsWin=single(-lx/2:dx:lx/2);
 ysWin=single(-ly/2:dy:ly/2);
@@ -160,14 +161,27 @@ ysV=reshape(yss,numel(yss),1);
 zsV=reshape(zss,numel(zss),1);
 pointCoorWin=[xsV,ysV,zsV];
 
+xsTarCapMean=mean(xsTarCap);
+ysTarCapMean=mean(ysTarCap);
+pointCoor=pointCoorWin+repmat([xsTarCapMean,ysTarCapMean,0],size(pointCoorWin,1),1);
+
+fTsrampRTZ=zeros(length(tsRamp),nRx,nTx,size(pointCoor,1),'single');
+isS=1:lBlock:size(pointCoor,1);
+for iS=isS
+    iBlock=(iS-1)/lBlock+1;
+    if iS+lBlock-1<size(pointCoor,1)
+        isBlock=iS:iS+lBlock-1;
+    else
+        isBlock=iS:size(pointCoor,1);
+    end
+    fTsrampRTZ(:,:,:,isBlock)=gather(rfcaptureCo2F(pointCoor(isBlock,:),antCoor,nRx,nTx,dCa,tsRamp,fBw,fTr,dLambda,1));
+end
+
 %% 计算目标范围内的功率分布
 ps=zeros(size(xss,1),size(xss,2),size(xss,3),length(ts),'single','gpuArray');
 tic;
 for iFrame=1:length(ts)
-    pointCoor=pointCoorWin+repmat([xsTarCap(iFrame),ysTarCap(iFrame),0],size(pointCoorWin,1),1);
-
     psF=zeros(size(pointCoor,1),1,'gpuArray');
-    isS=1:lBlock:size(pointCoor,1);
     for iS=isS
         iBlock=(iS-1)/lBlock+1;
         if iS+lBlock-1<size(pointCoor,1)
@@ -175,8 +189,7 @@ for iFrame=1:length(ts)
         else
             isBlock=iS:size(pointCoor,1);
         end
-        fTsrampRTZ=rfcaptureCo2F(pointCoor(isBlock,:),antCoor,nRx,nTx,dCa,tsRamp,fBw,fTr,dLambda,1);
-        psF(isBlock,1)=abs(rfcaptureF2ps(fTsrampRTZ,yLoReshape(:,:,:,iFrame),1));
+        psF(isBlock,1)=abs(rfcaptureF2ps(fTsrampRTZ(:,:,:,isBlock),yLoReshape(:,:,:,iFrame),1));
     end
     ps(:,:,:,iFrame)=reshape(psF,size(xss,1),size(xss,2),size(xss,3));
     
@@ -206,11 +219,19 @@ end
 
 %% 显示xz投影图
 if doShowPsXZsum
+    if doSavePsXZsum
+        writerObj=VideoWriter('../../xzProject.mp4','MPEG-4');  %// 定义一个视频文件用来存动画
+        writerObj.FrameRate=fF;
+        open(writerObj);                    %// 打开该视频文件
+    end
     hPs=figure('name','ps的xz投影图');
     for iFrame=1:length(ts)
         psXZsum=permute(sum(ps(:,:,:,iFrame),1),[3,2,1]);
+        psXZsum=gather(psXZsum/max(max(psXZsum)));
         figure(hPs);
         imagesc(xsWin,zsWin,psXZsum);
+        axis equal;
+        axis([min(xsWin), max(xsWin), min(zsWin), max(zsWin)])
         set(gca, 'XDir','normal', 'YDir','normal');
         title(['t=',num2str(ts(iFrame)), ...
             ', x=',num2str(xsTarCap(iFrame)), ...
@@ -218,6 +239,24 @@ if doShowPsXZsum
             '时ps的xz投影图']);
         xlabel('x(m)');
         ylabel('z(m)');
-        pause(0.1);
+        if doSavePsXZsum
+            writeVideo(writerObj,getframe(gcf));
+        end
+        pause(0.05);
+    end
+    if doSavePsXZsum
+        close(writerObj); %// 关闭视频文件句柄
     end
 end
+
+%% 尝试解算z轴功率分布
+if doShowPsZsum
+    psZsum=permute(sum(sum(ps,1),2),[3,4,2,1]);
+    psZsum=psZsum./repmat(max(psZsum),length(zsWin),1);
+    hpsZ=figure('name','目标点 z方向上各点的功率随时间变化关系图');
+    imagesc(ts,zsWin,psZsum);
+    set(gca, 'XDir','normal', 'YDir','normal');
+    title('目标点 z方向上各点的功率随时间变化关系图');
+    xlabel('t(s)');
+end
+ylabel('z(m)');
