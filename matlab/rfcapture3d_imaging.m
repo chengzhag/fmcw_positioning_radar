@@ -4,7 +4,7 @@ close all;
 
 %% 运行参数设置
 doShowHeatmaps=0;
-doShowTarcoor=0;
+doShowTarcoor=1;
 doShowPsSlice=0;
 doShowPsXZsum=1;
 doSavePsXZsum=1;
@@ -12,18 +12,17 @@ doShowPsZsum=1;
 lBlock=1000;
 
 %% 加载/提取数据、参数
-load '../data/yLoCut_200kHz_800rps_1rpf_4t12r_ztest_stand_squat.mat'
+load '../data/yLoCut_200kHz_800rps_1rpf_4t12r_ztest_stand_squat_moving.mat'
 
 yLoCut=log2array(logsout,'yLoCutSim');
 yLoReshape=reshape(yLoCut,size(yLoCut,1),nRx,nTx,size(yLoCut,3));
 
 ts=linspace(0,size(yLoCut,3)/fF,size(yLoCut,3));
 
-iTVal=ts>5 & ts<15;
+iTVal=ts>5 & ts<11;
 ts=ts(iTVal);
 yLoReshape=yLoReshape(:,:,:,iTVal);
 
-%% 坐标设置
 dx=0.1;
 dy=0.1;
 xsCoor=single(-4:dx:4);
@@ -200,7 +199,7 @@ for iFrame=1:length(ts)
     end
 end
 
-%% 背景消除
+% 背景消除
 psB=mean(ps,4);
 psFo=abs(ps-repmat(psB,1,1,1,size(ps,4)));
 
