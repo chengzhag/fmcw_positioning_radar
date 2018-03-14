@@ -146,10 +146,10 @@ end
 %% 计算立方窗口，准备rfcaptureCo2F
 dx=0.05;
 dy=0.15;
-dz=0.1;
+dz=0.05;
 lx=1;
-ly=0.5;
-lz=2.5;
+ly=1;
+lz=3;
 sz=-1.5;
 
 xsWin=single(-lx/2:dx:lx/2);
@@ -181,7 +181,7 @@ end
 ps=zeros(size(xss,1),size(xss,2),size(xss,3),length(ts),'single','gpuArray');
 tic;
 for iFrame=1:length(ts)
-    psF=zeros(size(pointCoor,1),1,'gpuArray');
+    psFr=zeros(size(pointCoor,1),1,'gpuArray');
     for iS=isS
         iBlock=(iS-1)/lBlock+1;
         if iS+lBlock-1<size(pointCoor,1)
@@ -189,9 +189,9 @@ for iFrame=1:length(ts)
         else
             isBlock=iS:size(pointCoor,1);
         end
-        psF(isBlock,1)=abs(rfcaptureF2ps(fTsrampRTZ(:,:,:,isBlock),yLoReshape(:,:,:,iFrame),1));
+        psFr(isBlock,1)=rfcaptureF2ps(fTsrampRTZ(:,:,:,isBlock),yLoReshape(:,:,:,iFrame),1);
     end
-    ps(:,:,:,iFrame)=reshape(psF,size(xss,1),size(xss,2),size(xss,3));
+    ps(:,:,:,iFrame)=reshape(psFr,size(xss,1),size(xss,2),size(xss,3));
     
     if mod(iFrame,10)==0
         disp(['第' num2str(iFrame) '帧' num2str(iFrame/length(ts)*100,'%.1f') ...
@@ -200,22 +200,9 @@ for iFrame=1:length(ts)
     end
 end
 
-%% 显示切片图
-if doShowPsSlice
-    hPs=figure('name','ps的切片图');
-    for iFrame=1:length(ts)
-        figure(hPs);
-        slice(xss,yss,zss,ps(:,:,:,iFrame),linspace(xsWin(1),xsWin(length(xsWin)),3),linspace(ysWin(1),ysWin(length(ysWin)),1),linspace(zsWin(1),zsWin(length(zsWin)),3));
-        xlabel('x(m)');
-        ylabel('y(m)');
-        zlabel('z(m)');
-        title(['t=',num2str(ts(iFrame)), ...
-            ', x=',num2str(xsTarCapFiltered(iFrame)), ...
-            ', y=',num2str(ysTarCapFiltered(iFrame)), ...
-            '时ps的切片图']);
-        pause(0.1);
-    end
-end
+%% 背景消除
+psB=mean(ps,4);
+psFo=abs(ps-repmat(psB,1,1,1,size(ps,4)));
 
 %% 显示xz投影图
 if doShowPsXZsum
@@ -226,7 +213,7 @@ if doShowPsXZsum
     end
     hPs=figure('name','ps的xz投影图');
     for iFrame=1:length(ts)
-        psXZsum=permute(sum(ps(:,:,:,iFrame),1),[3,2,1]);
+        psXZsum=permute(sum(psFo(:,:,:,iFrame),1),[3,2,1]);
         psXZsum=gather(psXZsum/max(max(psXZsum)));
         figure(hPs);
         imagesc(xsWin,zsWin,psXZsum);
@@ -251,7 +238,7 @@ end
 
 %% 尝试解算z轴功率分布
 if doShowPsZsum
-    psZsum=permute(sum(sum(ps,1),2),[3,4,2,1]);
+    psZsum=permute(sum(sum(psFo,1),2),[3,4,2,1]);
     psZsum=psZsum./repmat(max(psZsum),length(zsWin),1);
     hpsZ=figure('name','目标点 z方向上各点的功率随时间变化关系图');
     imagesc(ts,zsWin,psZsum);
