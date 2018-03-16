@@ -12,7 +12,7 @@ doShowPsZsum=1;
 lBlock=1000;
 
 %% 加载/提取数据、参数
-load '../data/yLoCut_200kHz_800rps_1rpf_4t12r_ztest_stand_squat_moving.mat'
+load '../data/yLoCut_200kHz_800rps_1rpf_4t12r_ztest_stand_squat.mat'
 
 yLoCut=log2array(logsout,'yLoCutSim');
 yLoReshape=reshape(yLoCut,size(yLoCut,1),nRx,nTx,size(yLoCut,3));
