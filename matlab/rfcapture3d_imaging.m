@@ -19,9 +19,11 @@ yLoReshape=reshape(yLoCut,size(yLoCut,1),nRx,nTx,size(yLoCut,3));
 
 ts=linspace(0,size(yLoCut,3)/fF,size(yLoCut,3));
 
-iTVal=ts>6 & ts<14.5;
-ts=ts(iTVal);
-yLoReshape=yLoReshape(:,:,:,iTVal);
+if exist('iTVal','var')
+    % iTVal=ts>5 & ts<16;
+    ts=ts(iTVal);
+    yLoReshape=yLoReshape(:,:,:,iTVal);
+end
 
 dx=0.1;
 dy=0.1;
@@ -37,8 +39,8 @@ heatMapsCap=zeros(length(ysCoor),length(xsCoor),nTx,length(ts),'single','gpuArra
 fTsrampRTZ=zeros(length(tsRamp),nRx,1,numel(xsMesh),nTx,'single','gpuArray');
 for iTx=1:nTx
     fTsrampRTZ(:,:,:,:,iTx)=rfcaptureCo2F(pointCoor, ...
-        [antCoor(1:nRx,:);antCoor(iTx+nRx,:)], ...
-        nRx,1,dCa,tsRamp,fBw,fTr,dLambda,1);
+        rxCoor(1:nRx,:),txCoor(iTx,:), ...
+        nRx,1,dCa,tsRamp,fBw,fRamp,dLambda,1);
 end
 tic;
 for iFrame=1:length(ts)
@@ -60,8 +62,8 @@ heatMapsFCap=abs(heatMapsCap-heatMapsBCap);
 heatMapsFCap=permute(prod(heatMapsFCap,3),[1,2,4,3]);
 
 %% fft2d测试
-heatMapsFft=fft2(yLoReshape,lFft,nAng);
-heatMapsFft=heatMapsFft(isD,:,:,:);
+heatMapsFft=fft2(yLoReshape,lFftDis,lFftAng);
+heatMapsFft=heatMapsFft(isDval,:,:,:);
 
 heatMapsFft=circshift(heatMapsFft,floor(size(heatMapsFft,2)/2)+1,2);
 heatMapsFft=flip(heatMapsFft,2);
@@ -80,7 +82,7 @@ angsPo2Car=atand(xsMesh./ysMesh);
 angsPo2Car(isnan(angsPo2Car))=0;
 
 for iFrame=1:length(ts)
-    heatMapsCarFFft(:,:,iFrame)=interp2(angs,dsC,heatMapsFFft(:,:,iFrame),angsPo2Car,dsPo2Car,'linear',0);
+    heatMapsCarFFft(:,:,iFrame)=interp2(angs,isDval,heatMapsFFft(:,:,iFrame),angsPo2Car,dsPo2Car,'linear',0);
 end
 heatMapsFFft=heatMapsCarFFft;
 
@@ -173,7 +175,7 @@ for iS=isS
     else
         isBlock=iS:size(pointCoor,1);
     end
-    fTsrampRTZ(:,:,:,isBlock)=gather(rfcaptureCo2F(pointCoor(isBlock,:),antCoor,nRx,nTx,dCa,tsRamp,fBw,fTr,dLambda,1));
+    fTsrampRTZ(:,:,:,isBlock)=gather(rfcaptureCo2F(pointCoor(isBlock,:),rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,1));
 end
 
 %% 计算目标范围内的功率分布
