@@ -6,33 +6,31 @@ close all;
 doShowLo=0;
 doShowPsYZ=0;
 doShowPsXY=0;
-doShowPsYZsum=1;
+doShowPsYZsum=0;
 doShowPsXYsum=1;
 doShowPsSlice=0;
 
 %% 加载/提取数据、参数
 nTx=4;
 nRx=12;
-antCoor=[ ...
-    [linspace(-0.053*(nRx/2-0.5),0.053*(nRx/2-0.5),nRx)',zeros(nRx,2)]; ...
-    [zeros(nTx,2),linspace(-0.138-0.053*(nTx-1),-0.138,nTx)'] ...
-    ];
+rxCoor=[linspace(-0.053*(nRx/2-0.5),0.053*(nRx/2-0.5),nRx)',zeros(nRx,2)];
+txCoor=[zeros(nTx,2),linspace(-0.138-0.053*(nTx-1),-0.138,nTx)'];
 fCen=3.2e9;
 fBw=1e9;
-fS=200e3;
-fTr=800;
-lRamp=fS/fTr;
-lFft=lRamp;
+fSDown=200e3;
+fRamp=800;
+lRampDown=fSDown/fRamp;
+lFft=512;
 dLambda=3e8/fCen;
 dMa=10;
 dMi=1;
 
-fPm=fBw*fTr/3e8;%frequency per meter
-fD=fS/lFft;%frequency delta
-fs=linspace(0,fS/2-fD,floor(lFft/2));
-ds=fs/fPm;
+fPm=fBw*fRamp/3e8;%frequency per meter
+% fD=fSDown/lFft;%frequency delta
+% fs=linspace(0,fSDown/2-fD,floor(lFft/2));
+% ds=fs/fPm;
 
-tsRamp=(0:lRamp-1)/fS;
+tsRamp=(0:lRampDown-1)/fSDown;
 
 tarCoor=[1,3,0.5];%target coordinate
 dx=0.1;
@@ -46,9 +44,7 @@ xs=single(-2:dx:2);
 ys=single(0:dy:5);
 zs=single(-1:dz:2);
 [xss,yss,zss]=meshgrid(xs,ys,zs);
-% xss=permute(xss,[2,1,3]);
-% yss=permute(yss,[2,1,3]);
-% zss=permute(zss,[2,1,3]);
+
 xsV=reshape(xss,numel(xss),1);
 ysV=reshape(yss,numel(yss),1);
 zsV=reshape(zss,numel(zss),1);
@@ -59,11 +55,11 @@ pointCoor=[xsV,ysV,zsV];
 dsRT=zeros(nRx,nTx);
 for iTx=1:nTx
     for iRx=1:nRx
-        dsRT(iRx,iTx)=pdist([tarCoor;antCoor(iRx,:)])+pdist([tarCoor;antCoor(iTx+nRx,:)]);
+        dsRT(iRx,iTx)=pdist([tarCoor;rxCoor(iRx,:)])+pdist([tarCoor;txCoor(iTx,:)]);
     end
 end
 
-yLoReshape=zeros(lRamp,nRx,nTx);
+yLoReshape=zeros(lRampDown,nRx,nTx);
 for iTx=1:nTx
     for iRx=1:nRx
         yLoReshape(:,iRx,iTx)=cos(2*pi*fPm*dsRT(iRx,iTx)*tsRamp+2*pi*dsRT(iRx,iTx)/dLambda);
@@ -71,7 +67,7 @@ for iTx=1:nTx
 end
 if doShowLo
     figure('name','yLo');
-    yLo=reshape(yLoReshape,lRamp,nRx*nTx);
+    yLo=reshape(yLoReshape,lRampDown,nRx*nTx);
     imagesc(1:nRx*nTx,tsRamp*1e6,yLo);
     set(gca, 'XDir','normal', 'YDir','normal');
     title('yLo');
@@ -90,7 +86,7 @@ for iS=isS
     else
         isBlock=iS:size(pointCoor,1);
     end
-    fTsrampRTZ=rfcaptureCo2F(pointCoor(isBlock,:),antCoor,nRx,nTx,0,tsRamp,fBw,fTr,dLambda,1);
+    fTsrampRTZ=rfcaptureCo2F(pointCoor(isBlock,:),rxCoor,txCoor,nRx,nTx,0,tsRamp,fBw,fRamp,dLambda,1);
     ps(isBlock,1)=abs(rfcaptureF2ps(fTsrampRTZ,yLoReshape,1));
     if mod(iBlock,10)==0
     disp(['第' num2str(iBlock) '分块' num2str(iBlock/length(isS)*100,'%.1f') ...
