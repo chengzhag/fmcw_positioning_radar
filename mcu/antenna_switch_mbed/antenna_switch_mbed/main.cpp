@@ -3,8 +3,8 @@
 #include <bitset>
 using namespace std;
 
-#define WIDTH_FALL 0
-#define WIDTH_PULSE 30
+#define WIDTH_FALL 5
+#define WIDTH_PULSE 25
 #define WIDTH_BIT 50
 
 InterruptIn triger(D2);
@@ -16,6 +16,10 @@ bitset<2> iTx(0);
 
 void switchAnt()
 {
+	//拉低脉冲
+	wait_us(WIDTH_FALL);
+	usrpSyn=0;
+
 	//切换天线
 	size_t iB = 0;
 	for (auto &dout : switchsRx)
@@ -31,9 +35,6 @@ void switchAnt()
 		++iB;
 	}
 
-	//拉低脉冲
-	wait_us(WIDTH_FALL);
-	usrpSyn=0;
 	wait_us(WIDTH_PULSE);
 
 	//发送天线编号
