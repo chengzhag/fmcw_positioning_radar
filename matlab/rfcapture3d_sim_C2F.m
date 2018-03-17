@@ -4,7 +4,7 @@ close all;
 
 %% 运行参数设置
 doShowLo=0;
-tShowPsProject=0;
+tShowPsProject=0.2;
 useGPU=1;
 
 %% 加载/提取数据、参数
@@ -62,14 +62,28 @@ C2Ffac=3;
 nC2F=3;
 C2Fratio=0.1;
 
-xs=single(-3:dxIn:3);
-ys=single(1:dyIn:5);
-zs=single(-1.5:dzIn:1.5);
+xMi=-3;
+xMa=3;
+yMi=1;
+yMa=5;
+zMi=-1.5;
+zMa=1.5;
+
+xs=xMi:dxIn:xMa;
+ys=yMi:dyIn:yMa;
+zs=zMi:dzIn:zMa;
+preciFac=1/C2Ffac.^(nC2F-1);
+xsB=xMi:dxIn*preciFac:xMa;
+ysB=yMi:dyIn*preciFac:yMa;
+zsB=zMi:dzIn*preciFac:zMa;
+[xssB,yssB,zssB]=meshgrid(xsB,ysB,zsB);
+psB=zeros(size(xssB),'single','gpuArray');
 
 if tShowPsProject
     hPs=figure('name','ps的xy投影图');
 else
     hPs=[];
 end
-[psF,xsF,ysF,zsF]=rfcaptureC2F(xs,ys,zs,nC2F,C2Fratio,C2Ffac,tShowPsProject,hPs, ...
-        yLoReshape,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
+[psF,xsF,ysF,zsF]=rfcaptureC2F(xs,ys,zs,xssB,yssB,zssB,psB, ...
+    nC2F,C2Fratio,C2Ffac,tShowPsProject,hPs, ...
+    yLoReshape,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
