@@ -219,7 +219,7 @@ if doShowPsXZsum
         figure(hPs);
         imagesc(xsWin,zsWin,psXZsum);
         axis equal;
-        axis([min(xsWin), max(xsWin), min(zsWin), max(zsWin)])
+        axis([min(xsWin), max(xsWin), min(zsWin), max(zsWin)]);
         set(gca, 'XDir','normal', 'YDir','normal');
         title(['t=',num2str(ts(iFrame)), ...
             ', x=',num2str(xsTarCap(iFrame)), ...
