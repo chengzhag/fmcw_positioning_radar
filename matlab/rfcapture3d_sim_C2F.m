@@ -4,7 +4,7 @@ close all;
 
 %% 运行参数设置
 doShowLo=0;
-doShowPsProject=1;
+tShowPsProject=0;
 useGPU=1;
 
 %% 加载/提取数据、参数
@@ -59,13 +59,17 @@ dxIn=1;
 dyIn=1;
 dzIn=1;
 C2Ffac=3;
-nC2F=2;
+nC2F=3;
 C2Fratio=0.1;
 
 xs=single(-3:dxIn:3);
 ys=single(1:dyIn:5);
 zs=single(-1.5:dzIn:1.5);
 
-[psF,xsF,ysF,zsF]=rfcaptureC2F(xs,ys,zs,nC2F,C2Fratio,C2Ffac,doShowPsProject, ...
-    yLoReshape,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
-
+if tShowPsProject
+    hPs=figure('name','ps的xy投影图');
+else
+    hPs=[];
+end
+[psF,xsF,ysF,zsF]=rfcaptureC2F(xs,ys,zs,nC2F,C2Fratio,C2Ffac,tShowPsProject,hPs, ...
+        yLoReshape,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
