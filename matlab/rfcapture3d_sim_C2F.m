@@ -4,8 +4,7 @@ close all;
 
 %% 运行参数设置
 doShowLo=0;
-doShowPsYZsum=0;
-doShowPsXYsum=1;
+doShowPsProject=1;
 useGPU=1;
 
 %% 加载/提取数据、参数
@@ -28,7 +27,7 @@ fPm=fBw*fRamp/3e8;%frequency per meter
 
 tsRamp=(0:lRampDown-1)/fSDown;
 
-tarCoor=[1,3,0.5];%target coordinate
+tarCoor=[2,4,0.5];%target coordinate
 
 %% 计算目标点反射回波下变频的中频信号
 % 计算目标到各天线间的距离
@@ -56,9 +55,9 @@ if doShowLo
 end
 
 %% 由粗到细算法
-dxIn=2;
-dyIn=2;
-dzIn=2;
+dxIn=1;
+dyIn=1;
+dzIn=1;
 C2Ffac=3;
 nC2F=2;
 C2Fratio=0.1;
@@ -75,68 +74,85 @@ zsV=reshape(zss,numel(zss),1);
 pointCoor=[xsV,ysV,zsV];
 
 fTsrampRTZ=rfcaptureCo2F(pointCoor,rxCoor,txCoor,nRx,nTx,0,tsRamp,fBw,fRamp,dLambda,1);
-ps=abs(rfcaptureF2ps(fTsrampRTZ,yLoReshape,1));
-ps=reshape(ps,size(xss));
+psH=abs(rfcaptureF2ps(fTsrampRTZ,yLoReshape,1));
+ps=reshape(psH,size(xss));
+isHLog=true(size(xss));
 
+if doShowPsProject
 hPs=figure('name','ps的xy投影图');
+showProjectedHeatmaps(hPs,ps,xs,ys,zs);
+pause(0.5);
+end
+
+for i=1:nC2F
+    [xssC,yssC,zssC]=meshgrid(xs,ys,zs);
+%     isXc=ceil(C2Ffac/2):C2Ffac:length(xs)*C2Ffac-floor(C2Ffac/2);
+%     isYc=ceil(C2Ffac/2):C2Ffac:length(ys)*C2Ffac-floor(C2Ffac/2);
+%     isZc=ceil(C2Ffac/2):C2Ffac:length(zs)*C2Ffac-floor(C2Ffac/2);
+%     isXf=1:length(xs)*C2Ffac;
+%     isYf=1:length(ys)*C2Ffac;
+%     isZf=1:length(zs)*C2Ffac;
+    isXc=0:C2Ffac:(length(xs)-1)*C2Ffac;
+    isYc=0:C2Ffac:(length(ys)-1)*C2Ffac;
+    isZc=0:C2Ffac:(length(zs)-1)*C2Ffac;
+    isXf=0:(length(xs)-1)*C2Ffac;
+    isYf=0:(length(ys)-1)*C2Ffac;
+    isZf=0:(length(zs)-1)*C2Ffac;
+    
+    xs=interp1(isXc,xs,isXf,'linear','extrap');
+    ys=interp1(isYc,ys,isYf,'linear','extrap');
+    zs=interp1(isZc,zs,isZf,'linear','extrap');
+    [xssF,yssF,zssF]=meshgrid(xs,ys,zs);
+    xsFv=reshape(xssF,numel(xssF),1);
+    ysFv=reshape(yssF,numel(yssF),1);
+    zsFv=reshape(zssF,numel(zssF),1);
+    pointCoor=[xsFv,ysFv,zsFv];
+    
+    
+    ps=interp3(xssC,yssC,zssC, ...
+        ps,xssF,yssF,zssF,'linear',0);
+    isHLog=interp3(xssC,yssC,zssC, ...
+        isHLog,xssF,yssF,zssF,'nearest',0);
+    
+    % 根据规则选取精算点
+    psHold=ps(isHLog);
+    [~,isHnum]=sort(psHold,'descend');
+    isHnum=isHnum(1:floor(numel(psHold)*C2Fratio));
+    isHLog=false(size(isHLog));
+    isHLog(isHnum)=1;
+        
+    
+    
+    % 硬算选取点
+    fTsrampRTZ=rfcaptureCo2F(pointCoor(isHLog(:),:),rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
+    psH=abs(rfcaptureF2ps(fTsrampRTZ,yLoReshape,1));
+    ps(isHLog)=psH;
+    
+    % 显示功率分布
+    if doShowPsProject
+    showProjectedHeatmaps(hPs,ps,xs,ys,zs);
+    pause(0.5);
+    end
+    
+end
+
+function showProjectedHeatmaps(hPs,ps,xs,ys,zs)
+hPs=figure(hPs);
 psYXsum=sum(ps,3);
 figure(hPs);
+subplot(1,2,1);
 imagesc(xs,ys,psYXsum);
 set(gca, 'XDir','normal', 'YDir','normal');
 title('ps的xy投影图');
 xlabel('x(m)');
 ylabel('y(m)');
-pause(1);
 
-for i=1:nC2F
-    [ps,xs,ys,zs]=getFine(ps,xs,ys,zs,C2Ffac,C2Fratio, ...
-        yLoReshape,rxCoor,txCoor,nRx,nTx,0,tsRamp, ...
-        fBw,fRamp,dLambda,1);
-    
-    figure(hPs);
-    psYXsum=sum(ps,3);
-    figure(hPs);
-    imagesc(xs,ys,psYXsum);
-    set(gca, 'XDir','normal', 'YDir','normal');
-    title('ps的xy投影图');
-    xlabel('x(m)');
-    ylabel('y(m)');
-    
-    pause(1);
-    
-end
-
-%% 精算公式
-function [psF,xsF,ysF,zsF]=getFine(psC,xsC,ysC,zsC,C2Ffac,C2Fratio, ...
-    yLoReshape,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU)
-
-[xssC,yssC,zssC]=meshgrid(xsC,ysC,zsC);
-isXc=ceil(C2Ffac/2):C2Ffac:length(xsC)*C2Ffac-floor(C2Ffac/2);
-isYc=ceil(C2Ffac/2):C2Ffac:length(ysC)*C2Ffac-floor(C2Ffac/2);
-isZc=ceil(C2Ffac/2):C2Ffac:length(zsC)*C2Ffac-floor(C2Ffac/2);
-isXf=1:length(xsC)*C2Ffac;
-isYf=1:length(ysC)*C2Ffac;
-isZf=1:length(zsC)*C2Ffac;
-xsF=interp1(isXc,xsC,isXf,'linear','extrap');
-ysF=interp1(isYc,ysC,isYf,'linear','extrap');
-zsF=interp1(isZc,zsC,isZf,'linear','extrap');
-[xssF,yssF,zssF]=meshgrid(xsF,ysF,zsF);
-xsFv=reshape(xssF,numel(xssF),1);
-ysFv=reshape(yssF,numel(yssF),1);
-zsFv=reshape(zssF,numel(zssF),1);
-pointCoor=[xsFv,ysFv,zsFv];
-
-
-psF=interp3(xssC,yssC,zssC, ...
-    psC,xssF,yssF,zssF,'linear',0);
-
-% 根据规则选取精算点
-psV=reshape(psF,numel(psF),1);
-[~,isH]=sort(psV,'descend');
-isH=isH(1:floor(length(isH)*C2Fratio));
-
-% 硬算选取点
-fTsrampRTZ=rfcaptureCo2F(pointCoor(isH,:),rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
-psH=abs(rfcaptureF2ps(fTsrampRTZ,yLoReshape,1));
-psF(isH)=psH;
+psXZsum=permute(sum(ps,1),[3,2,1]);
+figure(hPs);
+subplot(1,2,2);
+imagesc(xs,zs,psXZsum);
+set(gca, 'XDir','normal', 'YDir','normal');
+title('ps的xz投影图');
+xlabel('x(m)');
+ylabel('z(m)');
 end
