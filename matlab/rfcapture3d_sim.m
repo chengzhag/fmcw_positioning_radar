@@ -9,6 +9,7 @@ doShowPsXY=0;
 doShowPsYZsum=0;
 doShowPsXYsum=1;
 doShowPsSlice=0;
+useGPU=1;
 
 %% 加载/提取数据、参数
 nTx=4;
@@ -24,6 +25,7 @@ lFft=512;
 dLambda=3e8/fCen;
 dMa=10;
 dMi=1;
+dCa=0;
 
 fPm=fBw*fRamp/3e8;%frequency per meter
 % fD=fSDown/lFft;%frequency delta
@@ -45,10 +47,7 @@ ys=single(0:dy:5);
 zs=single(-1:dz:2);
 [xss,yss,zss]=meshgrid(xs,ys,zs);
 
-xsV=reshape(xss,numel(xss),1);
-ysV=reshape(yss,numel(yss),1);
-zsV=reshape(zss,numel(zss),1);
-pointCoor=[xsV,ysV,zsV];
+pointCoor=[xss(:),yss(:),zss(:)];
 
 %% 计算目标点反射回波下变频的中频信号
 % 计算目标到各天线间的距离
@@ -86,7 +85,7 @@ for iS=isS
     else
         isBlock=iS:size(pointCoor,1);
     end
-    fTsrampRTZ=rfcaptureCo2F(pointCoor(isBlock,:),rxCoor,txCoor,nRx,nTx,0,tsRamp,fBw,fRamp,dLambda,1);
+    fTsrampRTZ=rfcaptureCo2F(pointCoor(isBlock,:),rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
     ps(isBlock,1)=abs(rfcaptureF2ps(fTsrampRTZ,yLoReshape,1));
     if mod(iBlock,10)==0
     disp(['第' num2str(iBlock) '分块' num2str(iBlock/length(isS)*100,'%.1f') ...
@@ -94,7 +93,7 @@ for iS=isS
         '剩余' num2str(toc/iBlock*(length(isS)-iBlock)/60,'%.2f') 'min']);
     end
 end
-ps=reshape(ps,size(xss,1),size(xss,2),size(xss,3));
+ps=reshape(ps,size(xss));
 
 %% 绘制ps的yz剖面图
 if doShowPsYZ

@@ -25,20 +25,20 @@ dCa=0;
 
 fPm=fBw*fRamp/3e8;%frequency per meter
 
-tsRamp=(0:lRampDown-1)/fSDown;
+tsRamp=single((0:lRampDown-1)/fSDown);
 
 tarCoor=[2,4,0.5];%target coordinate
 
 %% 计算目标点反射回波下变频的中频信号
 % 计算目标到各天线间的距离
-dsRT=zeros(nRx,nTx);
+dsRT=zeros(nRx,nTx,'single');
 for iTx=1:nTx
     for iRx=1:nRx
         dsRT(iRx,iTx)=pdist([tarCoor;rxCoor(iRx,:)])+pdist([tarCoor;txCoor(iTx,:)]);
     end
 end
 
-yLoReshape=zeros(lRampDown,nRx,nTx);
+yLoReshape=zeros(lRampDown,nRx,nTx,'single');
 for iTx=1:nTx
     for iRx=1:nRx
         yLoReshape(:,iRx,iTx)=cos(2*pi*fPm*dsRT(iRx,iTx)*tsRamp+2*pi*dsRT(iRx,iTx)/dLambda);
@@ -55,9 +55,9 @@ if doShowLo
 end
 
 %% 由粗到细算法
-dxIn=1;
-dyIn=1;
-dzIn=1;
+dxC=1;
+dyC=1;
+dzC=1;
 C2Ffac=3;
 nC2F=3;
 C2Fratio=0.1;
@@ -69,13 +69,13 @@ yMa=5;
 zMi=-1.5;
 zMa=1.5;
 
-xs=xMi:dxIn:xMa;
-ys=yMi:dyIn:yMa;
-zs=zMi:dzIn:zMa;
-preciFac=1/C2Ffac.^(nC2F-1);
-xsB=xMi:dxIn*preciFac:xMa;
-ysB=yMi:dyIn*preciFac:yMa;
-zsB=zMi:dzIn*preciFac:zMa;
+xs=single(xMi:dxC:xMa);
+ys=single(yMi:dyC:yMa);
+zs=single(zMi:dzC:zMa);
+preciFac=C2Ffac.^(nC2F-1);
+xsB=single(xMi:dxC/preciFac:xMa);
+ysB=single(yMi:dyC/preciFac:yMa);
+zsB=single(zMi:dzC/preciFac:zMa);
 [xssB,yssB,zssB]=meshgrid(xsB,ysB,zsB);
 psB=zeros(size(xssB),'single','gpuArray');
 
