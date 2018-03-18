@@ -4,15 +4,15 @@ close all;
 
 %% 运行参数设置
 doShowHeatmaps=0;
-doShowTarcoor=1;
+doShowTarcoor=0;
 doShowPsSlice=0;
 doShowPsXZsum=1;
-doSavePsXZsum=1;
+doSavePsXZsum=0;
 doShowPsZsum=1;
 lBlock=1000;
 
 %% 加载/提取数据、参数
-load '../data/yLoCut_200kHz_800rps_1rpf_4t12r_ztest_stand_squat.mat'
+load '../data/yLoCut_200kHz_800rps_1rpf_4t12r_ztest_circle_reflector.mat'
 
 yLoCut=log2array(logsout,'yLoCutSim');
 yLoReshape=reshape(yLoCut,size(yLoCut,1),nRx,nTx,size(yLoCut,3));
@@ -82,7 +82,7 @@ angsPo2Car=atand(xsMesh./ysMesh);
 angsPo2Car(isnan(angsPo2Car))=0;
 
 for iFrame=1:length(ts)
-    heatMapsCarFFft(:,:,iFrame)=interp2(angs,isDval,heatMapsFFft(:,:,iFrame),angsPo2Car,dsPo2Car,'linear',0);
+    heatMapsCarFFft(:,:,iFrame)=interp2(angs,dsVal,heatMapsFFft(:,:,iFrame),angsPo2Car,dsPo2Car,'linear',0);
 end
 heatMapsFFft=heatMapsCarFFft;
 
@@ -146,7 +146,7 @@ end
 
 %% 计算立方窗口，准备rfcaptureCo2F
 dx=0.05;
-dy=0.15;
+dy=0.05;
 dz=0.05;
 lx=1;
 ly=1;

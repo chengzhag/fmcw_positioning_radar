@@ -35,14 +35,14 @@ for i=1:nC2F
     psH=abs(rfcaptureF2ps(fTsrampRTZ,yLoReshape,useGPU)-psBH);
     psF(isHLog)=psH;
     
-    if i>=nC2F
-        break;
-    end
-    
     % 显示功率分布
     if tShowPsProject
         showProjectedHeatmaps(hPs,psF,xsC,ysC,zsC);
         pause(tShowPsProject);
+    end
+    
+    if i>=nC2F
+        break;
     end
     
     % 扩展psF和isHLog矩阵
