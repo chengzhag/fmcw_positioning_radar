@@ -5,7 +5,7 @@ close all;
 %% 运行参数设置
 doShowHeatmaps=0;
 doShowTarcoor=0;
-doShowPsBProject=1;
+doShowPsBProject=0;
 tShowPsProject=0.2;
 doSavePsBProject=1;
 doShowPsZsum=1;
@@ -13,7 +13,7 @@ lBlock=1000;
 useGPU=1;
 
 %% 加载/提取数据、参数
-load '../data/yLoCut_200kHz_800rps_1rpf_4t12r_ztest_circle_reflector.mat'
+load '../data/yLoCut_200kHz_800rps_1rpf_4t12r_ztest_stand_squat_moving.mat'
 
 yLoCut=log2array(logsout,'yLoCutSim');
 yLoReshape=reshape(yLoCut,size(yLoCut,1),nRx,nTx,size(yLoCut,3));
@@ -154,7 +154,9 @@ if ~exist('psB','var')
     
     psB=reshape(psB,size(xssB))/lSampleB;
 else
-    psB=gpuArray(psB);
+    if useGPU
+        psB=gpuArray(psB);
+    end
 end
 
 %% 显示背景的功率分布投影图
@@ -162,6 +164,8 @@ if doShowPsBProject
     hPs=figure('name','psB的投影图');
     showProjectedHeatmaps(hPs,log(abs(psB)),xsB,ysB,zsB);
     pause(0.5);
+else
+    hPs=[];
 end
 
 %% 计算立方窗口
