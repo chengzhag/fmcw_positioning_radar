@@ -79,16 +79,16 @@ psBcoor=[xssB(:),yssB(:),zssB(:)];
 psB=zeros(size(xssB),'single','gpuArray');
 
 % 准备窗口坐标
-psWcoor={};
+psWcoor=[];
 for i=1:nC2F
     xsC=single(xMi:dxC/(C2Ffac^(i-1)):xMa);
     ysC=single(yMi:dxC/(C2Ffac^(i-1)):yMa);
     zsC=single(zMi:dxC/(C2Ffac^(i-1)):zMa);
-    psWcoor{i}.xs=xsC;
-    psWcoor{i}.ys=ysC;
-    psWcoor{i}.zs=zsC;
-    [psWcoor{i}.xss,psWcoor{i}.yss,psWcoor{i}.zss]=meshgrid(xsC,ysC,zsC);
-    psWcoor{i}.coor=[psWcoor{i}.xss(:),psWcoor{i}.yss(:),psWcoor{i}.zss(:)];
+    psWcoor(i).xs=xsC;
+    psWcoor(i).ys=ysC;
+    psWcoor(i).zs=zsC;
+    [psWcoor(i).xss,psWcoor(i).yss,psWcoor(i).zss]=meshgrid(xsC,ysC,zsC);
+    psWcoor(i).coor=[psWcoor(i).xss(:),psWcoor(i).yss(:),psWcoor(i).zss(:)];
 end
 psWcen=zeros(1,3,'single');
 
@@ -98,6 +98,6 @@ if tShowPsProject
 else
     hPs=[];
 end
-[psF,~,~,~]=rfcaptureC2F(psWcen,psWcoor,psBcoor,psB, ...
+psF=rfcaptureC2F(psWcen,psWcoor,psBcoor,psB, ...
     C2Fratio,tShowPsProject,hPs, ...
     yLoReshape,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);

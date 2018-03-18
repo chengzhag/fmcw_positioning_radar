@@ -201,7 +201,7 @@ end
 %% 利用rfcaptureC2F计算窗口前景
 tic;
 for iFrame=1:length(ts)
-    [psF,xsF,ysF,zsF]=rfcaptureC2F(psWcen,psWcoor,psBcoor,psB, ...
+    psF=rfcaptureC2F(psWcen,psWcoor,psBcoor,psB, ...
         C2Fratio,0,hPs, ...
         yLoReshape(:,:,:,iFrame),rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
     if iFrame==1
@@ -226,7 +226,8 @@ if tShowPsProject
         open(writerObj);                    %// 打开该视频文件
     end
     for iFrame=1:length(ts)
-        showProjectedHeatmaps(hPs,psFo(:,:,:,iFrame),xsF,ysF,zsF);
+        showProjectedHeatmaps(hPs,psFo(:,:,:,iFrame), ...
+            psWcoor(end).xs,psWcoor(end).ys,psWcoor(end).zs);
         if doSavePsBProject
             writeVideo(writerObj,getframe(gcf));
         end
@@ -241,9 +242,9 @@ end
 %% 尝试解算z轴功率分布
 if doShowPsZsum
     psZsum=permute(sum(sum(psFo,1),2),[3,4,2,1]);
-    psZsum=psZsum./repmat(max(psZsum),length(zsF),1);
+    psZsum=psZsum./repmat(max(psZsum),length(psWcoor(end).zs),1);
     hpsZ=figure('name','目标点 z方向上各点的功率随时间变化关系图');
-    imagesc(ts,zsF,psZsum);
+    imagesc(ts,psWcoor(end).zs,psZsum);
     set(gca, 'XDir','normal', 'YDir','normal');
     title('目标点 z方向上各点的功率随时间变化关系图');
     xlabel('t(s)');

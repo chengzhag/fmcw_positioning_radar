@@ -1,14 +1,19 @@
 %% 根据rfcapture论文的硬算公式计算指定坐标上的功率大小
+
 % fTsrampRTZ: 硬算公式的中间值f(n,m,zs,ts,tsRamp)，（ts为长时间,tsRamp为短时间）
+
 % pointCoor: 指定坐标，n行3列
-% antCoor: 天线坐标
+% rxCoor: 接收天线坐标
+% txCoor: 发射天线座标
 % nRx: 接收天线数量
 % nTx: 发射天线数量
 % dCa: 应减去的多余天线线缆距离
 % tsRamp: 一个斜坡内的时间坐标
 % fBw: 扫频带宽
-% fTr: 扫频频率
+% fRamp: 斜坡频率
 % dLambda: 波长
+% useGPU: 是否使用GPU
+
 function fTsrampRTZ=rfcaptureCo2F(pointCoor,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU)
 %% 计算r(n,m)(X(ts),Y(ts),z)，（ts为长时间）
 

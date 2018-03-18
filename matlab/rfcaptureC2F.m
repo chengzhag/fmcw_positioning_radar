@@ -1,5 +1,27 @@
 %% rfcapture coarse to fine 函数。由粗到细计算功率分布
-function [psF,xsF,ysF,zsF]=rfcaptureC2F(psWcen,psWcoor,psBcoor,psB, ...
+
+% psF: 精算功率分布, 实数
+
+% psWcen: 窗口属性，结构体数组，包含xyz坐标、meshgrid、坐标
+% psWcoor: 窗口中心坐标
+% psBcoor: 背景坐标
+% psB; 复数背景
+% C2Fratio: coarse to fine 比例，选取C2Fratio*maxPower的点进行迭代
+% tShowPsProject: 显示各精度投影图的间隔时间，为0时不显示
+% hPs: 显示投影图的目标窗口句柄
+% yLoReshape: 中频信号大小[length(tsRamp),nRx,nTx]
+% rxCoor: 接收天线坐标
+% txCoor: 发射天线座标
+% nRx: 接收天线数量
+% nTx: 发射天线数量
+% dCa: 应减去的多余天线线缆距离
+% tsRamp: 一个斜坡内的时间坐标
+% fBw: 扫频带宽
+% fRamp: 斜坡频率
+% dLambda: 波长
+% useGPU: 是否使用GPU
+
+function psF=rfcaptureC2F(psWcen,psWcoor,psBcoor,psB, ...
     C2Fratio,tShowPsProject,hPs, ...
     yLoReshape,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU)
 % 初始化
