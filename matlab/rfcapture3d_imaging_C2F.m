@@ -3,7 +3,7 @@ clear;
 close all;
 
 %% 运行参数设置
-doShowHeatmaps=0;
+doShow2DHeatmap=0;
 doShowTarcoor=0;
 doShowPsBProject=0;
 tShowPsProject=0;
@@ -39,11 +39,11 @@ dzC=0.5;
 
 lSampleB=50;
 
-C2Ffac=3;
-nC2F=2;
+C2Fw=3;
+C2Fn=2;
 C2Fratio=0.5;
 
-preciFac=C2Ffac.^(nC2F-1);
+preciFac=C2Fw.^(C2Fn-1);
 xsB=single(xMi:dxC/preciFac:xMa);
 ysB=single(yMi:dyC/preciFac:yMa);
 zsB=single(zMi:dzC/preciFac:zMa);
@@ -107,7 +107,7 @@ if doShowTarcoor
 end
 
 %% 显示功率分布
-if doShowHeatmaps
+if doShow2DHeatmap
     hHea=figure('name','空间热度图');
     for iFrame=1:length(ts)
         figure(hHea);
@@ -187,10 +187,10 @@ psWcen=[xsTarFftMean,ysTarFftMean,0];
 
 % 准备窗口坐标
 psWcoor=[];
-for i=1:nC2F
-    xsC=single(-lxW/2:dxC/(C2Ffac^(i-1)):lxW/2);
-    ysC=single(-lyW/2:dyC/(C2Ffac^(i-1)):lyW/2);
-    zsC=single(zWmi:dxC/(C2Ffac^(i-1)):zWmi+lzW);
+for i=1:C2Fn
+    xsC=single(-lxW/2:dxC/(C2Fw^(i-1)):lxW/2);
+    ysC=single(-lyW/2:dyC/(C2Fw^(i-1)):lyW/2);
+    zsC=single(zWmi:dxC/(C2Fw^(i-1)):zWmi+lzW);
     psWcoor(i).xs=xsC;
     psWcoor(i).ys=ysC;
     psWcoor(i).zs=zsC;

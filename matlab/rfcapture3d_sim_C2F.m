@@ -65,12 +65,12 @@ dxC=0.5;
 dyC=0.5;
 dzC=0.5;
 
-C2Ffac=3;
-nC2F=3;
+C2Fw=3;
+C2Fn=3;
 C2Fratio=0.5;
 
 
-preciFac=C2Ffac^(nC2F-1);
+preciFac=C2Fw^(C2Fn-1);
 xsB=single(xMi:dxC/preciFac:xMa);
 ysB=single(yMi:dyC/preciFac:yMa);
 zsB=single(zMi:dzC/preciFac:zMa);
@@ -80,10 +80,10 @@ psB=zeros(size(xssB),'single','gpuArray');
 
 % 准备窗口坐标
 psWcoor=[];
-for i=1:nC2F
-    xsC=single(xMi:dxC/(C2Ffac^(i-1)):xMa);
-    ysC=single(yMi:dxC/(C2Ffac^(i-1)):yMa);
-    zsC=single(zMi:dxC/(C2Ffac^(i-1)):zMa);
+for i=1:C2Fn
+    xsC=single(xMi:dxC/(C2Fw^(i-1)):xMa);
+    ysC=single(yMi:dxC/(C2Fw^(i-1)):yMa);
+    zsC=single(zMi:dxC/(C2Fw^(i-1)):zMa);
     psWcoor(i).xs=xsC;
     psWcoor(i).ys=ysC;
     psWcoor(i).zs=zsC;
