@@ -13,7 +13,7 @@ lBlock=1000;
 useGPU=1;
 
 %% 加载/提取数据、参数
-load '../data/yLoCut_200kHz_800rps_1rpf_4t12r_ztest_stand_squat_moving.mat'
+load '../data/yLoCut_200kHz_800rps_1rpf_4t12r_ztest_circle_reflector.mat'
 
 yLoCut=log2array(logsout,'yLoCutSim');
 yLoReshape=reshape(yLoCut,size(yLoCut,1),nRx,nTx,size(yLoCut,3));
@@ -171,13 +171,10 @@ end
 
 %% 计算立方窗口
 % 要保证d和l的搭配能在-lxW/2:dxW:lxW/2中产生0，y同理
-dxW=dxC;
-dyW=dyC;
-dzW=dzC;
 lxW=1;
 lyW=1;
 lzW=3;
-szW=-1.5;
+zWmi=-1.5;
 
 xsTarFftMean=mean(xsTarFft);
 ysTarFftMean=mean(ysTarFft);
@@ -186,20 +183,27 @@ ysTarFftMean=mean(ysTarFft);
 [~,iYTar]=min(abs(ysB-ysTarFftMean));
 xsTarFftMean=xsB(iXTar);
 ysTarFftMean=ysB(iYTar);
+psWcen=[xsTarFftMean,ysTarFftMean,0];
 
-xsWin=single(-lxW/2:dxW:lxW/2)+xsTarFftMean;
-ysWin=single(-lyW/2:dyW:lyW/2)+ysTarFftMean;
-zsWin=single(szW:dxW:szW+lzW);
+% 准备窗口坐标
+psWcoor=[];
+for i=1:nC2F
+    xsC=single(-lxW/2:dxC/(C2Ffac^(i-1)):lxW/2);
+    ysC=single(-lyW/2:dyC/(C2Ffac^(i-1)):lyW/2);
+    zsC=single(zWmi:dxC/(C2Ffac^(i-1)):zWmi+lzW);
+    psWcoor(i).xs=xsC;
+    psWcoor(i).ys=ysC;
+    psWcoor(i).zs=zsC;
+    [psWcoor(i).xss,psWcoor(i).yss,psWcoor(i).zss]=meshgrid(xsC,ysC,zsC);
+    psWcoor(i).coor=[psWcoor(i).xss(:),psWcoor(i).yss(:),psWcoor(i).zss(:)];
+end
 
 %% 利用rfcaptureC2F计算窗口前景
-xsC=xsWin;
-ysC=ysWin;
-zsC=zsWin;
 
 tic;
 for iFrame=1:length(ts)
-    [psF,xsF,ysF,zsF]=rfcaptureC2F(dxC,dyC,dzC,xsC,ysC,zsC,psBcoor,psB, ...
-        nC2F,C2Fratio,C2Ffac,0,hPs, ...
+    [psF,xsF,ysF,zsF]=rfcaptureC2F(psWcen,psWcoor,psBcoor,psB, ...
+        C2Fratio,0,hPs, ...
         yLoReshape(:,:,:,iFrame),rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
     if iFrame==1
         psFo=zeros([size(psF),length(ts)],'single','gpuArray');
