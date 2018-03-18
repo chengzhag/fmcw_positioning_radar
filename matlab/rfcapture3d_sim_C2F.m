@@ -14,9 +14,9 @@ rxCoor=[linspace(-0.053*(nRx/2-0.5),0.053*(nRx/2-0.5),nRx)',zeros(nRx,2)];
 txCoor=[zeros(nTx,2),linspace(-0.138-0.053*(nTx-1),-0.138,nTx)'];
 fCen=3.2e9;
 fBw=1e9;
-fSDown=200e3;
+fSdown=200e3;
 fRamp=800;
-lRampDown=fSDown/fRamp;
+lRampDown=fSdown/fRamp;
 lFft=512;
 dLambda=3e8/fCen;
 dMa=10;
@@ -25,7 +25,7 @@ dCa=0;
 
 fPm=fBw*fRamp/3e8;%frequency per meter
 
-tsRamp=single((0:lRampDown-1)/fSDown);
+tsRamp=single((0:lRampDown-1)/fSdown);
 
 tarCoor=[2,4,0.5];%target coordinate
 
@@ -55,19 +55,19 @@ if doShowLo
 end
 
 %% ”…¥÷µΩœ∏À„∑®
-dxC=1;
-dyC=1;
-dzC=1;
-C2Ffac=3;
-nC2F=3;
-C2Fratio=0.5;
-
 xMi=-3;
 xMa=3;
 yMi=1;
 yMa=5;
 zMi=-1.5;
 zMa=1.5;
+dxC=0.5;
+dyC=0.5;
+dzC=0.5;
+
+C2Ffac=3;
+nC2F=3;
+C2Fratio=0.5;
 
 xsC=single(xMi:dxC:xMa);
 ysC=single(yMi:dyC:yMa);
