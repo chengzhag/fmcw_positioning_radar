@@ -145,11 +145,11 @@ if doShowHeatmaps
 end
 
 %% 计算立方窗口，准备rfcaptureCo2F
-dx=0.05;
-dy=0.05;
-dz=0.05;
+dx=0.1;
+dy=0.25;
+dz=0.1;
 lx=1;
-ly=1;
+ly=0.5;
 lz=3;
 sz=-1.5;
 
