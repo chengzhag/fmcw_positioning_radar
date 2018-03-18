@@ -38,6 +38,7 @@ if useGPU
     tsRamp=gpuArray(tsRamp);
 end
 rsCoRTTsramp=permute(repmat(rsCoRT,1,1,1,length(tsRamp)),[4,2,3,1]);
+% persistent  tsCoRTTsramp;
 tsCoRTTsramp=repmat(tsRamp',1,size(rsCoRTTsramp,2),size(rsCoRTTsramp,3),size(rsCoRTTsramp,4));
 fTsrampRTZ=exp( ...
     1i*2*pi*fBw*fRamp.*rsCoRTTsramp/3e8 ...

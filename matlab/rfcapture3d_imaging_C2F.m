@@ -199,7 +199,6 @@ for i=1:nC2F
 end
 
 %% 利用rfcaptureC2F计算窗口前景
-
 tic;
 for iFrame=1:length(ts)
     [psF,xsF,ysF,zsF]=rfcaptureC2F(psWcen,psWcoor,psBcoor,psB, ...
