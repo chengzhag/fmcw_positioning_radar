@@ -58,15 +58,15 @@ for i=1:nC2F
     
     psF=interp3(xssC,yssC,zssC, ...
         psF,xssF,yssF,zssF,'linear',0);
-    isHLog=interp3(xssC,yssC,zssC, ...
-        isHLog,xssF,yssF,zssF,'nearest',0);
+%     isHLog=interp3(xssC,yssC,zssC, ...
+%         isHLog,xssF,yssF,zssF,'nearest',0);
     
     % 根据规则选取精算点
-    psHold=psF(isHLog);
-    [~,isHnum]=sort(psHold,'descend');
-    isHnum=isHnum(1:floor(numel(psHold)*C2Fratio));
-    isHLog=false(size(isHLog));
-    isHLog(isHnum)=1;
+%     [~,isHnum]=sort(psF,'descend');
+%     isHnum=isHnum(1:floor(numel(psF)*C2Fratio));
+%     isHLog=false(size(isHLog));
+%     isHLog(isHnum)=1;
+    isHLog=psF>max(max(max(psF)))*(1-C2Fratio);
     pointCoor=pointCoor(isHLog(:),:);
 end
 xsF=xsC;

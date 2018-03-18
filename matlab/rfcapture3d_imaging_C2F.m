@@ -9,7 +9,7 @@ doShowTarcoor=0;
 % doShowPsXZsum=1;
 % doSavePsXZsum=1;
 doShowPsBProject=1;
-tShowPsProject=0.05;
+tShowPsProject=0.2;
 doSavePsBProject=1;
 doShowPsZsum=1;
 lBlock=1000;
@@ -44,7 +44,7 @@ lSampleB=50;
 
 C2Ffac=3;
 nC2F=3;
-C2Fratio=0.2;
+C2Fratio=0.5;
 
 preciFac=C2Ffac.^(nC2F-1);
 xsB=single(xMi:dxC/preciFac:xMa);
@@ -218,7 +218,8 @@ if ~exist('psB','var')
     end
     
     psB=reshape(psB,size(xssB))/lSampleB;
-    
+else
+    psB=gpuArray(psB);
 end
 
 %% 显示背景的功率分布投影图
