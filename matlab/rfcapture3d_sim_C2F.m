@@ -60,7 +60,7 @@ dyC=1;
 dzC=1;
 C2Ffac=3;
 nC2F=3;
-C2Fratio=0.1;
+C2Fratio=0.5;
 
 xMi=-3;
 xMa=3;
@@ -69,14 +69,15 @@ yMa=5;
 zMi=-1.5;
 zMa=1.5;
 
-xs=single(xMi:dxC:xMa);
-ys=single(yMi:dyC:yMa);
-zs=single(zMi:dzC:zMa);
+xsC=single(xMi:dxC:xMa);
+ysC=single(yMi:dyC:yMa);
+zsC=single(zMi:dzC:zMa);
 preciFac=C2Ffac.^(nC2F-1);
 xsB=single(xMi:dxC/preciFac:xMa);
 ysB=single(yMi:dyC/preciFac:yMa);
 zsB=single(zMi:dzC/preciFac:zMa);
 [xssB,yssB,zssB]=meshgrid(xsB,ysB,zsB);
+psBcoor=[xssB(:),yssB(:),zssB(:)];
 psB=zeros(size(xssB),'single','gpuArray');
 
 if tShowPsProject
@@ -84,6 +85,6 @@ if tShowPsProject
 else
     hPs=[];
 end
-[psF,xsF,ysF,zsF]=rfcaptureC2F(xs,ys,zs,xssB,yssB,zssB,psB, ...
+[psF,xsF,ysF,zsF]=rfcaptureC2F(dxC,dyC,dzC,xsC,ysC,zsC,psBcoor,psB, ...
     nC2F,C2Fratio,C2Ffac,tShowPsProject,hPs, ...
     yLoReshape,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);

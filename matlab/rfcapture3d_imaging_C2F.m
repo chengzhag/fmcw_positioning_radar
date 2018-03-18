@@ -6,7 +6,7 @@ close all;
 doShowHeatmaps=0;
 doShowTarcoor=0;
 doShowPsBProject=0;
-tShowPsProject=0.2;
+tShowPsProject=0;
 doSavePsBProject=1;
 doShowPsZsum=1;
 lBlock=1000;
@@ -128,21 +128,21 @@ end
 if ~exist('psB','var')
     [xssB,yssB,zssB]=meshgrid(xsB,ysB,zsB);
     
-    pointCoor=[xssB(:),yssB(:),zssB(:)];
+    psBcoor=[xssB(:),yssB(:),zssB(:)];
     
     
-    psB=zeros(size(pointCoor,1),1,'single','gpuArray');
-    isS=1:lBlock:size(pointCoor,1);
+    psB=zeros(size(psBcoor,1),1,'single','gpuArray');
+    isS=1:lBlock:size(psBcoor,1);
     tic;
     for iFrame=1:lSampleB
         for iS=isS
             iBlock=(iS-1)/lBlock+1;
-            if iS+lBlock-1<size(pointCoor,1)
+            if iS+lBlock-1<size(psBcoor,1)
                 isBlock=iS:iS+lBlock-1;
             else
-                isBlock=iS:size(pointCoor,1);
+                isBlock=iS:size(psBcoor,1);
             end
-            fTsrampRTZ=rfcaptureCo2F(pointCoor(isBlock,:),rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
+            fTsrampRTZ=rfcaptureCo2F(psBcoor(isBlock,:),rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
             psB(isBlock,1)=psB(isBlock,1)+rfcaptureF2ps(fTsrampRTZ,yLoReshape(:,:,:,iFrame),useGPU);
         end
         if mod(iFrame,1)==0
@@ -157,6 +157,7 @@ else
     if useGPU
         psB=gpuArray(psB);
     end
+    psBcoor=[xssB(:),yssB(:),zssB(:)];
 end
 
 %% 显示背景的功率分布投影图
@@ -197,7 +198,7 @@ zsC=zsWin;
 
 tic;
 for iFrame=1:length(ts)
-    [psF,xsF,ysF,zsF]=rfcaptureC2F(xsC,ysC,zsC,xssB,yssB,zssB,psB, ...
+    [psF,xsF,ysF,zsF]=rfcaptureC2F(dxC,dyC,dzC,xsC,ysC,zsC,psBcoor,psB, ...
         nC2F,C2Fratio,C2Ffac,0,hPs, ...
         yLoReshape(:,:,:,iFrame),rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
     if iFrame==1
