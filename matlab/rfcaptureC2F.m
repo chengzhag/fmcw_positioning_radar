@@ -73,8 +73,5 @@ for i=1:length(psWcoor)
     isHLog=psF>max(psF(:))*(1-C2Fratio);
     psHcoor=psWcoor(i+1).coor(isHLog(:),:);
 end
-xsF=psWcoor(end).xs;
-ysF=psWcoor(end).ys;
-zsF=psWcoor(end).zs;
 
 end
