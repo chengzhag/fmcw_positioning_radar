@@ -21,24 +21,20 @@
 % dLambda: 波长
 % useGPU: 是否使用GPU
 
-function psF=rfcaptureC2F(psWcen,psWcoor,psBcoor,psB, ...
-    C2Fratio,tShowPsProject,hPs, ...
+function psF=rfcaptureC2F(psWcen,psWl,psWdC, ...
+    psBcoor,psB,C2Fratio,C2Fw,C2Fn,tShowPsProject,hPs, ...
     yLoReshape,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU)
-% 初始化
-for i=1:length(psWcoor)
-    psWcoor(i).xs=psWcoor(i).xs+psWcen(1);
-    psWcoor(i).ys=psWcoor(i).ys+psWcen(2);
-    psWcoor(i).zs=psWcoor(i).zs+psWcen(3);
-    psWcoor(i).xss=psWcoor(i).xss+psWcen(1);
-    psWcoor(i).yss=psWcoor(i).yss+psWcen(2);
-    psWcoor(i).zss=psWcoor(i).zss+psWcen(3);
-    psWcoor(i).coor=psWcoor(i).coor+psWcen;
-end
 
 % 最粗一级
-psHcoor=psWcoor(1).coor;
+xsC=single(-psWl(1)/2+psWcen(1):psWdC(1):psWl(1)/2+psWcen(1));
+ysC=single(-psWl(2)/2+psWcen(2):psWdC(2):psWl(2)/2+psWcen(2));
+zsC=single(-psWl(3)/2+psWcen(3):psWdC(3):psWl(3)/2+psWcen(3));
 
-for i=1:length(psWcoor)
+[xssC,yssC,zssC]=meshgrid(xsC,ysC,zsC);
+psHcoor=[xssC(:),yssC(:),zssC(:)];
+
+for i=1:C2Fn
+
     % 抽取背景点
     isPsB=zeros(size(psHcoor,1),1);
     for j=1:size(psHcoor,1)
@@ -50,28 +46,40 @@ for i=1:length(psWcoor)
     fTsrampRTZ=rfcaptureCo2F(psHcoor,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
     psH=abs(rfcaptureF2ps(fTsrampRTZ,yLoReshape,useGPU)-psBH);
     if i==1
-        psF=reshape(psH,size(psWcoor(1).xss));
+        psF=reshape(psH,size(xssC));
     else
         psF(isHLog)=psH;
     end
     
     % 显示功率分布
     if tShowPsProject
-        showProjectedHeatmaps(hPs,psF,psWcoor(i).xs,psWcoor(i).ys,psWcoor(i).zs);
+        showProjectedHeatmaps(hPs,psF,xsC,ysC,zsC);
         pause(tShowPsProject);
     end
     
-    if i>=length(psWcoor)
+    if i>=C2Fn
         break;
     end
     
+    % 计算下一次迭代坐标
+    xsF=single(-psWl(1)/2+psWcen(1):psWdC(1)/(C2Fw^i):psWl(1)/2+psWcen(1));
+    ysF=single(-psWl(2)/2+psWcen(2):psWdC(2)/(C2Fw^i):psWl(2)/2+psWcen(2));
+    zsF=single(-psWl(3)/2+psWcen(3):psWdC(3)/(C2Fw^i):psWl(3)/2+psWcen(3));
+    
+    [xssF,yssF,zssF]=meshgrid(xsF,ysF,zsF);
+    coorF=[xssF(:),yssF(:),zssF(:)];
+    
     % 扩展psF和isHLog矩阵
-    psF=interp3(psWcoor(i).xss,psWcoor(i).yss,psWcoor(i).zss, ...
-        psF,psWcoor(i+1).xss,psWcoor(i+1).yss,psWcoor(i+1).zss,'linear',0);
+    psF=interp3(xssC,yssC,zssC, ...
+        psF,xssF,yssF,zssF,'linear',0);
     
     % 根据规则选取精算点
     isHLog=psF>max(psF(:))*(1-C2Fratio);
-    psHcoor=psWcoor(i+1).coor(isHLog(:),:);
+    psHcoor=coorF(isHLog(:),:);
+    
+    xssC=xssF;
+    yssC=yssF;
+    zssC=zssF;
 end
 
 end

@@ -174,7 +174,8 @@ end
 lxW=1;
 lyW=1;
 lzW=3;
-zWmi=-1.5;
+psWl=single([lxW,lyW,lzW]);
+psWdC=single([dxC,dyC,dzC]);
 
 xsTarFftMean=mean(xsTarFft);
 ysTarFftMean=mean(ysTarFft);
@@ -185,24 +186,16 @@ xsTarFftMean=xsB(iXTar);
 ysTarFftMean=ysB(iYTar);
 psWcen=[xsTarFftMean,ysTarFftMean,0];
 
-% 准备窗口坐标
-psWcoor=[];
-for i=1:C2Fn
-    xsC=single(-lxW/2:dxC/(C2Fw^(i-1)):lxW/2);
-    ysC=single(-lyW/2:dyC/(C2Fw^(i-1)):lyW/2);
-    zsC=single(zWmi:dxC/(C2Fw^(i-1)):zWmi+lzW);
-    psWcoor(i).xs=xsC;
-    psWcoor(i).ys=ysC;
-    psWcoor(i).zs=zsC;
-    [psWcoor(i).xss,psWcoor(i).yss,psWcoor(i).zss]=meshgrid(xsC,ysC,zsC);
-    psWcoor(i).coor=[psWcoor(i).xss(:),psWcoor(i).yss(:),psWcoor(i).zss(:)];
-end
+preciFac=C2Fw^(C2Fn-1);
+xsF=single(-psWl(1)/2+psWcen(1):psWdC(1)/preciFac:psWl(1)/2+psWcen(1));
+ysF=single(-psWl(2)/2+psWcen(2):psWdC(2)/preciFac:psWl(2)/2+psWcen(2));
+zsF=single(-psWl(3)/2+psWcen(3):psWdC(3)/preciFac:psWl(3)/2+psWcen(3));
 
 %% 利用rfcaptureC2F计算窗口前景
 tic;
 for iFrame=1:length(ts)
-    psF=rfcaptureC2F(psWcen,psWcoor,psBcoor,psB, ...
-        C2Fratio,0,hPs, ...
+    psF=rfcaptureC2F(psWcen,psWl,psWdC, ...
+        psBcoor,psB,C2Fratio,C2Fw,C2Fn,0,hPs, ...
         yLoReshape(:,:,:,iFrame),rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
     if iFrame==1
         psFo=zeros([size(psF),length(ts)],'single','gpuArray');
@@ -227,7 +220,7 @@ if tShowPsProject
     end
     for iFrame=1:length(ts)
         showProjectedHeatmaps(hPs,psFo(:,:,:,iFrame), ...
-            psWcoor(end).xs,psWcoor(end).ys,psWcoor(end).zs);
+            xsF,ysF,zsF);
         if doSavePsBProject
             writeVideo(writerObj,getframe(gcf));
         end
@@ -242,9 +235,9 @@ end
 %% 尝试解算z轴功率分布
 if doShowPsZsum
     psZsum=permute(sum(sum(psFo,1),2),[3,4,2,1]);
-    psZsum=psZsum./repmat(max(psZsum),length(psWcoor(end).zs),1);
+    psZsum=psZsum./repmat(max(psZsum),length(zsF),1);
     hpsZ=figure('name','目标点 z方向上各点的功率随时间变化关系图');
-    imagesc(ts,psWcoor(end).zs,psZsum);
+    imagesc(ts,zsF,psZsum);
     set(gca, 'XDir','normal', 'YDir','normal');
     title('目标点 z方向上各点的功率随时间变化关系图');
     xlabel('t(s)');

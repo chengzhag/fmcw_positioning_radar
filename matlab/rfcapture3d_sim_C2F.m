@@ -79,18 +79,9 @@ psBcoor=[xssB(:),yssB(:),zssB(:)];
 psB=zeros(size(xssB),'single','gpuArray');
 
 % 准备窗口坐标
-psWcoor=[];
-for i=1:C2Fn
-    xsC=single(xMi:dxC/(C2Fw^(i-1)):xMa);
-    ysC=single(yMi:dyC/(C2Fw^(i-1)):yMa);
-    zsC=single(zMi:dzC/(C2Fw^(i-1)):zMa);
-    psWcoor(i).xs=xsC;
-    psWcoor(i).ys=ysC;
-    psWcoor(i).zs=zsC;
-    [psWcoor(i).xss,psWcoor(i).yss,psWcoor(i).zss]=meshgrid(xsC,ysC,zsC);
-    psWcoor(i).coor=[psWcoor(i).xss(:),psWcoor(i).yss(:),psWcoor(i).zss(:)];
-end
-psWcen=zeros(1,3,'single');
+psWcen=single([(xMa+xMi)/2,(yMa+yMi)/2,(zMa+zMi)/2]);
+psWl=single([xMa-xMi,yMa-yMi,zMa-zMi]);
+psWdC=single([dxC,dyC,dzC]);
 
 %% 开始计算
 if tShowPsProject
@@ -98,6 +89,6 @@ if tShowPsProject
 else
     hPs=[];
 end
-psF=rfcaptureC2F(psWcen,psWcoor,psBcoor,psB, ...
-    C2Fratio,tShowPsProject,hPs, ...
+psF=rfcaptureC2F(psWcen,psWl,psWdC, ...
+    psBcoor,psB,C2Fratio,C2Fw,C2Fn,tShowPsProject,hPs, ...
     yLoReshape,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
