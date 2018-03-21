@@ -92,3 +92,21 @@ end
 psF=rfcaptureC2F(psWcen,psWl,psWdC, ...
     psBcoor,psB,C2Fratio,C2Fw,C2Fn,tShowPsProject,hPs, ...
     yLoReshape,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
+
+%% 测试rfcaptureC2F2
+
+% 准备窗口坐标
+psWcen=single([(xMa+xMi)/2,tarCoor(2),(zMa+zMi)/2]);
+psWl=single([xMa-xMi,0,zMa-zMi]);
+psWdC=single([dxC,dyC,dzC]);
+
+%% 开始计算
+
+if tShowPsProject
+    hPs=figure('name','ps的xy投影图');
+else
+    hPs=[];
+end
+psF=rfcaptureC2F2(psWcen,psWl,psWdC, ...
+    psBcoor,psB,C2Fratio,C2Fw,C2Fn,tShowPsProject,hPs, ...
+    yLoReshape,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
