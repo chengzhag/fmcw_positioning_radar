@@ -227,3 +227,6 @@ build_exception.mat
 
 # visualGDB
 VisualGDBCache/
+
+# 背景数据
+data/yLoCut_200kHz_800rps_1rpf_4t12r_background.mat
