@@ -241,8 +241,9 @@ if doShowPsZsum
     set(gca, 'XDir','normal', 'YDir','normal');
     title('目标点 z方向上各点的功率随时间变化关系图');
     xlabel('t(s)');
+    ylabel('z(m)');
 end
-ylabel('z(m)');
+
 
 %% 利用rfcaptureC2F2计算窗口前景
 tic;
@@ -301,5 +302,6 @@ if doShowPsZsum
     set(gca, 'XDir','normal', 'YDir','normal');
     title('目标点 z方向上各点的功率随时间变化关系图');
     xlabel('t(s)');
+    ylabel('z(m)');
 end
-ylabel('z(m)');
+

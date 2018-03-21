@@ -22,7 +22,7 @@
 % useGPU: 是否使用GPU
 
 function psF=rfcaptureC2F2sim(psWcen,psWl,psWdC, ...
-    psBcoor,psB,C2Fratio,C2Fw,C2Fn,tShowPsProject,hPs, ...
+    psBcoor,psB,C2Fratio,C2Fw,C2Fn, ...
     yLoReshape,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU)
 
 yLoReshape=reshape(yLoReshape,size(yLoReshape,1),nRx,nTx);
@@ -51,22 +51,7 @@ for i=1:C2Fn
     else
         psF(isHLog)=psH;
     end
-    
-    % 显示功率分布
-    if tShowPsProject
-        hPs=figure(hPs);
 
-        imagesc(xsC,zsC,psF);
-        axis equal;
-        axis([min(xsC), max(xsC), min(zsC), max(zsC)]);
-        set(gca, 'XDir','normal', 'YDir','normal');
-        title('ps的xz投影图');
-        xlabel('x(m)');
-        ylabel('z(m)');
-
-        pause(tShowPsProject);
-    end
-    
     if i>=C2Fn
         break;
     end
@@ -90,6 +75,6 @@ for i=1:C2Fn
     zssC=zssF;
 end
 
-psF=reshape(gather(double(psF)),numel(psF),1);
+psF=gather(double(psF));
 
 end
