@@ -4,18 +4,18 @@ close all;
 
 %% 运行参数设置
 doShow2DHeatmap=0;
-doShowTarcoor=0;
+doShowTarcoor=1;
 doShowPsBProject=0;
 doTestC2F=0;
 doTestC2F2=1;
 tShowPsProject=0;
 doSavePsBProject=1;
-doShowPsZsum=1;
+doShowPsZsum=0;
 lBlock=1000;
 useGPU=1;
 
 %% 加载/提取数据、参数
-load '../data/yLoCut_200kHz_800rps_1rpf_4t12r_ztest_stand_squat_moving.mat'
+load '../data/yLoCut_200kHz_800rps_1rpf_4t12r_ztest_circle_reflector.mat'
 
 yLoCut=log2array(logsout,'yLoCutSim');
 yLoReshape=reshape(yLoCut,size(yLoCut,1),nRx,nTx,size(yLoCut,3));
@@ -77,31 +77,39 @@ angsPo2Car(isnan(angsPo2Car))=0;
 for iFrame=1:length(ts)
     heatMapsCarFFft(:,:,iFrame)=interp2(angs,dsVal,heatMapsFFft(:,:,iFrame),angsPo2Car,dsPo2Car,'linear',0);
 end
-heatMapsFFft=heatMapsCarFFft;
 
 %% 比较目标坐标
 [isYTarFft,isXTarFft]=iMax2d(heatMapsCarFFft);
+[isDTarPoFft,isATarPoFft]=iMax2d(heatMapsFFft);
 
-isXTarFft=gather(isXTarFft);
-isYTarFft=gather(isYTarFft);
+xsTarCarFft=xs2D(isXTarFft);
+ysTarCarFft=ys2D(isYTarFft);
 
-xsTarFft=xs2D(isXTarFft);
-ysTarFft=ys2D(isYTarFft);
+coorTarPoFft=zeros(length(isATarPoFft),2);
+for i=1:length(isATarPoFft)
+    coorTarPoFft(i,:)=isPo2coor([isDTarPoFft(i),isATarPoFft(i)], dsVal, angs);
+end
+xsTarPoFft=coorTarPoFft(:,1);
+ysTarPoFft=coorTarPoFft(:,2);
 
+psWcen=zeros(length(isATarPoFft),3);
+for i=1:length(coorTarPoFft)
+    psWcen(i,:) = getPsWcen(coorTarPoFft(i,:),xsB, ysB, [1,0,3]);
+end
 
 if doShowTarcoor
     hCoor=figure('name','比较两种方法所得目标坐标');
     subplot(1,2,1);
-    plot(ts,xsTarFft);
-    legend('xsTarFft');
-    title('FFT2D所得目标x坐标');
+    plot(ts,xsTarCarFft,ts,xsTarPoFft,ts,psWcen(:,1));
+    legend('xsTarFft','xsTarPoFft','psWcenX');
+    title('图像映射和极坐标转换所得目标x坐标');
     xlabel('t(s)');
     ylabel('x(m)');
     
     subplot(1,2,2);
-    plot(ts,ysTarFft);
-    legend('ysTarFft');
-    title('FFT2D所得目标y坐标');
+    plot(ts,ysTarCarFft,ts,ysTarPoFft,ts,psWcen(:,2));
+    legend('ysTarFft','ysTarPoFft','psWcenY');
+    title('图像映射和极坐标转换所得目标y坐标');
     xlabel('t(s)');
     ylabel('y(m)');
     
@@ -114,7 +122,7 @@ if doShow2DHeatmap
     for iFrame=1:length(ts)
         figure(hHea);
         
-        heatMapsFFftScaled=heatMapsFFft(:,:,iFrame)/max(max(heatMapsFFft(:,:,iFrame)));
+        heatMapsFFftScaled=heatMapsCarFFft(:,:,iFrame)/max(max(heatMapsCarFFft(:,:,iFrame)));
         heatMapsFFftTar=insertShape(gather(heatMapsFFftScaled),'circle',[isXTarFft(iFrame) isYTarFft(iFrame) 5],'LineWidth',2);
         imagesc(xs2D,ys2D,heatMapsFFftTar);
         set(gca, 'XDir','normal', 'YDir','normal');
@@ -179,8 +187,8 @@ lzW=3;
 psWl=single([lxW,lyW,lzW]);
 psWdC=single([dxC,dyC,dzC]);
 
-xsTarFftMean=mean(xsTarFft);
-ysTarFftMean=mean(ysTarFft);
+xsTarFftMean=mean(xsTarCarFft);
+ysTarFftMean=mean(ysTarCarFft);
 
 [~,iXTar]=min(abs(xsB-xsTarFftMean));
 [~,iYTar]=min(abs(ysB-ysTarFftMean));
