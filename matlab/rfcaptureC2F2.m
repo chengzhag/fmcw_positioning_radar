@@ -22,7 +22,7 @@
 % useGPU: 是否使用GPU
 
 function psF=rfcaptureC2F2(psWcen,psWl,psWdC, ...
-    psBcoor,psB,C2Fratio,C2Fw,C2Fn,tShowPsProject,hPs, ...
+    xssB,yssB,zssB,psB,C2Fratio,C2Fw,C2Fn,tShowPsProject,hPs, ...
     yLoReshape,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU)
 
 % 最粗一级
@@ -35,11 +35,12 @@ psHcoor=[xssC(:),repmat(psWcen(2),numel(xssC),1),zssC(:)];
 for i=1:C2Fn
 
     % 抽取背景点
-    isPsB=zeros(size(psHcoor,1),1);
-    for j=1:size(psHcoor,1)
-        isPsB(j)=find(all(abs(psBcoor-psHcoor(j,:))<0.001,2),1);
-    end
-    psBH=psB(isPsB);
+%     isPsB=zeros(size(psHcoor,1),1);
+%     for j=1:size(psHcoor,1)
+%         isPsB(j)=find(all(abs(psBcoor-psHcoor(j,:))<0.001,2),1);
+%     end
+%     psBH=psB(isPsB);
+    psBH=interp3(xssB,yssB,zssB,psB,psHcoor(:,1),psHcoor(:,2),psHcoor(:,3),'nearest');
 
     % 硬算选取点
     fTsrampRTZ=rfcaptureCo2F(psHcoor,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);

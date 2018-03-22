@@ -6,10 +6,10 @@ close all;
 doShow2DHeatmap=0;
 doShowTarcoor=1;
 doShowPsBProject=0;
-doTestC2F=0;
+doTestC2F=1;
 doTestC2F2=1;
 tShowPsProject=0;
-doSavePsBProject=1;
+doSavePsBProject=0;
 doShowPsZsum=0;
 lBlock=1000;
 useGPU=1;
@@ -206,7 +206,7 @@ if doTestC2F
     tic;
     for iFrame=1:length(ts)
         psF=rfcaptureC2F(psWcen,psWl,psWdC, ...
-            psBcoor,psB,C2Fratio,C2Fw,C2Fn,0,hPs, ...
+            xssB,yssB,zssB,psB,C2Fratio,C2Fw,C2Fn,0,hPs, ...
             yLoReshape(:,:,:,iFrame),rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
         if iFrame==1
             psFo=zeros([size(psF),length(ts)],'single','gpuArray');
@@ -261,7 +261,7 @@ if doTestC2F2
     tic;
     for iFrame=1:length(ts)
         psF=rfcaptureC2F2(psWcen,psWl,psWdC, ...
-            psBcoor,psB,C2Fratio,C2Fw,C2Fn,0,hPs, ...
+            xssB,yssB,zssB,psB,C2Fratio,C2Fw,C2Fn,0,hPs, ...
             yLoReshape(:,:,:,iFrame),rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
         if iFrame==1
             psFo=zeros([size(psF),length(ts)],'single','gpuArray');

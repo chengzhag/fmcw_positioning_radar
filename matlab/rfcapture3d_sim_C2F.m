@@ -5,7 +5,7 @@ close all;
 %% 运行参数设置
 doShowLo=0;
 tShowPsProject=0.2;
-doTestC2F=0;
+doTestC2F=1;
 doTestC2F2=1;
 useGPU=1;
 
@@ -77,7 +77,6 @@ xsB=single(xMi:dxC/preciFac:xMa);
 ysB=single(yMi:dyC/preciFac:yMa);
 zsB=single(zMi:dzC/preciFac:zMa);
 [xssB,yssB,zssB]=meshgrid(xsB,ysB,zsB);
-psBcoor=[xssB(:),yssB(:),zssB(:)];
 psB=zeros(size(xssB),'single','gpuArray');
 
 % 准备窗口坐标
@@ -93,7 +92,7 @@ if doTestC2F
         hPs=[];
     end
     psF=rfcaptureC2F(psWcen,psWl,psWdC, ...
-        psBcoor,psB,C2Fratio,C2Fw,C2Fn,tShowPsProject,hPs, ...
+        xssB,yssB,zssB,psB,C2Fratio,C2Fw,C2Fn,tShowPsProject,hPs, ...
         yLoReshape,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
 end
 
@@ -113,6 +112,6 @@ if doTestC2F2
         hPs=[];
     end
     psF=rfcaptureC2F2(psWcen,psWl,psWdC, ...
-        psBcoor,psB,C2Fratio,C2Fw,C2Fn,tShowPsProject,hPs, ...
+        xssB,yssB,zssB,psB,C2Fratio,C2Fw,C2Fn,tShowPsProject,hPs, ...
         yLoReshape,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
 end
