@@ -6,6 +6,8 @@ close all;
 doShow2DHeatmap=0;
 doShowTarcoor=0;
 doShowPsBProject=0;
+doTestC2F=0;
+doTestC2F2=1;
 tShowPsProject=0;
 doSavePsBProject=1;
 doShowPsZsum=1;
@@ -111,7 +113,7 @@ if doShow2DHeatmap
     hHea=figure('name','空间热度图');
     for iFrame=1:length(ts)
         figure(hHea);
-
+        
         heatMapsFFftScaled=heatMapsFFft(:,:,iFrame)/max(max(heatMapsFFft(:,:,iFrame)));
         heatMapsFFftTar=insertShape(gather(heatMapsFFftScaled),'circle',[isXTarFft(iFrame) isYTarFft(iFrame) 5],'LineWidth',2);
         imagesc(xs2D,ys2D,heatMapsFFftTar);
@@ -192,116 +194,118 @@ ysF=single(-psWl(2)/2+psWcen(2):psWdC(2)/preciFac:psWl(2)/2+psWcen(2));
 zsF=single(-psWl(3)/2+psWcen(3):psWdC(3)/preciFac:psWl(3)/2+psWcen(3));
 
 %% 利用rfcaptureC2F计算窗口前景
-tic;
-for iFrame=1:length(ts)
-    psF=rfcaptureC2F(psWcen,psWl,psWdC, ...
-        psBcoor,psB,C2Fratio,C2Fw,C2Fn,0,hPs, ...
-        yLoReshape(:,:,:,iFrame),rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
-    if iFrame==1
-        psFo=zeros([size(psF),length(ts)],'single','gpuArray');
-    end
-    psFo(:,:,:,iFrame)=psF;
-    
-    if mod(iFrame,10)==0
-        disp(['第' num2str(iFrame) '帧' num2str(iFrame/length(ts)*100,'%.1f') ...
-            '% 用时' num2str(toc/60,'%.2f') 'min ' ...
-            '剩余' num2str(toc/iFrame*(length(ts)-iFrame)/60,'%.2f') 'min']);
-    end
-end
-
-
-%% 显示窗口投影
-if tShowPsProject
-    hPs=figure('name','psF的投影图');
-    if doSavePsBProject
-        writerObj=VideoWriter('../../xzProject.mp4','MPEG-4');  %// 定义一个视频文件用来存动画
-        writerObj.FrameRate=fF;
-        open(writerObj);                    %// 打开该视频文件
-    end
+if doTestC2F
+    tic;
     for iFrame=1:length(ts)
-        showProjectedHeatmaps(hPs,psFo(:,:,:,iFrame), ...
-            xsF,ysF,zsF);
-        if doSavePsBProject
-            writeVideo(writerObj,getframe(gcf));
+        psF=rfcaptureC2F(psWcen,psWl,psWdC, ...
+            psBcoor,psB,C2Fratio,C2Fw,C2Fn,0,hPs, ...
+            yLoReshape(:,:,:,iFrame),rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
+        if iFrame==1
+            psFo=zeros([size(psF),length(ts)],'single','gpuArray');
         end
-        pause(tShowPsProject);
+        psFo(:,:,:,iFrame)=psF;
+        
+        if mod(iFrame,10)==0
+            disp(['第' num2str(iFrame) '帧' num2str(iFrame/length(ts)*100,'%.1f') ...
+                '% 用时' num2str(toc/60,'%.2f') 'min ' ...
+                '剩余' num2str(toc/iFrame*(length(ts)-iFrame)/60,'%.2f') 'min']);
+        end
     end
-    if doSavePsBProject
-        close(writerObj); %// 关闭视频文件句柄
+    
+    
+    %% 显示窗口投影
+    if tShowPsProject
+        hPs=figure('name','psF的投影图');
+        if doSavePsBProject
+            writerObj=VideoWriter('../../xzProject.mp4','MPEG-4');  %// 定义一个视频文件用来存动画
+            writerObj.FrameRate=fF;
+            open(writerObj);                    %// 打开该视频文件
+        end
+        for iFrame=1:length(ts)
+            showProjectedHeatmaps(hPs,psFo(:,:,:,iFrame), ...
+                xsF,ysF,zsF);
+            if doSavePsBProject
+                writeVideo(writerObj,getframe(gcf));
+            end
+            pause(tShowPsProject);
+        end
+        if doSavePsBProject
+            close(writerObj); %// 关闭视频文件句柄
+        end
+    end
+    
+    
+    %% 尝试解算z轴功率分布
+    if doShowPsZsum
+        psZsum=permute(sum(sum(psFo,1),2),[3,4,2,1]);
+        psZsum=psZsum./repmat(max(psZsum),length(zsF),1);
+        hpsZ=figure('name','目标点 z方向上各点的功率随时间变化关系图');
+        imagesc(ts,zsF,psZsum);
+        set(gca, 'XDir','normal', 'YDir','normal');
+        title('目标点 z方向上各点的功率随时间变化关系图');
+        xlabel('t(s)');
+        ylabel('z(m)');
     end
 end
-
-
-%% 尝试解算z轴功率分布
-if doShowPsZsum
-    psZsum=permute(sum(sum(psFo,1),2),[3,4,2,1]);
-    psZsum=psZsum./repmat(max(psZsum),length(zsF),1);
-    hpsZ=figure('name','目标点 z方向上各点的功率随时间变化关系图');
-    imagesc(ts,zsF,psZsum);
-    set(gca, 'XDir','normal', 'YDir','normal');
-    title('目标点 z方向上各点的功率随时间变化关系图');
-    xlabel('t(s)');
-    ylabel('z(m)');
-end
-
 
 %% 利用rfcaptureC2F2计算窗口前景
-tic;
-for iFrame=1:length(ts)
-    psF=rfcaptureC2F2(psWcen,psWl,psWdC, ...
-        psBcoor,psB,C2Fratio,C2Fw,C2Fn,0,hPs, ...
-        yLoReshape(:,:,:,iFrame),rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
-    if iFrame==1
-        psFo=zeros([size(psF),length(ts)],'single','gpuArray');
-    end
-    psFo(:,:,iFrame)=psF;
-    
-    if mod(iFrame,10)==0
-        disp(['第' num2str(iFrame) '帧' num2str(iFrame/length(ts)*100,'%.1f') ...
-            '% 用时' num2str(toc/60,'%.2f') 'min ' ...
-            '剩余' num2str(toc/iFrame*(length(ts)-iFrame)/60,'%.2f') 'min']);
-    end
-end
-
-
-%% 显示窗口投影
-if tShowPsProject
-    hPs=figure('name','psF的投影图');
-    if doSavePsBProject
-        writerObj=VideoWriter('../../xzProject.mp4','MPEG-4');  %// 定义一个视频文件用来存动画
-        writerObj.FrameRate=fF;
-        open(writerObj);                    %// 打开该视频文件
-    end
+if doTestC2F2
+    tic;
     for iFrame=1:length(ts)
-        figure(hPs);
-        
-        imagesc(xsF,zsF,psFo(:,:,iFrame));
-        axis equal;
-        axis([min(xsF), max(xsF), min(zsF), max(zsF)]);
-        set(gca, 'XDir','normal', 'YDir','normal');
-        title('ps的xz投影图');
-        xlabel('x(m)');
-        ylabel('z(m)');
-        if doSavePsBProject
-            writeVideo(writerObj,getframe(gcf));
+        psF=rfcaptureC2F2(psWcen,psWl,psWdC, ...
+            psBcoor,psB,C2Fratio,C2Fw,C2Fn,0,hPs, ...
+            yLoReshape(:,:,:,iFrame),rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
+        if iFrame==1
+            psFo=zeros([size(psF),length(ts)],'single','gpuArray');
         end
-        pause(tShowPsProject);
+        psFo(:,:,iFrame)=psF;
+        
+        if mod(iFrame,10)==0
+            disp(['第' num2str(iFrame) '帧' num2str(iFrame/length(ts)*100,'%.1f') ...
+                '% 用时' num2str(toc/60,'%.2f') 'min ' ...
+                '剩余' num2str(toc/iFrame*(length(ts)-iFrame)/60,'%.2f') 'min']);
+        end
     end
-    if doSavePsBProject
-        close(writerObj); %// 关闭视频文件句柄
+    
+    
+    %% 显示窗口投影
+    if tShowPsProject
+        hPs=figure('name','psF的投影图');
+        if doSavePsBProject
+            writerObj=VideoWriter('../../xzProject.mp4','MPEG-4');  %// 定义一个视频文件用来存动画
+            writerObj.FrameRate=fF;
+            open(writerObj);                    %// 打开该视频文件
+        end
+        for iFrame=1:length(ts)
+            figure(hPs);
+            
+            imagesc(xsF,zsF,psFo(:,:,iFrame));
+            axis equal;
+            axis([min(xsF), max(xsF), min(zsF), max(zsF)]);
+            set(gca, 'XDir','normal', 'YDir','normal');
+            title('ps的xz投影图');
+            xlabel('x(m)');
+            ylabel('z(m)');
+            if doSavePsBProject
+                writeVideo(writerObj,getframe(gcf));
+            end
+            pause(tShowPsProject);
+        end
+        if doSavePsBProject
+            close(writerObj); %// 关闭视频文件句柄
+        end
+    end
+    
+    
+    %% 尝试解算z轴功率分布
+    if doShowPsZsum
+        psZsum=permute(sum(psFo,2),[1,3,2]);
+        psZsum=psZsum./repmat(max(psZsum),length(zsF),1);
+        hpsZ=figure('name','目标点 z方向上各点的功率随时间变化关系图');
+        imagesc(ts,zsF,psZsum);
+        set(gca, 'XDir','normal', 'YDir','normal');
+        title('目标点 z方向上各点的功率随时间变化关系图');
+        xlabel('t(s)');
+        ylabel('z(m)');
     end
 end
-
-
-%% 尝试解算z轴功率分布
-if doShowPsZsum
-    psZsum=permute(sum(psFo,2),[1,3,2]);
-    psZsum=psZsum./repmat(max(psZsum),length(zsF),1);
-    hpsZ=figure('name','目标点 z方向上各点的功率随时间变化关系图');
-    imagesc(ts,zsF,psZsum);
-    set(gca, 'XDir','normal', 'YDir','normal');
-    title('目标点 z方向上各点的功率随时间变化关系图');
-    xlabel('t(s)');
-    ylabel('z(m)');
-end
-

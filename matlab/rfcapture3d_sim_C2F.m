@@ -5,6 +5,8 @@ close all;
 %% 运行参数设置
 doShowLo=0;
 tShowPsProject=0.2;
+doTestC2F=0;
+doTestC2F2=1;
 useGPU=1;
 
 %% 加载/提取数据、参数
@@ -84,14 +86,16 @@ psWl=single([xMa-xMi,yMa-yMi,zMa-zMi]);
 psWdC=single([dxC,dyC,dzC]);
 
 %% 开始计算
-if tShowPsProject
-    hPs=figure('name','ps的xy投影图');
-else
-    hPs=[];
+if doTestC2F
+    if tShowPsProject
+        hPs=figure('name','ps的xy投影图');
+    else
+        hPs=[];
+    end
+    psF=rfcaptureC2F(psWcen,psWl,psWdC, ...
+        psBcoor,psB,C2Fratio,C2Fw,C2Fn,tShowPsProject,hPs, ...
+        yLoReshape,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
 end
-psF=rfcaptureC2F(psWcen,psWl,psWdC, ...
-    psBcoor,psB,C2Fratio,C2Fw,C2Fn,tShowPsProject,hPs, ...
-    yLoReshape,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
 
 %% 测试rfcaptureC2F2
 
@@ -102,11 +106,13 @@ psWdC=single([dxC,dyC,dzC]);
 
 %% 开始计算
 
-if tShowPsProject
-    hPs=figure('name','ps的xy投影图');
-else
-    hPs=[];
+if doTestC2F2
+    if tShowPsProject
+        hPs=figure('name','ps的xy投影图');
+    else
+        hPs=[];
+    end
+    psF=rfcaptureC2F2(psWcen,psWl,psWdC, ...
+        psBcoor,psB,C2Fratio,C2Fw,C2Fn,tShowPsProject,hPs, ...
+        yLoReshape,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
 end
-psF=rfcaptureC2F2(psWcen,psWl,psWdC, ...
-    psBcoor,psB,C2Fratio,C2Fw,C2Fn,tShowPsProject,hPs, ...
-    yLoReshape,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
