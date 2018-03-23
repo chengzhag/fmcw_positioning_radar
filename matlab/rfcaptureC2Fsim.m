@@ -23,7 +23,7 @@
 
 function psF=rfcaptureC2Fsim(psWcen,psWl,psWdC, ...
     xssB,yssB,zssB,psB,C2Fratio,C2Fw,C2Fn, ...
-    yLoReshape,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU)
+    yLoReshape,rxCoor,txCoor,dCa,tsRamp,fBw,fRamp,dLambda,useGPU)
 
 yLoReshape=reshape(yLoReshape,size(yLoReshape,1),nRx,nTx);
 
@@ -46,7 +46,7 @@ for i=1:C2Fn
     psBH=interp3(xssB,yssB,zssB,psB,psHcoor(:,1),psHcoor(:,2),psHcoor(:,3),'nearest');
 
     % ”≤À„—°»°µ„
-    fTsrampRTZ=rfcaptureCo2F(psHcoor,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
+    fTsrampRTZ=rfcaptureCo2F(psHcoor,rxCoor,txCoor,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
     psH=abs(rfcaptureF2ps(fTsrampRTZ,yLoReshape,useGPU)-psBH);
     if i==1
         psF=reshape(psH,size(xssC));

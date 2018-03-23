@@ -155,7 +155,7 @@ if ~exist('psB','var')
             else
                 isBlock=iS:size(psBcoor,1);
             end
-            fTsrampRTZ=rfcaptureCo2F(psBcoor(isBlock,:),rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
+            fTsrampRTZ=rfcaptureCo2F(psBcoor(isBlock,:),rxCoor,txCoor,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
             psB(isBlock,1)=psB(isBlock,1)+rfcaptureF2ps(fTsrampRTZ,yLoReshape(:,:,:,iFrame),useGPU);
         end
         if mod(iFrame,1)==0
@@ -210,7 +210,7 @@ if doTestC2F
     for iFrame=1:length(ts)
         psF=rfcaptureC2F(psWcen,psWl,psWdC, ...
             xssB,yssB,zssB,psB,C2Fratio,C2Fw,C2Fn,0,hPs, ...
-            yLoReshape(:,:,:,iFrame),rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
+            yLoReshape(:,:,:,iFrame),rxCoor,txCoor,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
         if iFrame==1
             if useGPU
                 psFo=zeros([size(psF),length(ts)],'single','gpuArray');
@@ -269,7 +269,7 @@ if doTestC2F2
     for iFrame=1:length(ts)
         psF=rfcaptureC2F2(psWcen,psWl,psWdC, ...
             xssB,yssB,zssB,psB,C2Fratio,C2Fw,C2Fn,0,hPs, ...
-            yLoReshape(:,:,:,iFrame),rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
+            yLoReshape(:,:,:,iFrame),rxCoor,txCoor,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
         if iFrame==1
             if useGPU
                 psFo=zeros([size(psF),length(ts)],'single','gpuArray');

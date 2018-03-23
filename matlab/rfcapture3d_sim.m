@@ -89,7 +89,7 @@ for iS=isS
     else
         isBlock=iS:size(pointCoor,1);
     end
-    fTsrampRTZ=rfcaptureCo2F(pointCoor(isBlock,:),rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
+    fTsrampRTZ=rfcaptureCo2F(pointCoor(isBlock,:),rxCoor,txCoor,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
     ps(isBlock,1)=abs(rfcaptureF2ps(fTsrampRTZ,yLoReshape,useGPU));
     if mod(iBlock,10)==0
     disp(['µÚ' num2str(iBlock) '·Ö¿é' num2str(iBlock/length(isS)*100,'%.1f') ...

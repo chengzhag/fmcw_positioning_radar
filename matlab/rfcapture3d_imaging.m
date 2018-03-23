@@ -46,7 +46,7 @@ end
 for iTx=1:nTx
     fTsrampRTZ(:,:,:,:,iTx)=rfcaptureCo2F(pointCoor, ...
         rxCoor(1:nRx,:),txCoor(iTx,:), ...
-        nRx,1,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
+        dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
 end
 tic;
 for iFrame=1:length(ts)
@@ -181,7 +181,7 @@ for iS=isS
     else
         isBlock=iS:size(pointCoor,1);
     end
-    fTsrampRTZ(:,:,:,isBlock)=gather(rfcaptureCo2F(pointCoor(isBlock,:),rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU));
+    fTsrampRTZ(:,:,:,isBlock)=gather(rfcaptureCo2F(pointCoor(isBlock,:),rxCoor,txCoor,dCa,tsRamp,fBw,fRamp,dLambda,useGPU));
 end
 
 %% 计算目标范围内的功率分布

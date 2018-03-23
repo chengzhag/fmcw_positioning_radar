@@ -14,12 +14,13 @@
 % dLambda: 波长
 % useGPU: 是否使用GPU
 
-function fTsrampRTZ=rfcaptureCo2F(pointCoor,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU)
+function fTsrampRTZ=rfcaptureCo2F(pointCoor,rxCoor,txCoor,dCa,tsRamp,fBw,fRamp,dLambda,useGPU)
 %% 计算r(n,m)(X(ts),Y(ts),z)，（ts为长时间）
-
+nRx=size(rxCoor,1);
+nTx=size(txCoor,1);
 nPair=nRx*nTx;
 nP=size(pointCoor,1);
-[isRx,isTx]=meshgrid(1:nRx,1:nTx);
+[isRx,isTx]=meshgrid(1:size(rxCoor,1),1:nTx);
 isRx=permute(isRx,[2,1]);
 isTx=permute(isTx,[2,1]);
 isRxV=reshape(isRx,1,nPair);

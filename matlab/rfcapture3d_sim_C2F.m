@@ -97,7 +97,7 @@ if doTestC2F
     end
     psF=rfcaptureC2F(psWcen,psWl,psWdC, ...
         xssB,yssB,zssB,psB,C2Fratio,C2Fw,C2Fn,tShowPsProject,hPs, ...
-        yLoReshape,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
+        yLoReshape,rxCoor,txCoor,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
 end
 
 %% ≤‚ ‘rfcaptureC2F2
@@ -117,5 +117,5 @@ if doTestC2F2
     end
     psF=rfcaptureC2F2(psWcen,psWl,psWdC, ...
         xssB,yssB,zssB,psB,C2Fratio,C2Fw,C2Fn,tShowPsProject,hPs, ...
-        yLoReshape,rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
+        yLoReshape,rxCoor,txCoor,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
 end
