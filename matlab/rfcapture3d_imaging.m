@@ -10,6 +10,7 @@ doShowPsXZsum=1;
 doSavePsXZsum=0;
 doShowPsZsum=1;
 lBlock=1000;
+useGPU=1;
 
 %% 加载/提取数据、参数
 load '../data/yLoCut_200kHz_800rps_1rpf_4t12r_ztest_circle_reflector.mat'
@@ -35,17 +36,22 @@ ysCoor=single(1:dy:8);
 pointCoor=[reshape(xsMesh,numel(xsMesh),1),reshape(ysMesh,numel(ysMesh),1),zeros(numel(xsMesh),1)];
 
 % 硬算功率分布
-heatMapsCap=zeros(length(ysCoor),length(xsCoor),nTx,length(ts),'single','gpuArray');
-fTsrampRTZ=zeros(length(tsRamp),nRx,1,numel(xsMesh),nTx,'single','gpuArray');
+if useGPU
+    heatMapsCap=zeros(length(ysCoor),length(xsCoor),nTx,length(ts),'single','gpuArray');
+    fTsrampRTZ=zeros(length(tsRamp),nRx,1,numel(xsMesh),nTx,'single','gpuArray');
+else
+    heatMapsCap=zeros(length(ysCoor),length(xsCoor),nTx,length(ts),'single');
+    fTsrampRTZ=zeros(length(tsRamp),nRx,1,numel(xsMesh),nTx,'single');
+end
 for iTx=1:nTx
     fTsrampRTZ(:,:,:,:,iTx)=rfcaptureCo2F(pointCoor, ...
         rxCoor(1:nRx,:),txCoor(iTx,:), ...
-        nRx,1,dCa,tsRamp,fBw,fRamp,dLambda,1);
+        nRx,1,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
 end
 tic;
 for iFrame=1:length(ts)
     for iTx=1:nTx
-        ps=rfcaptureF2ps(fTsrampRTZ(:,:,:,:,iTx),yLoReshape(:,:,iTx,iFrame),1);
+        ps=rfcaptureF2ps(fTsrampRTZ(:,:,:,:,iTx),yLoReshape(:,:,iTx,iFrame),useGPU);
         heatMapsCap(:,:,iTx,iFrame)=reshape(ps,length(ysCoor),length(xsCoor));
     end
     
@@ -175,14 +181,22 @@ for iS=isS
     else
         isBlock=iS:size(pointCoor,1);
     end
-    fTsrampRTZ(:,:,:,isBlock)=gather(rfcaptureCo2F(pointCoor(isBlock,:),rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,1));
+    fTsrampRTZ(:,:,:,isBlock)=gather(rfcaptureCo2F(pointCoor(isBlock,:),rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU));
 end
 
 %% 计算目标范围内的功率分布
-ps=zeros(size(xss,1),size(xss,2),size(xss,3),length(ts),'single','gpuArray');
+if useGPU
+    ps=zeros([size(xss),length(ts)],'single','gpuArray');
+else
+    ps=zeros([size(xss),length(ts)],'single');
+end
 tic;
 for iFrame=1:length(ts)
-    psFr=zeros(size(pointCoor,1),1,'gpuArray');
+    if useGPU
+        psFr=zeros(size(pointCoor,1),1,'single','gpuArray');
+    else
+        psFr=zeros(size(pointCoor,1),1,'single');
+    end
     for iS=isS
         iBlock=(iS-1)/lBlock+1;
         if iS+lBlock-1<size(pointCoor,1)
@@ -190,9 +204,9 @@ for iFrame=1:length(ts)
         else
             isBlock=iS:size(pointCoor,1);
         end
-        psFr(isBlock,1)=rfcaptureF2ps(fTsrampRTZ(:,:,:,isBlock),yLoReshape(:,:,:,iFrame),1);
+        psFr(isBlock,1)=rfcaptureF2ps(fTsrampRTZ(:,:,:,isBlock),yLoReshape(:,:,:,iFrame),useGPU);
     end
-    ps(:,:,:,iFrame)=reshape(psFr,size(xss,1),size(xss,2),size(xss,3));
+    ps(:,:,:,iFrame)=reshape(psFr,size(xss));
     
     if mod(iFrame,10)==0
         disp(['第' num2str(iFrame) '帧' num2str(iFrame/length(ts)*100,'%.1f') ...

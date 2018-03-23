@@ -16,6 +16,13 @@ yLoReshape=reshape(yLoCut,size(yLoCut,1),nRx,nTx,size(yLoCut,3));
 
 ts=linspace(0,size(yLoCut,3)/fF,size(yLoCut,3));
 
+%% 截取后lBackCut帧参与建模
+lBackCut=50;
+if length(ts)>lBackCut
+    yLoReshape=yLoReshape(:,:,:,end-lBackCut+1:end);
+    ts=ts(end-lBackCut+1:end);
+end
+
 %% 计算背景
 if ~exist('psB','var')
     preciFac=C2Fw.^(C2Fn-1);
@@ -25,7 +32,11 @@ if ~exist('psB','var')
     [xssB,yssB,zssB]=meshgrid(xsB,ysB,zsB);
     psBcoor=[xssB(:),yssB(:),zssB(:)];
     
-    psB=zeros(size(psBcoor,1),1,'single','gpuArray');
+    if useGPU
+        psB=zeros(size(psBcoor,1),1,'single','gpuArray');
+    else
+        psB=zeros(size(psBcoor,1),1,'single');
+    end
     
     isS=1:lBlock:size(psBcoor,1);
     tic;

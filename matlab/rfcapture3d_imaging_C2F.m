@@ -140,8 +140,11 @@ if ~exist('psB','var')
     
     psBcoor=[xssB(:),yssB(:),zssB(:)];
     
-    
-    psB=zeros(size(psBcoor,1),1,'single','gpuArray');
+    if useGPU
+        psB=zeros(size(psBcoor,1),1,'single','gpuArray');
+    else
+        psB=zeros(size(psBcoor,1),1,'single');
+    end
     isS=1:lBlock:size(psBcoor,1);
     tic;
     for iFrame=1:lSampleB
@@ -209,7 +212,11 @@ if doTestC2F
             xssB,yssB,zssB,psB,C2Fratio,C2Fw,C2Fn,0,hPs, ...
             yLoReshape(:,:,:,iFrame),rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
         if iFrame==1
-            psFo=zeros([size(psF),length(ts)],'single','gpuArray');
+            if useGPU
+                psFo=zeros([size(psF),length(ts)],'single','gpuArray');
+            else
+                psFo=zeros([size(psF),length(ts)],'single');
+            end
         end
         psFo(:,:,:,iFrame)=psF;
         
@@ -264,7 +271,11 @@ if doTestC2F2
             xssB,yssB,zssB,psB,C2Fratio,C2Fw,C2Fn,0,hPs, ...
             yLoReshape(:,:,:,iFrame),rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
         if iFrame==1
-            psFo=zeros([size(psF),length(ts)],'single','gpuArray');
+            if useGPU
+                psFo=zeros([size(psF),length(ts)],'single','gpuArray');
+            else
+                psFo=zeros([size(psF),length(ts)],'single');
+            end
         end
         psFo(:,:,iFrame)=psF;
         

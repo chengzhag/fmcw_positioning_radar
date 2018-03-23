@@ -35,9 +35,9 @@ fPm=fBw*fRamp/3e8;%frequency per meter
 tsRamp=(0:lRampDown-1)/fSDown;
 
 tarCoor=[1,3,0.5];%target coordinate
-dx=0.1;
-dy=0.1;
-dz=0.1;
+dx=0.2;
+dy=0.2;
+dz=0.2;
 
 lBlock=1000;
 
@@ -75,7 +75,11 @@ if doShowLo
 end
 
 %% 根据rfcapture论文的硬算公式计算指定坐标上的功率大小
-ps=zeros(size(pointCoor,1),1,'gpuArray');
+if useGPU
+    ps=zeros(size(pointCoor,1),1,'single','gpuArray');
+else
+    ps=zeros(size(pointCoor,1),1,'single');
+end
 isS=1:lBlock:size(pointCoor,1);
 tic;
 for iS=isS
@@ -86,7 +90,7 @@ for iS=isS
         isBlock=iS:size(pointCoor,1);
     end
     fTsrampRTZ=rfcaptureCo2F(pointCoor(isBlock,:),rxCoor,txCoor,nRx,nTx,dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
-    ps(isBlock,1)=abs(rfcaptureF2ps(fTsrampRTZ,yLoReshape,1));
+    ps(isBlock,1)=abs(rfcaptureF2ps(fTsrampRTZ,yLoReshape,useGPU));
     if mod(iBlock,10)==0
     disp(['第' num2str(iBlock) '分块' num2str(iBlock/length(isS)*100,'%.1f') ...
         '% 用时' num2str(toc/60,'%.2f') 'min ' ...

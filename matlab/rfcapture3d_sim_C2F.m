@@ -77,7 +77,11 @@ xsB=single(xMi:dxC/preciFac:xMa);
 ysB=single(yMi:dyC/preciFac:yMa);
 zsB=single(zMi:dzC/preciFac:zMa);
 [xssB,yssB,zssB]=meshgrid(xsB,ysB,zsB);
-psB=zeros(size(xssB),'single','gpuArray');
+if useGPU
+    psB=zeros(size(xssB),'single','gpuArray');
+else
+    psB=zeros(size(xssB),'single');
+end
 
 % 准备窗口坐标
 psWcen=single([(xMa+xMi)/2,(yMa+yMi)/2,(zMa+zMi)/2]);
