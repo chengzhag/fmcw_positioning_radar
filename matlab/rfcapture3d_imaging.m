@@ -6,7 +6,7 @@ close all;
 doShowHeatmaps=0;
 doShowTarcoor=0;
 doShowPsSlice=0;
-doShowPsXZsum=1;
+doShowPsXZsum=0;
 doSavePsXZsum=0;
 doShowPsZsum=1;
 lBlock=1000;
@@ -26,25 +26,23 @@ if exist('iTVal','var')
     yLoReshape=yLoReshape(:,:,:,iTVal);
 end
 
-dx=0.1;
-dy=0.1;
-xsCoor=single(-4:dx:4);
-ysCoor=single(1:dy:8);
+xsB2=xsB;
+ysB2=ysB;
+[xssB2,yssB2]=meshgrid(xsB2,ysB2);
 
 %% rfcapture2d测试
-[xsMesh,ysMesh]=meshgrid(xsCoor,ysCoor);
-pointCoor=[reshape(xsMesh,numel(xsMesh),1),reshape(ysMesh,numel(ysMesh),1),zeros(numel(xsMesh),1)];
+pointCoorB=[xssB2(:),yssB2(:),zeros(numel(xssB2),1)];
 
 % 硬算功率分布
 if useGPU
-    heatMapsCap=zeros(length(ysCoor),length(xsCoor),nTx,length(ts),'single','gpuArray');
-    fTsrampRTZ=zeros(length(tsRamp),nRx,1,numel(xsMesh),nTx,'single','gpuArray');
+    heatMapsCap=zeros(length(ysB2),length(xsB2),nTx,length(ts),'single','gpuArray');
+    fTsrampRTZ=zeros(length(tsRamp),nRx,1,numel(xssB2),nTx,'single','gpuArray');
 else
-    heatMapsCap=zeros(length(ysCoor),length(xsCoor),nTx,length(ts),'single');
-    fTsrampRTZ=zeros(length(tsRamp),nRx,1,numel(xsMesh),nTx,'single');
+    heatMapsCap=zeros(length(ysB2),length(xsB2),nTx,length(ts),'single');
+    fTsrampRTZ=zeros(length(tsRamp),nRx,1,numel(xssB2),nTx,'single');
 end
 for iTx=1:nTx
-    fTsrampRTZ(:,:,:,:,iTx)=rfcaptureCo2F(pointCoor, ...
+    fTsrampRTZ(:,:,:,:,iTx)=rfcaptureCo2F(pointCoorB, ...
         rxCoor(1:nRx,:),txCoor(iTx,:), ...
         dCa,tsRamp,fBw,fRamp,dLambda,useGPU);
 end
@@ -52,7 +50,7 @@ tic;
 for iFrame=1:length(ts)
     for iTx=1:nTx
         ps=rfcaptureF2ps(fTsrampRTZ(:,:,:,:,iTx),yLoReshape(:,:,iTx,iFrame),useGPU);
-        heatMapsCap(:,:,iTx,iFrame)=reshape(ps,length(ysCoor),length(xsCoor));
+        heatMapsCap(:,:,iTx,iFrame)=reshape(ps,length(ysB2),length(xsB2));
     end
     
     if mod(iFrame,10)==0
@@ -71,7 +69,7 @@ heatMapsFCap=permute(prod(heatMapsFCap,3),[1,2,4,3]);
 heatMapsFft=fft2(yLoReshape,lFftDis,lFftAng);
 heatMapsFft=heatMapsFft(isDval,:,:,:);
 
-heatMapsFft=circshift(heatMapsFft,floor(size(heatMapsFft,2)/2)+1,2);
+heatMapsFft=circshift(heatMapsFft,ceil(size(heatMapsFft,2)/2),2);
 heatMapsFft=flip(heatMapsFft,2);
 
 % 背景消除
@@ -80,17 +78,18 @@ heatMapsFFft=abs(heatMapsFft-heatMapsBFft);
 heatMapsFFft=permute(prod(heatMapsFFft,3),[1,2,4,3]);
 
 % 极坐标转换
-heatMapsCarFFft=zeros(length(ysCoor),length(xsCoor),length(ts),'single');
+heatMapsCarFFft=zeros(length(ysB2),length(xsB2),length(ts),'single');
 
 % 计算坐标映射矩阵
-dsPo2Car=sqrt(xsMesh.^2+ysMesh.^2);
-angsPo2Car=atand(xsMesh./ysMesh);
+dsPo2Car=sqrt(xssB2.^2+yssB2.^2);
+angsPo2Car=atand(xssB2./yssB2);
 angsPo2Car(isnan(angsPo2Car))=0;
 
 for iFrame=1:length(ts)
     heatMapsCarFFft(:,:,iFrame)=interp2(angs,dsVal,heatMapsFFft(:,:,iFrame),angsPo2Car,dsPo2Car,'linear',0);
 end
 heatMapsFFft=heatMapsCarFFft;
+
 
 %% 比较目标坐标
 [isYTarCap,isXTarCap]=iMax2d(heatMapsFCap);
@@ -101,10 +100,10 @@ isYTarCap=gather(isYTarCap);
 isXTarFft=gather(isXTarFft);
 isYTarFft=gather(isYTarFft);
 
-xsTarCap=xsCoor(isXTarCap);
-ysTarCap=ysCoor(isYTarCap);
-xsTarFft=xsCoor(isXTarFft);
-ysTarFft=ysCoor(isYTarFft);
+xsTarCap=xsB2(isXTarCap);
+ysTarCap=ysB2(isYTarCap);
+xsTarFft=xsB2(isXTarFft);
+ysTarFft=ysB2(isYTarFft);
 
 if doShowTarcoor
     hCoor=figure('name','比较两种方法所得目标坐标');
@@ -131,7 +130,7 @@ if doShowHeatmaps
         subplot(1,2,1);
         heatMapsFCapScaled=heatMapsFCap(:,:,iFrame)/max(max(heatMapsFCap(:,:,iFrame)));
         heatMapsFCapTar=insertShape(gather(heatMapsFCapScaled),'circle',[isXTarCap(iFrame) isYTarCap(iFrame) 5],'LineWidth',2);
-        imagesc(xsCoor,ysCoor,heatMapsFCapTar);
+        imagesc(xsB2,ysB2,heatMapsFCapTar);
         set(gca, 'XDir','normal', 'YDir','normal');
         title(['第' num2str(ts(iFrame)) 's 的rfcapture2d空间热度图']);
         xlabel('x(m)');
@@ -140,7 +139,7 @@ if doShowHeatmaps
         subplot(1,2,2);
         heatMapsFFftScaled=heatMapsFFft(:,:,iFrame)/max(max(heatMapsFFft(:,:,iFrame)));
         heatMapsFFftTar=insertShape(gather(heatMapsFFftScaled),'circle',[isXTarFft(iFrame) isYTarFft(iFrame) 5],'LineWidth',2);
-        imagesc(xsCoor,ysCoor,heatMapsFFftTar);
+        imagesc(xsB2,ysB2,heatMapsFFftTar);
         set(gca, 'XDir','normal', 'YDir','normal');
         title(['第' num2str(ts(iFrame)) 's 的fft2d空间热度图']);
         xlabel('x(m)');
@@ -170,18 +169,18 @@ pointCoorWin=[xsV,ysV,zsV];
 
 xsTarCapMean=mean(xsTarCap);
 ysTarCapMean=mean(ysTarCap);
-pointCoor=pointCoorWin+repmat([xsTarCapMean,ysTarCapMean,0],size(pointCoorWin,1),1);
+pointCoorB=pointCoorWin+repmat([xsTarCapMean,ysTarCapMean,0],size(pointCoorWin,1),1);
 
-fTsrampRTZ=zeros(length(tsRamp),nRx,nTx,size(pointCoor,1),'single');
-isS=1:lBlock:size(pointCoor,1);
+fTsrampRTZ=zeros(length(tsRamp),nRx,nTx,size(pointCoorB,1),'single');
+isS=1:lBlock:size(pointCoorB,1);
 for iS=isS
     iBlock=(iS-1)/lBlock+1;
-    if iS+lBlock-1<size(pointCoor,1)
+    if iS+lBlock-1<size(pointCoorB,1)
         isBlock=iS:iS+lBlock-1;
     else
-        isBlock=iS:size(pointCoor,1);
+        isBlock=iS:size(pointCoorB,1);
     end
-    fTsrampRTZ(:,:,:,isBlock)=gather(rfcaptureCo2F(pointCoor(isBlock,:),rxCoor,txCoor,dCa,tsRamp,fBw,fRamp,dLambda,useGPU));
+    fTsrampRTZ(:,:,:,isBlock)=gather(rfcaptureCo2F(pointCoorB(isBlock,:),rxCoor,txCoor,dCa,tsRamp,fBw,fRamp,dLambda,useGPU));
 end
 
 %% 计算目标范围内的功率分布
@@ -193,16 +192,16 @@ end
 tic;
 for iFrame=1:length(ts)
     if useGPU
-        psFr=zeros(size(pointCoor,1),1,'single','gpuArray');
+        psFr=zeros(size(pointCoorB,1),1,'single','gpuArray');
     else
-        psFr=zeros(size(pointCoor,1),1,'single');
+        psFr=zeros(size(pointCoorB,1),1,'single');
     end
     for iS=isS
         iBlock=(iS-1)/lBlock+1;
-        if iS+lBlock-1<size(pointCoor,1)
+        if iS+lBlock-1<size(pointCoorB,1)
             isBlock=iS:iS+lBlock-1;
         else
-            isBlock=iS:size(pointCoor,1);
+            isBlock=iS:size(pointCoorB,1);
         end
         psFr(isBlock,1)=rfcaptureF2ps(fTsrampRTZ(:,:,:,isBlock),yLoReshape(:,:,:,iFrame),useGPU);
     end
