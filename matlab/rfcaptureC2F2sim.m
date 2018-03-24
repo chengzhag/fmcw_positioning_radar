@@ -23,9 +23,9 @@
 
 function psF=rfcaptureC2F2sim(psWcen,psWl,psWdC, ...
     xssB,yssB,zssB,psB,C2Fratio,C2Fw,C2Fn, ...
-    yLoReshape,rxCoor,txCoor,nRx,tsRamp,fBw,fRamp,dLambda,useGPU)
+    yLoReshape,rxCoor,txCoor,dCa,tsRamp,fBw,fRamp,dLambda,useGPU)
 
-yLoReshape=reshape(yLoReshape,length(tsRamp),nRx,nTx);
+yLoReshape=reshape(yLoReshape,length(tsRamp),size(rxCoor,1),size(txCoor,1));
 
 % ×î´ÖÒ»¼¶
 xsC=single(-psWl(1)/2+psWcen(1):psWdC(1):psWl(1)/2+psWcen(1));
