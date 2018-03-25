@@ -3,7 +3,7 @@ clear;
 close all;
 
 %% 加载/提取数据、参数
-filename='../data/yLoCut_200kHz_800rps_1rpf_4t12r_track_stand_squat_circle.mat';
+filename='../data/yLoCut_200kHz_800rps_1rpf_4t12r_track_stand_squat_difdis.mat';
 load(filename)
 
 

@@ -6,16 +6,16 @@ close all;
 doShow2DHeatmap=0;
 doShowTarcoor=1;
 doShowPsBProject=0;
-doTestC2F=0;
+doTestC2F=1;
 doTestC2F2=0;
-tShowPsProject=0.02;
+tShowPsProject=0;
 doSavePsProject=1;
 doShowPsZsum=1;
 lBlock=1000;
 useGPU=1;
 
 %% 加载/提取数据、参数
-load '../data/yLoCut_200kHz_800rps_1rpf_4t12r_track_stand_squat_circle.mat'
+load '../data/yLoCut_200kHz_800rps_1rpf_4t12r_track_stand_squat_difdis.mat'
 
 yLoCut=log2array(logsout,'yLoCutSim');
 yLoReshape=reshape(yLoCut,size(yLoCut,1),nRx,nTx,size(yLoCut,3));
