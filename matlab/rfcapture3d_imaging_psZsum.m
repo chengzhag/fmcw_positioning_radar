@@ -6,7 +6,7 @@ close all;
 doShowPsZsum=1;
 
 %% 加载/提取数据、参数
-filename='../data/psZsum_200kHz_800rps_1rpf_4t12r_ztest_stand_squat_lie.mat';
+filename='../data/psZsum_200kHz_800rps_1rpf_4t12r_ztest_stand_squat_circle.mat';
 load(filename)
 
 psZsum=permute(log2array(logsout,'psZsumSim'),[1,3,2]);
