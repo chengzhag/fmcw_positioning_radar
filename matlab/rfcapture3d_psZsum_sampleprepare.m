@@ -3,10 +3,10 @@ clear;
 close all;
 
 %% 运行参数设置
-doShowSam=1;
+doShowSam=0;
 
 %% 加载/提取数据、参数
-sFileData='../data/psZsum_200kHz_2000rps_4rpf_4t12r_stand_fall.mat';
+sFileData='../data/psZsum_200kHz_2000rps_4rpf_4t12r_walk.mat';
 load(sFileData)
 
 psZsum=permute(log2array(logsout,'psZsumSim'),[1,3,2]);
@@ -59,4 +59,7 @@ if doShowSam
         pause(0.5);
     end
 end
+
+%% 分类器输入前预处理
+psZReshapeSam=reshape(psZsumSam,size(psZsumSam,1)*size(psZsumSam,2),size(psZsumSam,3));
 
