@@ -6,7 +6,7 @@ close all;
 doShowSam=0;
 
 %% 加载/提取数据、参数
-sFileData='../data/psZsum_200kHz_2000rps_4rpf_4t12r_walk.mat';
+sFileData='../data/psZsum_200kHz_2000rps_4rpf_4t12r_stand_fall.mat';
 load(sFileData)
 
 psZsum=permute(log2array(logsout,'psZsumSim'),[1,3,2]);
@@ -61,5 +61,7 @@ if doShowSam
 end
 
 %% 分类器输入前预处理
-psZReshapeSam=reshape(psZsumSam,size(psZsumSam,1)*size(psZsumSam,2),size(psZsumSam,3));
+psZReshapeSam=permute(reshape(psZsumSam,size(psZsumSam,1)*size(psZsumSam,2),size(psZsumSam,3)),[2,1]);
+% 归一化
+psZReshapeSam=psZReshapeSam./repmat(max(psZReshapeSam,[],2),1,size(psZReshapeSam,2));
 

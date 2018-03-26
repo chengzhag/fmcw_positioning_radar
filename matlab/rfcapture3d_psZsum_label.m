@@ -6,8 +6,8 @@ close all;
 doLabel=1;
 
 %% 加载/提取数据、参数
-sFileData='../data/psZsum_200kHz_2000rps_4rpf_4t12r_walk.mat';
-sFileTime='../data/psZsum_200kHz_2000rps_4rpf_4t12r_walk.txt';
+sFileData='../data/psZsum_200kHz_2000rps_4rpf_4t12r_stand_fall.mat';
+sFileTime='../data/psZsum_200kHz_2000rps_4rpf_4t12r_stand_fall.txt';
 load(sFileData)
 
 psZsum=permute(log2array(logsout,'psZsumSim'),[1,3,2]);
