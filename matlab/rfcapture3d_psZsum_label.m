@@ -3,7 +3,7 @@ clear;
 close all;
 
 %% 运行参数设置
-doLabel=0;
+doLabel=1;
 
 %% 加载/提取数据、参数
 sFileData='../data/psZsum_200kHz_2000rps_4rpf_4t12r_stand_fall.mat';
@@ -35,11 +35,9 @@ if doLabel
     tsLabel=tsLabel-tsLabel(1)+tFirstLabel;
     
     % 计算标签
-    lb1=input('输入第一个动作点的标签：');
-    lb2=input('输入第二个动作点的标签：');
+    lb=input('输入动作点的标签：');
     lbsChange=zeros(length(tsLabel),2);
-    lbsChange(1:2:end,1)=lb1;
-    lbsChange(2:2:end,1)=lb2;
+    lbsChange(:,1)=lb;
     lbsChange(:,2)=tsLabel;
     
     fclose(idFileTime);
