@@ -35,10 +35,7 @@ if doLabel
     tsLabel=tsLabel-tsLabel(1)+tFirstLabel;
     
     % 计算标签
-    lb=input('输入动作点的标签：');
-    lbsChange=zeros(length(tsLabel),2);
-    lbsChange(:,1)=lb;
-    lbsChange(:,2)=tsLabel;
+    lbsChange=tsLabel;
     
     fclose(idFileTime);
     
@@ -51,9 +48,8 @@ zsMax=zsF(isZMax);
 figure('name','展示标签');
 plot(ts,zsMax);
 hold on;
-isLbsChange=interp1(ts,1:length(ts),lbsChange(:,2),'nearst');
-plot(lbsChange(:,2),zsMax(isLbsChange),'o');
-text(lbsChange(:,2),double(zsMax(isLbsChange))+0.03,num2str(lbsChange(:,1)));
+isLbsChange=interp1(ts,1:length(ts),lbsChange,'nearst');
+plot(lbsChange,zsMax(isLbsChange),'o');
 hold off;
 
 

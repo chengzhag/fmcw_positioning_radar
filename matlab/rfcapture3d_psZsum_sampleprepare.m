@@ -4,7 +4,15 @@ close all;
 
 %% 运行参数设置
 doShowSam=0;
-
+lSweep=1;
+doPrepareFallingWindow=0;
+doPrepareStandWindow=1;
+doPrepareFallenWindow=0;
+doClearHistory=0;
+doAdd2Sample=1;
+labelFalling=1;
+labelStand=0;
+labelFallen=1;
 %% 加载/提取数据、参数
 sFileData='../data/psZsum_200kHz_2000rps_4rpf_4t12r_stand_fall.mat';
 sFileSample='../data/inoutputs_200kHz_2000rps_4rpf_4t12r_walk_fall.mat';
@@ -30,34 +38,45 @@ zsMax=zsF(isZMax);
 figure('name','展示标签');
 plot(ts,zsMax);
 hold on;
-isLbsChange=interp1(ts,1:length(ts),lbsChange(:,2),'nearst');
-plot(lbsChange(:,2),zsMax(isLbsChange),'o');
-text(lbsChange(:,2),double(zsMax(isLbsChange))+0.03,num2str(lbsChange(:,1)));
+isLbsChange=interp1(ts,1:length(ts),lbsChange,'nearst');
+plot(lbsChange,zsMax(isLbsChange),'o');
 hold off;
 
 %% 切割样本
-isSamW=-round(tSam*fF/2):round(tSam*fF/2);
+if doPrepareFallingWindow
+    isSamW=-round(tSam*fF/2):round(tSam*fF/2)-lSweep/2;
+    label=labelFalling;
+elseif doPrepareStandWindow
+    isSamW=(-round(tSam*fF)-1:0)-lSweep;
+    label=labelStand;
+elseif doPrepareFallenWindow
+    isSamW=0:round(tSam*fF)+1;
+    label=labelFallen;
+end
 tsSamW=isSamW/fF;
-psZsumSam=zeros(size(psZsum,1),length(isSamW),length(size(lbsChange,1)));
+
+psZsumSam=zeros(size(psZsum,1),length(isSamW),length(size(lbsChange,1))*lSweep);
 
 for i=1:size(lbsChange,1)
-    tSamCen=lbsChange(i,2);
+    tSamCen=lbsChange(i);
     iSamCen=interp1(ts,1:length(ts),tSamCen,'nearst');
-    psZsumSam(:,:,i)=psZsum(:,iSamCen+isSamW);
+    
+    for j=0:lSweep-1
+        psZsumSam(:,:,lSweep*(i-1)+j+1)=psZsum(:,iSamCen+isSamW+j);
+    end
 end
-
-%% 显示样本
+%% 显示样5本
 if doShowSam
     hSam=figure('name','显示样本');
     for i=1:size(psZsumSam,3)
         figure(hSam);
         psZsumSamAj=psZsumSam(:,:,i)./repmat(max(psZsumSam(:,:,i)),length(zsF),1);
-        imagesc(tsSamW+lbsChange(i,2),zsF,psZsumSamAj);
+        imagesc(tsSamW,zsF,psZsumSamAj);
         set(gca, 'XDir','normal', 'YDir','normal');
         title(['样本' num2str(i) '/' num2str(size(psZsumSam,3))]);
         xlabel('t(s)');
         ylabel('z(m)');
-        pause(0.5);
+        pause(0.1);
     end
 end
 
@@ -67,11 +86,16 @@ psZReshapeSam=permute(reshape(psZsumSam,size(psZsumSam,1)*size(psZsumSam,2),size
 psZReshapeSam=psZReshapeSam./repmat(max(psZReshapeSam,[],2),1,size(psZReshapeSam,2));
 
 %% 添加到数据
-doAdd2Sample=input('是否要添加到训练样本？(1/0)：');
 if doAdd2Sample
-    load(sFileSample)
+    if doClearHistory
+        inputs=[];
+        targets=[];
+        samples=[];
+    else
+        load(sFileSample)
+    end
     inputs=[inputs;psZReshapeSam];
-    targets=[targets;lbsChange(:,1)];
+    targets=[targets;repmat(label,size(psZReshapeSam,1),1)];
     samples=[targets,inputs];
     save(sFileSample,'inputs','targets','samples');
 end
