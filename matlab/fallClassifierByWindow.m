@@ -1,10 +1,10 @@
-classdef fallClassifierByFrame < matlab.System
-    % fallClassifierByFrame
-    % 以1*19作为输入的基于帧的跌到检测
+classdef fallClassifierByWindow < matlab.System
+    % fallClassifierByWindow
+    % 以1*627作为输入的基于滑窗的跌到检测
 
     % Public, tunable properties
     properties
-        
+
     end
 
     properties(DiscreteState)
@@ -20,7 +20,7 @@ classdef fallClassifierByFrame < matlab.System
         function setupImpl(obj)
             % Perform one-time calculations, such as computing constants
             % Load model from file
-            obj.CompactMdl = loadCompactModel('../data/fall_classifier_by_frame_compactModel');
+            obj.CompactMdl = loadCompactModel('../data/fall_classifier_by_window_compactModel');
         end
 
         function y = stepImpl(obj,u)
@@ -29,7 +29,7 @@ classdef fallClassifierByFrame < matlab.System
             y = predict(obj.CompactMdl,u);
         end
         
-        function flag = isInputSizeLockedImpl(obj,index)
+                function flag = isInputSizeLockedImpl(obj,index)
             % Return true if input size is not allowed to change while
             % system is running
             flag = true;
@@ -42,7 +42,7 @@ classdef fallClassifierByFrame < matlab.System
         function sizeout = getOutputSizeImpl(~)
             sizeout = [1 1];
         end
-        
+
         function resetImpl(obj)
             % Initialize / reset discrete-state properties
         end
