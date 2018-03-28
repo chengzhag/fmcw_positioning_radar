@@ -7,6 +7,7 @@ doShowSam=0;
 
 %% 加载/提取数据、参数
 sFileData='../data/psZsum_200kHz_2000rps_4rpf_4t12r_stand_fall.mat';
+sFileSample='../data/inoutputs_200kHz_2000rps_4rpf_4t12r_walk_fall.mat';
 load(sFileData)
 
 psZsum=permute(log2array(logsout,'psZsumSim'),[1,3,2]);
@@ -65,3 +66,12 @@ psZReshapeSam=permute(reshape(psZsumSam,size(psZsumSam,1)*size(psZsumSam,2),size
 % 归一化
 psZReshapeSam=psZReshapeSam./repmat(max(psZReshapeSam,[],2),1,size(psZReshapeSam,2));
 
+%% 添加到数据
+doAdd2Sample=input('是否要添加到训练样本？(1/0)：');
+if doAdd2Sample
+    load(sFileSample)
+    inputs=[inputs;psZReshapeSam];
+    targets=[targets;lbsChange(:,1)];
+    samples=[targets,inputs];
+    save(sFileSample,'inputs','targets','samples');
+end
