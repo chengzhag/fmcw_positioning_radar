@@ -3,8 +3,8 @@ clear;
 close all;
 
 %% 运行参数设置
-doShow2DHeatmap=1;
-doShowTarcoor=1;
+doShow2DHeatmap=0;
+doShowTarcoor=0;
 doShowPsBProject=0;
 doTestC2F=0;
 doTestC2F2=1;

@@ -1,3 +1,5 @@
+% 读取simulink log生成的dataset数据类型示例程序，log2array函数例程
+
 %% 清理
 close all;
 %% 加载数据、参数
