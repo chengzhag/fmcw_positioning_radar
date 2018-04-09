@@ -1,8 +1,8 @@
 %% 二维数组最大值索引
-function [isX,isY]=iMax2d(m)
-[xsMax,isY]=max(m,[],2);
-[~,isX]=max(xsMax,[],1);
-isX=shiftdim(isX);
-isY=permute(isY,[3,1,2]);
-isY=isY((isX-1)*size(isY,1)+(1:size(isY,1))');
+function [is1,is2]=iMax2d(m)
+[xsMax,is2]=max(m,[],2);
+[~,is1]=max(xsMax,[],1);
+is1=shiftdim(is1);
+is2=permute(is2,[3,1,2]);
+is2=is2((is1-1)*size(is2,1)+(1:size(is2,1))');
 end
