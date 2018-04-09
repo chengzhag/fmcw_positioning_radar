@@ -1,27 +1,25 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "antenna_switch_mbed", "antenna_switch_mbed\antenna_switch_mbed.vcxproj", "{2922A6D5-A8A4-4206-81C4-E4E667A5A2EB}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "antenna_switch_mbed", "antenna_switch_mbed.vcxproj", "{5F030036-E8F6-49F1-BB19-C7E570EDF577}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x86 = Debug|x86
-		Release|x86 = Release|x86
+		Debug|VisualGDB = Debug|VisualGDB
+		Release|VisualGDB = Release|VisualGDB
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2922A6D5-A8A4-4206-81C4-E4E667A5A2EB}.Debug|x64.ActiveCfg = Debug|Win32
-		{2922A6D5-A8A4-4206-81C4-E4E667A5A2EB}.Debug|x86.ActiveCfg = Debug|Win32
-		{2922A6D5-A8A4-4206-81C4-E4E667A5A2EB}.Debug|x86.Build.0 = Debug|Win32
-		{2922A6D5-A8A4-4206-81C4-E4E667A5A2EB}.Release|x64.ActiveCfg = Release|Win32
-		{2922A6D5-A8A4-4206-81C4-E4E667A5A2EB}.Release|x86.ActiveCfg = Release|Win32
-		{2922A6D5-A8A4-4206-81C4-E4E667A5A2EB}.Release|x86.Build.0 = Release|Win32
+		{5F030036-E8F6-49F1-BB19-C7E570EDF577}.Debug|VisualGDB.ActiveCfg = Debug|VisualGDB
+		{5F030036-E8F6-49F1-BB19-C7E570EDF577}.Debug|VisualGDB.Build.0 = Debug|VisualGDB
+		{5F030036-E8F6-49F1-BB19-C7E570EDF577}.Release|VisualGDB.ActiveCfg = Release|VisualGDB
+		{5F030036-E8F6-49F1-BB19-C7E570EDF577}.Release|VisualGDB.Build.0 = Release|VisualGDB
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {DA02A7FE-384F-48D1-93D9-CABBBADDF033}
+		SolutionGuid = {EFD9D47C-2910-4B1F-B490-16F59B23B0CA}
 	EndGlobalSection
 EndGlobal
