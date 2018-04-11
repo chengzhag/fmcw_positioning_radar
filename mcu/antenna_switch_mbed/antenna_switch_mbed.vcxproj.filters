@@ -2,37 +2,40 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source files">
-      <UniqueIdentifier>{4d9633ff-7354-434c-bed6-69706681fe2d}</UniqueIdentifier>
+      <UniqueIdentifier>{14c4581c-f66d-4210-94cd-c959086125ab}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
     <Filter Include="Header files">
-      <UniqueIdentifier>{3422bf6c-362d-44a0-8a72-1b2a0a6820b2}</UniqueIdentifier>
+      <UniqueIdentifier>{246c56ef-72d3-423f-a441-34ddd30a1e8a}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
     <Filter Include="Resource files">
-      <UniqueIdentifier>{fb8012d2-c66b-4681-b3ea-1ee66ca69e5e}</UniqueIdentifier>
+      <UniqueIdentifier>{b88f5ed0-70aa-49fc-93e9-1de560361c47}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
     <Filter Include="Source files\mbed Files">
-      <UniqueIdentifier>{f1a114c5-efce-4625-804e-544566f3f0f5}</UniqueIdentifier>
+      <UniqueIdentifier>{93f58b68-0058-4236-8ea1-0e5a24fd2a0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source files\mbed Files\drivers Library">
+      <UniqueIdentifier>{f31471aa-fee9-4989-8969-f01b07384dd7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header files\mbed Files">
-      <UniqueIdentifier>{4225c75d-6677-48b7-bf12-6f64fb87d356}</UniqueIdentifier>
+      <UniqueIdentifier>{aea6df49-6316-4be9-84d1-86986529b4e9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Make files">
-      <UniqueIdentifier>{601c7fd7-f5fa-41a3-85c7-7772e0a73b93}</UniqueIdentifier>
+    <Filter Include="Header files\mbed Files\drivers Library">
+      <UniqueIdentifier>{4bbe81a0-e8f2-4a25-910c-ccae86a6748d}</UniqueIdentifier>
     </Filter>
     <Filter Include="VisualGDB settings">
-      <UniqueIdentifier>{cc7ff52a-8fbd-4c64-bfc6-765bb4b85c1e}</UniqueIdentifier>
+      <UniqueIdentifier>{9ac9a6df-8742-4554-ae35-8f3f660f5ef0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Makefile" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="mbed.mak">
+    <None Include="mbed.props">
       <Filter>Source files\mbed Files</Filter>
     </None>
+    <ClCompile Include="$(BSP_ROOT)\hal\mbed_flash_api.c">
+      <Filter>Source files\mbed Files</Filter>
+    </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\hal\mbed_gpio.c">
       <Filter>Source files\mbed Files</Filter>
     </ClCompile>
@@ -40,6 +43,9 @@
       <Filter>Source files\mbed Files</Filter>
     </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\hal\mbed_pinmap_common.c">
+      <Filter>Source files\mbed Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\hal\mbed_sleep_manager.c">
       <Filter>Source files\mbed Files</Filter>
     </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\hal\mbed_ticker_api.c">
@@ -69,6 +75,12 @@
     <ClCompile Include="$(BSP_ROOT)\platform\mbed_mem_trace.c">
       <Filter>Source files\mbed Files</Filter>
     </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\platform\mbed_mktime.c">
+      <Filter>Source files\mbed Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\platform\mbed_sdk_boot.c">
+      <Filter>Source files\mbed Files</Filter>
+    </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\platform\mbed_semihost_api.c">
       <Filter>Source files\mbed Files</Filter>
     </ClCompile>
@@ -81,64 +93,7 @@
     <ClCompile Include="$(BSP_ROOT)\stubs.cpp">
       <Filter>Source files\mbed Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\drivers\AnalogIn.cpp">
-      <Filter>Source files\mbed Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\drivers\BusIn.cpp">
-      <Filter>Source files\mbed Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\drivers\BusInOut.cpp">
-      <Filter>Source files\mbed Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\drivers\BusOut.cpp">
-      <Filter>Source files\mbed Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\drivers\CAN.cpp">
-      <Filter>Source files\mbed Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\drivers\Ethernet.cpp">
-      <Filter>Source files\mbed Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\drivers\FlashIAP.cpp">
-      <Filter>Source files\mbed Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\drivers\I2C.cpp">
-      <Filter>Source files\mbed Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\drivers\I2CSlave.cpp">
-      <Filter>Source files\mbed Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\drivers\InterruptIn.cpp">
-      <Filter>Source files\mbed Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\drivers\InterruptManager.cpp">
-      <Filter>Source files\mbed Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\drivers\RawSerial.cpp">
-      <Filter>Source files\mbed Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\drivers\Serial.cpp">
-      <Filter>Source files\mbed Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\drivers\SerialBase.cpp">
-      <Filter>Source files\mbed Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\drivers\SPI.cpp">
-      <Filter>Source files\mbed Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\drivers\SPISlave.cpp">
-      <Filter>Source files\mbed Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\drivers\Ticker.cpp">
-      <Filter>Source files\mbed Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\drivers\Timeout.cpp">
-      <Filter>Source files\mbed Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\drivers\Timer.cpp">
-      <Filter>Source files\mbed Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\drivers\TimerEvent.cpp">
+    <ClCompile Include="$(BSP_ROOT)\platform\ATCmdParser.cpp">
       <Filter>Source files\mbed Files</Filter>
     </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\platform\CallChain.cpp">
@@ -147,16 +102,22 @@
     <ClCompile Include="$(BSP_ROOT)\platform\FileBase.cpp">
       <Filter>Source files\mbed Files</Filter>
     </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\platform\FileHandle.cpp">
+      <Filter>Source files\mbed Files</Filter>
+    </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\platform\FilePath.cpp">
       <Filter>Source files\mbed Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\platform\FileSystemLike.cpp">
+    <ClCompile Include="$(BSP_ROOT)\platform\FileSystemHandle.cpp">
       <Filter>Source files\mbed Files</Filter>
     </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\platform\LocalFileSystem.cpp">
       <Filter>Source files\mbed Files</Filter>
     </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\platform\mbed_alloc_wrappers.cpp">
+      <Filter>Source files\mbed Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\platform\mbed_poll.cpp">
       <Filter>Source files\mbed Files</Filter>
     </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\platform\mbed_retarget.cpp">
@@ -169,6 +130,9 @@
       <Filter>Source files\mbed Files</Filter>
     </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\platform\Stream.cpp">
+      <Filter>Source files\mbed Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\analogout_api.c">
       <Filter>Source files\mbed Files</Filter>
     </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\can_api.c">
@@ -192,6 +156,9 @@
     <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\lp_ticker.c">
       <Filter>Source files\mbed Files</Filter>
     </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\mbed_overrides.c">
+      <Filter>Source files\mbed Files</Filter>
+    </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\pinmap.c">
       <Filter>Source files\mbed Files</Filter>
     </ClCompile>
@@ -202,6 +169,9 @@
       <Filter>Source files\mbed Files</Filter>
     </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\rtc_api.c">
+      <Filter>Source files\mbed Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\serial_api.c">
       <Filter>Source files\mbed Files</Filter>
     </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\sleep.c">
@@ -222,19 +192,19 @@
     <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\analogin_api.c">
       <Filter>Source files\mbed Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\analogout_api.c">
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\analogout_device.c">
+      <Filter>Source files\mbed Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\flash_api.c">
       <Filter>Source files\mbed Files</Filter>
     </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\gpio_irq_device.c">
       <Filter>Source files\mbed Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\mbed_overrides.c">
-      <Filter>Source files\mbed Files</Filter>
-    </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\pwmout_device.c">
       <Filter>Source files\mbed Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\serial_api.c">
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\serial_device.c">
       <Filter>Source files\mbed Files</Filter>
     </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\spi_api.c">
@@ -492,40 +462,94 @@
     <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_utils.c">
       <Filter>Source files\mbed Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\device\cmsis_nvic.c">
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\system_stm32f7xx.c">
       <Filter>Source files\mbed Files</Filter>
     </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\TARGET_NUCLEO_F767ZI\PeripheralPins.c">
       <Filter>Source files\mbed Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\TARGET_NUCLEO_F767ZI\system_stm32f7xx.c">
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\TARGET_NUCLEO_F767ZI\system_clock.c">
       <Filter>Source files\mbed Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\device\TOOLCHAIN_GCC_ARM\startup_stm32f769xx.s">
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\device\TOOLCHAIN_GCC_ARM\startup_stm32f767xx.S">
       <Filter>Source files\mbed Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\drivers\AnalogIn.cpp">
+      <Filter>Source files\mbed Files\drivers Library</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\drivers\BusIn.cpp">
+      <Filter>Source files\mbed Files\drivers Library</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\drivers\BusInOut.cpp">
+      <Filter>Source files\mbed Files\drivers Library</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\drivers\BusOut.cpp">
+      <Filter>Source files\mbed Files\drivers Library</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\drivers\CAN.cpp">
+      <Filter>Source files\mbed Files\drivers Library</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\drivers\Ethernet.cpp">
+      <Filter>Source files\mbed Files\drivers Library</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\drivers\FlashIAP.cpp">
+      <Filter>Source files\mbed Files\drivers Library</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\drivers\I2C.cpp">
+      <Filter>Source files\mbed Files\drivers Library</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\drivers\I2CSlave.cpp">
+      <Filter>Source files\mbed Files\drivers Library</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\drivers\InterruptIn.cpp">
+      <Filter>Source files\mbed Files\drivers Library</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\drivers\InterruptManager.cpp">
+      <Filter>Source files\mbed Files\drivers Library</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\drivers\RawSerial.cpp">
+      <Filter>Source files\mbed Files\drivers Library</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\drivers\Serial.cpp">
+      <Filter>Source files\mbed Files\drivers Library</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\drivers\SerialBase.cpp">
+      <Filter>Source files\mbed Files\drivers Library</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\drivers\SPI.cpp">
+      <Filter>Source files\mbed Files\drivers Library</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\drivers\SPISlave.cpp">
+      <Filter>Source files\mbed Files\drivers Library</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\drivers\Ticker.cpp">
+      <Filter>Source files\mbed Files\drivers Library</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\drivers\Timeout.cpp">
+      <Filter>Source files\mbed Files\drivers Library</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\drivers\Timer.cpp">
+      <Filter>Source files\mbed Files\drivers Library</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\drivers\TimerEvent.cpp">
+      <Filter>Source files\mbed Files\drivers Library</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\drivers\UARTSerial.cpp">
+      <Filter>Source files\mbed Files\drivers Library</Filter>
     </ClCompile>
     <ClInclude Include="$(BSP_ROOT)\mbed.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\cmsis\arm_common_tables.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\cmsis\arm_const_structs.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\cmsis\arm_math.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\cmsis\core_ca9.h">
+    <ClInclude Include="$(BSP_ROOT)\cmsis\core_armv8mbl.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\cmsis\core_caFunc.h">
+    <ClInclude Include="$(BSP_ROOT)\cmsis\core_armv8mml.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\cmsis\core_caInstr.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\cmsis\core_ca_mmu.h">
+    <ClInclude Include="$(BSP_ROOT)\cmsis\core_ca.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\cmsis\core_cm0.h">
@@ -534,28 +558,22 @@
     <ClInclude Include="$(BSP_ROOT)\cmsis\core_cm0plus.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\cmsis\core_cm23.h">
+      <Filter>Header files\mbed Files</Filter>
+    </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\cmsis\core_cm3.h">
+      <Filter>Header files\mbed Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\cmsis\core_cm33.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\cmsis\core_cm4.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\cmsis\core_cm4_simd.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\cmsis\core_cm7.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\cmsis\core_cmFunc.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\cmsis\core_cmInstr.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\cmsis\core_cmSecureAccess.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\cmsis\core_cmSimd.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\cmsis\core_sc000.h">
@@ -564,97 +582,7 @@
     <ClInclude Include="$(BSP_ROOT)\cmsis\core_sc300.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\AnalogIn.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\AnalogOut.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\BusIn.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\BusInOut.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\BusOut.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\CAN.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\DigitalIn.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\DigitalInOut.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\DigitalOut.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\Ethernet.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\FlashIAP.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\I2C.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\I2CSlave.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\InterruptIn.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\InterruptManager.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\LowPowerTicker.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\LowPowerTimeout.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\LowPowerTimer.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\PortIn.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\PortInOut.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\PortOut.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\PwmOut.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\RawSerial.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\Serial.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\SerialBase.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\SPI.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\SPISlave.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\Ticker.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\Timeout.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\Timer.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\drivers\TimerEvent.h">
+    <ClInclude Include="$(BSP_ROOT)\cmsis\tz_context.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\hal\analogin_api.h">
@@ -732,6 +660,9 @@
     <ClInclude Include="$(BSP_ROOT)\hal\storage_abstraction\Driver_Storage.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\platform\ATCmdParser.h">
+      <Filter>Header files\mbed Files</Filter>
+    </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\platform\Callback.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
@@ -744,7 +675,13 @@
     <ClInclude Include="$(BSP_ROOT)\platform\critical.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\platform\CriticalSectionLock.h">
+      <Filter>Header files\mbed Files</Filter>
+    </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\platform\CThunk.h">
+      <Filter>Header files\mbed Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\platform\DeepSleepLock.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\platform\DirHandle.h">
@@ -760,6 +697,9 @@
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\platform\FilePath.h">
+      <Filter>Header files\mbed Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\platform\FileSystemHandle.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\platform\FileSystemLike.h">
@@ -792,6 +732,12 @@
     <ClInclude Include="$(BSP_ROOT)\platform\mbed_mem_trace.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\platform\mbed_mktime.h">
+      <Filter>Header files\mbed Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\platform\mbed_poll.h">
+      <Filter>Header files\mbed Files</Filter>
+    </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\platform\mbed_preprocessor.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
@@ -814,6 +760,9 @@
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\platform\mbed_wait_api.h">
+      <Filter>Header files\mbed Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\platform\NonCopyable.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\platform\platform.h">
@@ -846,10 +795,19 @@
     <ClInclude Include="$(BSP_ROOT)\platform\wait_api.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\cmsis\TARGET_CORTEX_M\cmsis_compiler.h">
+      <Filter>Header files\mbed Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\cmsis\TARGET_CORTEX_M\TOOLCHAIN_GCC\cmsis_gcc.h">
+      <Filter>Header files\mbed Files</Filter>
+    </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\gpio_object.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\mbed_rtx.h">
+      <Filter>Header files\mbed Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\nvic_addr.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\PeripheralPins.h">
@@ -864,10 +822,10 @@
     <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\rtc_api_hal.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\USBHALHost_STM_144_64pins.h">
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\serial_api_hal.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\USBHAL_STM_144_64pins.h">
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\stm32_assert.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\can_device.h">
@@ -889,6 +847,9 @@
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\pwmout_device.h">
+      <Filter>Header files\mbed Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\spi_device.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal.h">
@@ -1179,12 +1140,6 @@
     <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32_hal_legacy.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\TARGET_NUCLEO_F767ZI\USBHALHost_STM_TARGET.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\TARGET_NUCLEO_F767ZI\USBHAL_STM_TARGET.h">
-      <Filter>Header files\mbed Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\objects.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
@@ -1192,6 +1147,9 @@
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\device\cmsis_nvic.h">
+      <Filter>Header files\mbed Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\device\flash_data.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\device\hal_tick.h">
@@ -1212,12 +1170,102 @@
     <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\TARGET_NUCLEO_F767ZI\PinNames.h">
       <Filter>Header files\mbed Files</Filter>
     </ClInclude>
-    <None Include="debug.mak">
-      <Filter>Make files</Filter>
-    </None>
-    <None Include="release.mak">
-      <Filter>Make files</Filter>
-    </None>
+    <ClInclude Include="$(BSP_ROOT)\drivers\AnalogIn.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\AnalogOut.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\BusIn.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\BusInOut.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\BusOut.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\CAN.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\DigitalIn.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\DigitalInOut.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\DigitalOut.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\Ethernet.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\FlashIAP.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\I2C.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\I2CSlave.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\InterruptIn.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\InterruptManager.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\LowPowerTicker.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\LowPowerTimeout.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\LowPowerTimer.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\PortIn.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\PortInOut.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\PortOut.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\PwmOut.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\RawSerial.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\Serial.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\SerialBase.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\SPI.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\SPISlave.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\Ticker.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\Timeout.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\Timer.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\TimerEvent.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BSP_ROOT)\drivers\UARTSerial.h">
+      <Filter>Header files\mbed Files\drivers Library</Filter>
+    </ClInclude>
     <None Include="antenna_switch_mbed-Debug.vgdbsettings">
       <Filter>VisualGDB settings</Filter>
     </None>
@@ -1227,8 +1275,6 @@
     <None Include="mbed.xml">
       <Filter>VisualGDB settings</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
