@@ -1,0 +1,475 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|VisualGDB">
+      <Configuration>Debug</Configuration>
+      <Platform>VisualGDB</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|VisualGDB">
+      <Configuration>Release</Configuration>
+      <Platform>VisualGDB</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{5F030036-E8F6-49F1-BB19-C7E570EDF577}</ProjectGuid>
+    <BSP_ID>com.sysprogs.arm.mbed</BSP_ID>
+    <BSP_VERSION>5.6.3r3</BSP_VERSION>
+    <InPlaceBSPSubdir />
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|VisualGDB'">
+    <MCUPropertyListFile>$(ProjectDir)mbed.props</MCUPropertyListFile>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|VisualGDB'">
+    <MCUPropertyListFile>$(ProjectDir)mbed.props</MCUPropertyListFile>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|VisualGDB'">
+    <GNUConfigurationType>Debug</GNUConfigurationType>
+    <ToolchainID>com.visualgdb.arm-eabi</ToolchainID>
+    <ToolchainVersion>7.2.0/8.0.1/r2</ToolchainVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|VisualGDB'">
+    <ToolchainID>com.visualgdb.arm-eabi</ToolchainID>
+    <ToolchainVersion>7.2.0/8.0.1/r2</ToolchainVersion>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|VisualGDB'">
+    <ClCompile>
+      <CPPLanguageStandard>GNUPP14</CPPLanguageStandard>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|VisualGDB'">
+    <ClCompile>
+      <CPPLanguageStandard>GNUPP14</CPPLanguageStandard>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <None Include="mbed.props" />
+    <ClCompile Include="$(BSP_ROOT)\hal\mbed_flash_api.c" />
+    <ClCompile Include="$(BSP_ROOT)\hal\mbed_gpio.c" />
+    <ClCompile Include="$(BSP_ROOT)\hal\mbed_lp_ticker_api.c" />
+    <ClCompile Include="$(BSP_ROOT)\hal\mbed_pinmap_common.c" />
+    <ClCompile Include="$(BSP_ROOT)\hal\mbed_sleep_manager.c" />
+    <ClCompile Include="$(BSP_ROOT)\hal\mbed_ticker_api.c" />
+    <ClCompile Include="$(BSP_ROOT)\hal\mbed_us_ticker_api.c" />
+    <ClCompile Include="$(BSP_ROOT)\platform\mbed_application.c" />
+    <ClCompile Include="$(BSP_ROOT)\platform\mbed_assert.c" />
+    <ClCompile Include="$(BSP_ROOT)\platform\mbed_board.c" />
+    <ClCompile Include="$(BSP_ROOT)\platform\mbed_critical.c" />
+    <ClCompile Include="$(BSP_ROOT)\platform\mbed_error.c" />
+    <ClCompile Include="$(BSP_ROOT)\platform\mbed_interface.c" />
+    <ClCompile Include="$(BSP_ROOT)\platform\mbed_mem_trace.c" />
+    <ClCompile Include="$(BSP_ROOT)\platform\mbed_mktime.c" />
+    <ClCompile Include="$(BSP_ROOT)\platform\mbed_sdk_boot.c" />
+    <ClCompile Include="$(BSP_ROOT)\platform\mbed_semihost_api.c" />
+    <ClCompile Include="$(BSP_ROOT)\platform\mbed_stats.c" />
+    <ClCompile Include="$(BSP_ROOT)\platform\mbed_wait_api_no_rtos.c" />
+    <ClCompile Include="$(BSP_ROOT)\stubs.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\platform\ATCmdParser.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\platform\CallChain.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\platform\FileBase.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\platform\FileHandle.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\platform\FilePath.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\platform\FileSystemHandle.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\platform\LocalFileSystem.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\platform\mbed_alloc_wrappers.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\platform\mbed_poll.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\platform\mbed_retarget.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\platform\mbed_rtc_time.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\platform\mbed_wait_api_rtos.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\platform\Stream.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\analogout_api.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\can_api.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\gpio_api.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\gpio_irq_api.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\hal_tick_16b.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\hal_tick_32b.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\i2c_api.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\lp_ticker.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\mbed_overrides.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\pinmap.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\port_api.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\pwmout_api.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\rtc_api.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\serial_api.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\sleep.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\stm_spi_api.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\trng_api.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\us_ticker_16b.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\us_ticker_32b.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\analogin_api.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\analogout_device.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\flash_api.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\gpio_irq_device.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\pwmout_device.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\serial_device.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\spi_api.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_adc.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_adc_ex.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_can.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_cec.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_cortex.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_crc.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_crc_ex.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_cryp.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_cryp_ex.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_dac.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_dac_ex.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_dcmi.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_dcmi_ex.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_dfsdm.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_dma.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_dma2d.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_dma_ex.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_dsi.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_eth.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_flash.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_flash_ex.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_gpio.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_hash.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_hash_ex.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_hcd.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_i2c.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_i2c_ex.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_i2s.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_irda.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_iwdg.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_jpeg.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_lptim.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_ltdc.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_ltdc_ex.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_mdios.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_mmc.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_nand.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_nor.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_pcd.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_pcd_ex.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_pwr.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_pwr_ex.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_qspi.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_rcc.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_rcc_ex.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_rng.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_rtc.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_rtc_ex.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_sai.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_sai_ex.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_sd.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_sdram.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_smartcard.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_smartcard_ex.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_smbus.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_spdifrx.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_spi.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_sram.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_tim.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_tim_ex.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_uart.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_usart.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_wwdg.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_adc.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_crc.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_dac.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_dma.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_dma2d.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_exti.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_fmc.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_gpio.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_i2c.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_lptim.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_pwr.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_rcc.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_rng.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_rtc.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_sdmmc.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_spi.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_tim.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_usart.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_usb.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_utils.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\system_stm32f7xx.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\TARGET_NUCLEO_F767ZI\PeripheralPins.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\TARGET_NUCLEO_F767ZI\system_clock.c" />
+    <ClCompile Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\device\TOOLCHAIN_GCC_ARM\startup_stm32f767xx.S" />
+    <ClCompile Include="$(BSP_ROOT)\drivers\AnalogIn.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\drivers\BusIn.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\drivers\BusInOut.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\drivers\BusOut.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\drivers\CAN.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\drivers\Ethernet.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\drivers\FlashIAP.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\drivers\I2C.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\drivers\I2CSlave.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\drivers\InterruptIn.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\drivers\InterruptManager.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\drivers\RawSerial.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\drivers\Serial.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\drivers\SerialBase.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\drivers\SPI.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\drivers\SPISlave.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\drivers\Ticker.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\drivers\Timeout.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\drivers\Timer.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\drivers\TimerEvent.cpp" />
+    <ClCompile Include="$(BSP_ROOT)\drivers\UARTSerial.cpp" />
+    <ClInclude Include="$(BSP_ROOT)\mbed.h" />
+    <ClInclude Include="$(BSP_ROOT)\cmsis\arm_math.h" />
+    <ClInclude Include="$(BSP_ROOT)\cmsis\core_armv8mbl.h" />
+    <ClInclude Include="$(BSP_ROOT)\cmsis\core_armv8mml.h" />
+    <ClInclude Include="$(BSP_ROOT)\cmsis\core_ca.h" />
+    <ClInclude Include="$(BSP_ROOT)\cmsis\core_cm0.h" />
+    <ClInclude Include="$(BSP_ROOT)\cmsis\core_cm0plus.h" />
+    <ClInclude Include="$(BSP_ROOT)\cmsis\core_cm23.h" />
+    <ClInclude Include="$(BSP_ROOT)\cmsis\core_cm3.h" />
+    <ClInclude Include="$(BSP_ROOT)\cmsis\core_cm33.h" />
+    <ClInclude Include="$(BSP_ROOT)\cmsis\core_cm4.h" />
+    <ClInclude Include="$(BSP_ROOT)\cmsis\core_cm7.h" />
+    <ClInclude Include="$(BSP_ROOT)\cmsis\core_cmSecureAccess.h" />
+    <ClInclude Include="$(BSP_ROOT)\cmsis\core_sc000.h" />
+    <ClInclude Include="$(BSP_ROOT)\cmsis\core_sc300.h" />
+    <ClInclude Include="$(BSP_ROOT)\cmsis\tz_context.h" />
+    <ClInclude Include="$(BSP_ROOT)\hal\analogin_api.h" />
+    <ClInclude Include="$(BSP_ROOT)\hal\analogout_api.h" />
+    <ClInclude Include="$(BSP_ROOT)\hal\buffer.h" />
+    <ClInclude Include="$(BSP_ROOT)\hal\can_api.h" />
+    <ClInclude Include="$(BSP_ROOT)\hal\can_helper.h" />
+    <ClInclude Include="$(BSP_ROOT)\hal\dma_api.h" />
+    <ClInclude Include="$(BSP_ROOT)\hal\emac_api.h" />
+    <ClInclude Include="$(BSP_ROOT)\hal\ethernet_api.h" />
+    <ClInclude Include="$(BSP_ROOT)\hal\flash_api.h" />
+    <ClInclude Include="$(BSP_ROOT)\hal\gpio_api.h" />
+    <ClInclude Include="$(BSP_ROOT)\hal\gpio_irq_api.h" />
+    <ClInclude Include="$(BSP_ROOT)\hal\i2c_api.h" />
+    <ClInclude Include="$(BSP_ROOT)\hal\lp_ticker_api.h" />
+    <ClInclude Include="$(BSP_ROOT)\hal\pinmap.h" />
+    <ClInclude Include="$(BSP_ROOT)\hal\port_api.h" />
+    <ClInclude Include="$(BSP_ROOT)\hal\pwmout_api.h" />
+    <ClInclude Include="$(BSP_ROOT)\hal\rtc_api.h" />
+    <ClInclude Include="$(BSP_ROOT)\hal\serial_api.h" />
+    <ClInclude Include="$(BSP_ROOT)\hal\sleep_api.h" />
+    <ClInclude Include="$(BSP_ROOT)\hal\spi_api.h" />
+    <ClInclude Include="$(BSP_ROOT)\hal\ticker_api.h" />
+    <ClInclude Include="$(BSP_ROOT)\hal\trng_api.h" />
+    <ClInclude Include="$(BSP_ROOT)\hal\us_ticker_api.h" />
+    <ClInclude Include="$(BSP_ROOT)\hal\storage_abstraction\Driver_Common.h" />
+    <ClInclude Include="$(BSP_ROOT)\hal\storage_abstraction\Driver_Storage.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\ATCmdParser.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\Callback.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\CallChain.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\CircularBuffer.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\critical.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\CriticalSectionLock.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\CThunk.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\DeepSleepLock.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\DirHandle.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\FileBase.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\FileHandle.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\FileLike.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\FilePath.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\FileSystemHandle.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\FileSystemLike.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\FunctionPointer.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\LocalFileSystem.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\mbed_application.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\mbed_assert.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\mbed_critical.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\mbed_debug.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\mbed_error.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\mbed_interface.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\mbed_mem_trace.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\mbed_mktime.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\mbed_poll.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\mbed_preprocessor.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\mbed_retarget.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\mbed_rtc_time.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\mbed_semihost_api.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\mbed_sleep.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\mbed_stats.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\mbed_toolchain.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\mbed_wait_api.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\NonCopyable.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\platform.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\PlatformMutex.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\rtc_time.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\semihost_api.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\SingletonPtr.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\sleep.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\Stream.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\toolchain.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\Transaction.h" />
+    <ClInclude Include="$(BSP_ROOT)\platform\wait_api.h" />
+    <ClInclude Include="$(BSP_ROOT)\cmsis\TARGET_CORTEX_M\cmsis_compiler.h" />
+    <ClInclude Include="$(BSP_ROOT)\cmsis\TARGET_CORTEX_M\TOOLCHAIN_GCC\cmsis_gcc.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\gpio_object.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\mbed_rtx.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\nvic_addr.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\PeripheralPins.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\PinNamesTypes.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\PortNames.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\rtc_api_hal.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\serial_api_hal.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\stm32_assert.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\can_device.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\common_objects.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\gpio_irq_device.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\i2c_device.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\pin_device.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\pwmout_device.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\spi_device.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_adc.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_adc_ex.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_can.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_cec.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_conf.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_cortex.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_crc.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_crc_ex.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_cryp.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_cryp_ex.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_dac.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_dac_ex.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_dcmi.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_dcmi_ex.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_def.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_dfsdm.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_dma.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_dma2d.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_dma_ex.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_dsi.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_eth.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_flash.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_flash_ex.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_gpio.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_gpio_ex.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_hash.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_hash_ex.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_hcd.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_i2c.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_i2c_ex.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_i2s.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_irda.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_irda_ex.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_iwdg.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_jpeg.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_lptim.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_ltdc.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_ltdc_ex.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_mdios.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_mmc.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_nand.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_nor.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_pcd.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_pcd_ex.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_pwr.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_pwr_ex.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_qspi.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_rcc.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_rcc_ex.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_rng.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_rtc.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_rtc_ex.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_sai.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_sai_ex.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_sd.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_sdram.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_smartcard.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_smartcard_ex.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_smbus.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_spdifrx.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_spi.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_sram.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_tim.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_tim_ex.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_uart.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_uart_ex.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_usart.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_usart_ex.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_hal_wwdg.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_adc.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_bus.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_cortex.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_crc.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_dac.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_dma.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_dma2d.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_exti.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_fmc.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_gpio.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_i2c.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_iwdg.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_lptim.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_pwr.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_rcc.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_rng.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_rtc.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_sdmmc.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_spi.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_system.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_tim.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_usart.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_usb.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_utils.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32f7xx_ll_wwdg.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\device\stm32_hal_legacy.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\objects.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\device\cmsis.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\device\cmsis_nvic.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\device\flash_data.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\device\hal_tick.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\device\stm32f767xx.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\device\stm32f7xx.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\device\system_stm32f7xx.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\TARGET_NUCLEO_F767ZI\PeripheralNames.h" />
+    <ClInclude Include="$(BSP_ROOT)\targets\TARGET_STM\TARGET_STM32F7\TARGET_STM32F767xI\TARGET_NUCLEO_F767ZI\PinNames.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\AnalogIn.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\AnalogOut.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\BusIn.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\BusInOut.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\BusOut.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\CAN.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\DigitalIn.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\DigitalInOut.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\DigitalOut.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\Ethernet.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\FlashIAP.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\I2C.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\I2CSlave.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\InterruptIn.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\InterruptManager.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\LowPowerTicker.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\LowPowerTimeout.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\LowPowerTimer.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\PortIn.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\PortInOut.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\PortOut.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\PwmOut.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\RawSerial.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\Serial.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\SerialBase.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\SPI.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\SPISlave.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\Ticker.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\Timeout.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\Timer.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\TimerEvent.h" />
+    <ClInclude Include="$(BSP_ROOT)\drivers\UARTSerial.h" />
+    <None Include="antenna_switch_mbed-Debug.vgdbsettings" />
+    <None Include="antenna_switch_mbed-Release.vgdbsettings" />
+    <None Include="mbed.xml" />
+  </ItemGroup>
+</Project>
