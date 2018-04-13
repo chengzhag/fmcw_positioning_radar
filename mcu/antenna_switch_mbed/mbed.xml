@@ -8,14 +8,10 @@
   </ToolchainVersion>
   <BspID>com.sysprogs.arm.mbed</BspID>
   <BspVersion>5.6.3r3</BspVersion>
-  <McuID>NUCLEO_F767ZI</McuID>
-  <MCUDefinitionFile>DeviceDefinitions/stm32f767xx.xml</MCUDefinitionFile>
+  <McuID>NUCLEO_F446RE</McuID>
+  <MCUDefinitionFile>DeviceDefinitions/stm32f446xx.xml</MCUDefinitionFile>
   <MCUProperties>
     <Entries>
-      <KeyValue>
-        <Key>com.sysprogs.mbed.target.d11_configuration</Key>
-        <Value>PA_7</Value>
-      </KeyValue>
       <KeyValue>
         <Key>com.sysprogs.mbed.platform.stdio-baud-rate</Key>
         <Value>9600</Value>

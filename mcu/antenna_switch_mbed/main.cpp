@@ -3,9 +3,9 @@
 #include <bitset>
 using namespace std;
 
-#define WIDTH_FALL 2
-#define WIDTH_PULSE 0
-#define WIDTH_BIT 24
+#define WIDTH_FALL 0
+#define WIDTH_PULSE 4
+#define WIDTH_BIT 22
 
 InterruptIn triger(D2);
 DigitalInOut usrpSyn(D3, PIN_OUTPUT, OpenDrainNoPull, 1);
