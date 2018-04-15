@@ -75,14 +75,20 @@ simulink框图.slx文件。
 - coorTar：n行2列的矩阵，n个目标的坐标，单位（m）。第1列为x坐标，第2列为y坐标。前nTar个坐标为有效坐标。
 - nTar：目标的个数。
 
-参数说明：参数中FFT、Imaging、Targeting Parameters板块下的参数影响了运算量和目标检测效果。
-- angle FFT length：角度方向的FFT长度，设置为2的幂次方以使用更快的FFT算法。
-- dis FFT length：距离方向的FFT长度，设置为2的幂次方以使用更快的FFT算法。
-- y min（max）：距离方向（y 方向）的坐标范围，直接影响雷达图像的行数和坐标序列ys，单位（m）。算法原理：两个参数会将2DFFT后的矩阵在距离方向（y方向）上作截取，如果dis FFT length参数设置的FFT长度达不到y max参数要求的FFT长度，会自动截取到dis FFT length所能计算到的最远距离，此ys表示的坐标序列不再以y max为最大值。
-- target number max：最大跟踪目标数量。
-- average frames：滑动均值滤波的窗口宽度。算法原理：多径效应对成像造成的影响一般呈现出瞬时性，如果通过滑动均值滤波的方法平均多帧雷达图像，可以大大减弱多径效应的影响。同时均值滤波会带来与窗口长度相同的延迟。
-- background power threshold：背景功率阈值。参考pMa端口输出的功率设置Targeting Parameters板块下的background power threshold参数，保证无人状态下的pMa小于参数background power threshold。算法原理：当pMa < background power threshold时判定区域内没有目标，此时端口nTar输出的值为0。
-- targets relative threshold：目标功率相对与背景噪声功率比值的阈值。算法原理：以背景噪声平均值的targets relative threshold倍作为阈值对图像进行分割，高于此阈值的像素认为有目标存在。
+参数说明：参数中Preprocess、FFT、Imaging、Targeting Parameters板块下的参数影响了运算量和目标检测效果。
+- Preprocess Parameters：
+    - yLo downsample factor：中频信号软件降采样系数。增大此值以减小运算量，同时减小距离测量范围。
+    - cycles per frame（average time）：每帧包含的天线扫描周期。算法原理：将多个周期的中频信号平均，合并为一帧。增大此值以减小运算量，同时降低帧率。
+- FFT Parameters：
+    - angle FFT length：角度方向的FFT长度，设置为2的幂次方以使用更快的FFT算法。
+    - dis FFT length：距离方向的FFT长度，设置为2的幂次方以使用更快的FFT算法。
+- Imaging Parameters：
+    - y min（max）：距离方向（y 方向）的坐标范围，直接影响雷达图像的行数和坐标序列ys，单位（m）。算法原理：两个参数会将2DFFT后的矩阵在距离方向（y方向）上作截取，如果dis FFT length参数设置的FFT长度达不到y max参数要求的FFT长度，会自动截取到dis FFT length所能计算到的最远距离，此ys表示的坐标序列不再以y max为最大值。
+- Targeting Parameters：
+    - target number max：最大跟踪目标数量。
+    - average frames：滑动均值滤波的窗口宽度。算法原理：多径效应对成像造成的影响一般呈现出瞬时性，如果通过滑动均值滤波的方法平均多帧雷达图像，可以大大减弱多径效应的影响。同时均值滤波会带来与窗口长度相同的延迟。
+    - background power threshold：背景功率阈值。参考pMa端口输出的功率设置Targeting Parameters板块下的background power threshold参数，保证无人状态下的pMa小于参数background power threshold。算法原理：当pMa < background power threshold时判定区域内没有目标，此时端口nTar输出的值为0。
+    - targets relative threshold：目标功率相对与背景噪声功率比值的阈值。算法原理：以背景噪声平均值的targets relative threshold倍作为阈值对图像进行分割，高于此阈值的像素认为有目标存在。
 
 
 # release note
@@ -112,3 +118,4 @@ simulink框图.slx文件。
 - 将整个系统封装为三个子模块。
 - 为三个子模块分别建立库，方便组件重用和团队开发。
 - 为三个模块添加说明。并在readme中强调了各模块说明。
+
