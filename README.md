@@ -74,6 +74,7 @@ simulink框图.slx文件。
 - pMa：雷达图像最大功率值。参考该值设置Targeting Parameters板块下的background power threshold参数，保证无人状态下的pMa小于参数background power threshold。算法原理：当pMa < background power threshold时判定区域内没有目标，此时端口nTar输出的值为0。
 - coorTar：n行2列的矩阵，n个目标的坐标，单位（m）。第1列为x坐标，第2列为y坐标。前nTar个坐标为有效坐标。
 - nTar：目标的个数。
+- heatMapFil：滤波后的图像。算法原理：由于帧平均后的图像一个目标可能引起多个峰值，因此对图像进行一次以filter window width为正方形窗口宽度的中值滤波和均值滤波。增加filter window width使滤波后的图像更加平滑，减少一个目标检测到多个点的可能，同时会增加运算量。该端口用作参考以对filter window width进行修改。
 
 参数说明：参数中Preprocess、FFT、Imaging、Targeting Parameters板块下的参数影响了运算量和目标检测效果。
 - Preprocess Parameters：
@@ -88,6 +89,7 @@ simulink框图.slx文件。
     - target number max：最大跟踪目标数量。
     - average frames：滑动均值滤波的窗口宽度。算法原理：多径效应对成像造成的影响一般呈现出瞬时性，如果通过滑动均值滤波的方法平均多帧雷达图像，可以大大减弱多径效应的影响。同时均值滤波会带来与窗口长度相同的延迟。
     - background power threshold：背景功率阈值。参考pMa端口输出的功率设置Targeting Parameters板块下的background power threshold参数，保证无人状态下的pMa小于参数background power threshold。算法原理：当pMa < background power threshold时判定区域内没有目标，此时端口nTar输出的值为0。
+    - filter window width：图像滤波的窗口宽度，设置为3以上的奇数（如3、5、7……）。算法原理：由于帧平均后的图像一个目标可能引起多个峰值，因此对图像进行一次以filter window width为正方形窗口宽度的中值滤波和均值滤波。增加此值使滤波后的图像更加平滑，减少一个目标检测到多个点的可能，同时会增加运算量。可以参考端口heaMapFil输出的滤波后的图像对该值进行修改。
     - targets relative threshold：目标功率相对与背景噪声功率比值的阈值。算法原理：以背景噪声平均值的targets relative threshold倍作为阈值对图像进行分割，高于此阈值的像素认为有目标存在。
 
 
