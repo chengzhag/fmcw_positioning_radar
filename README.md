@@ -120,4 +120,14 @@ simulink框图.slx文件。
 - 将整个系统封装为三个子模块。
 - 为三个子模块分别建立库，方便组件重用和团队开发。
 - 为三个模块添加说明。并在readme中强调了各模块说明。
-
+## 2.3.1
+- 添加了之前遗漏的两个参数说明。
+- 为RadarImagingAndPositioning.slx的Mask添加Tab。
+- 删除多余的2017b模型。
+## 2.3.2
+- 从commit记录中删除.mat/.avi/.mp4文件，以减少lfs使用量
+- 取消lfs
+## 2.3.3
+- 修复RadarImagingAndPositioning.slx模块同步失败的错误。
+## 2.4.0
+- 为模型RadarImagingAndPositioning.slx添加heatMapFil端口和lWfil参数。
