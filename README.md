@@ -134,3 +134,11 @@ simulink框图.slx文件。
 - 修复RadarImagingAndPositioning.slx模块同步失败的错误。
 ## 2.4.0
 - 为模型RadarImagingAndPositioning.slx添加heatMapFil端口和lWfil参数。
+## 2.5.0
+- 为RadarImagingAndPositioning.slx模块添加原始图像输出。
+- 通过以下手段优化RadarImagingAndPositioning.slx模型的效率
+    - 设置所有滤波器的运行方式为Code Generation。
+    - 更换fft2模块为simulink自带模块与foreach模块的组合。
+    - 将消除多径效应的滑动平均操作改为一阶低通滤波以提升性能。
+    - 将背景建模的低通滤波器改为前景建模的高通滤波器，减少运算量。
+- 添加背景建模滤波器的截止频率设置，使弱信号目标的检测效果可调。
