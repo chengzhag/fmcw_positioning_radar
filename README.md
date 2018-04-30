@@ -75,6 +75,7 @@ simulink框图.slx文件。
 - coorTar：n行2列的矩阵，n个目标的坐标，单位（m）。第1列为x坐标，第2列为y坐标。前nTar个坐标为有效坐标。
 - nTar：目标的个数。
 - heatMapFil：滤波后的图像。算法原理：由于帧平均后的图像一个目标可能引起多个峰值，因此对图像进行一次以filter window width为正方形窗口宽度的中值滤波和均值滤波。增加filter window width使滤波后的图像更加平滑，减少一个目标检测到多个点的可能，同时会增加运算量。该端口用作参考以对filter window width进行修改。
+- heatMapRaw：进行目标跟踪子系统功率衰减矫正、对比度调整前的原始图像。
 
 参数说明：参数中Preprocess、FFT、Imaging、Targeting Parameters板块下的参数影响了运算量和目标检测效果。
 - Preprocess Parameters：
@@ -85,8 +86,10 @@ simulink框图.slx文件。
     - dis FFT length：距离方向的FFT长度，设置为2的幂次方以使用更快的FFT算法。
 - Imaging Parameters：
     - y min（max）：距离方向（y 方向）的坐标范围，直接影响雷达图像的行数和坐标序列ys，单位（m）。算法原理：两个参数会将2DFFT后的矩阵在距离方向（y方向）上作截取，如果dis FFT length参数设置的FFT长度达不到y max参数要求的FFT长度，会自动截取到dis FFT length所能计算到的最远距离，此ys表示的坐标序列不再以y max为最大值。
+    - background constructing filter fc：前景建模一阶高通滤波器的截止频率。增大以减少建模时间，减小以增强弱目标的检测效果。
 - Targeting Parameters：
     - target number max：最大跟踪目标数量。
+    - multipath removing filter fc：消除多径效应的一阶低通滤波截止频率。增大以增强多径效应消除效果，减小以减少目标轨迹拖尾效应。
     - average frames：滑动均值滤波的窗口宽度。算法原理：多径效应对成像造成的影响一般呈现出瞬时性，如果通过滑动均值滤波的方法平均多帧雷达图像，可以大大减弱多径效应的影响。同时均值滤波会带来与窗口长度相同的延迟。
     - background power threshold：背景功率阈值。参考pMa端口输出的功率设置Targeting Parameters板块下的background power threshold参数，保证无人状态下的pMa小于参数background power threshold。算法原理：当pMa < background power threshold时判定区域内没有目标，此时端口nTar输出的值为0。
     - filter window width：图像滤波的窗口宽度，设置为3以上的奇数（如3、5、7……）。算法原理：由于帧平均后的图像一个目标可能引起多个峰值，因此对图像进行一次以filter window width为正方形窗口宽度的中值滤波和均值滤波。增加此值使滤波后的图像更加平滑，减少一个目标检测到多个点的可能，同时会增加运算量。可以参考端口heaMapFil输出的滤波后的图像对该值进行修改。
@@ -131,3 +134,11 @@ simulink框图.slx文件。
 - 修复RadarImagingAndPositioning.slx模块同步失败的错误。
 ## 2.4.0
 - 为模型RadarImagingAndPositioning.slx添加heatMapFil端口和lWfil参数。
+## 2.5.0
+- 为RadarImagingAndPositioning.slx模块添加原始图像输出。
+- 通过以下手段优化RadarImagingAndPositioning.slx模型的效率
+    - 设置所有滤波器的运行方式为Code Generation。
+    - 更换fft2模块为simulink自带模块与foreach模块的组合。
+    - 将消除多径效应的滑动平均操作改为一阶低通滤波以提升性能。
+    - 将背景建模的低通滤波器改为前景建模的高通滤波器，减少运算量。
+- 添加背景建模滤波器的截止频率设置，使弱信号目标的检测效果可调。
