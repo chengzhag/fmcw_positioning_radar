@@ -7,11 +7,11 @@ if ~exist('angs','var')
 end
 
 %% gif原始基带信号
-yLoGif(tsFrame,yLoRawSim,'原始基带信号','时间(s)','幅度',fullfile(sSavePath,'yLoRaw.gif'),fF);
+yLoGif(tsFdown,yLoRawSim,'原始基带信号','时间(s)','幅度',fullfile(sSavePath,'yLoRaw.gif'),fF);
 %% gif同步后基带信号
-yLoGif(tsFrame,yLoSyncSim,'同步后基带信号','时间(s)','幅度',fullfile(sSavePath,'yLoSync.gif'),fF);
+yLoGif(tsFdown,yLoSyncSim,'同步后基带信号','时间(s)','幅度',fullfile(sSavePath,'yLoSync.gif'),fF);
 %% gif切割后基带信号
-yLoGif(tsRamp,yLoCutSim,'切割后基带信号','时间(s)','幅度',fullfile(sSavePath,'yLoCut.gif'),fF);
+yLoGif(tsFdown,yLoCutSim,'切割后基带信号','时间(s)','幅度',fullfile(sSavePath,'yLoCut.gif'),fF);
 
 %% gif函数
 function yLoGif(ts,yLo,sTitle,sXlabel,sYlabel,sSave,fF)
