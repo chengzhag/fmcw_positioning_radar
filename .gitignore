@@ -224,6 +224,7 @@ build_exception.mat
 
 # matlab
 *.asv
+*.mexw64
 
 # visualGDB
 VisualGDBCache/
